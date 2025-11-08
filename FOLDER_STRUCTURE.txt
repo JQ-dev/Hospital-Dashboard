@@ -1,0 +1,222 @@
+Hospital Analytics Dashboard - Folder Structure
+================================================
+
+hospital_dashboard/
+│
+├── README.md                          # Full documentation
+├── QUICKSTART.md                      # Quick start guide
+├── TECHNICAL_ARCHITECTURE.md          # Technical deep-dive documentation
+├── FOLDER_STRUCTURE.txt               # This file
+├── requirements.txt                   # Python dependencies
+│
+├── dashboard.py                       # Main Dash application (~95 KB)
+│   └── Run with: python dashboard.py
+│   └── Opens: http://localhost:8050
+│
+├── hospital_analytics.duckdb          # Optimized database (3.5 GB)
+│   └── Contains: Pre-computed KPIs, benchmarks, and indexed raw data
+│
+├── financial_reports_db.ipynb         # Jupyter notebook - database exploration
+├── financial_reports_parquet.ipynb    # Jupyter notebook - parquet exploration
+│
+├── config/                           # Configuration Module
+│   ├── __init__.py
+│   └── paths.py                      # Centralized path configuration
+│
+├── utils/                            # Utility Functions
+│   ├── __init__.py
+│   ├── logging_config.py             # Logging configuration
+│   └── error_helpers.py              # Error handling utilities
+│
+├── etl/                              # ETL Pipeline Scripts
+│   ├── create_duckdb_tables.py       # Step 1: Prepare source tables from raw CSV
+│   ├── create_balance_sheet.py       # Step 2: Transform balance sheet (G000, G200, G300)
+│   ├── create_revenue.py             # Step 3: Transform revenue data (A000)
+│   ├── create_revenue_expenses.py    # Step 4: Transform revenue & expenses (G000)
+│   ├── create_costs_a000.py          # Step 5a: Transform costs - Schedule A (A000)
+│   ├── create_costs_b100.py          # Step 5b: Transform costs - Schedule B (B100)
+│   ├── create_fund_balance_changes.py # Step 6: Transform fund balance changes (B000)
+│   ├── dev_create_costs_b100.py      # Development/testing script
+│   └── logs/                         # ETL execution logs
+│
+├── scripts/                          # Utility Scripts
+│   ├── build_database.py             # Build optimized database with pre-computed KPIs
+│   │   └── Run with: python build_database.py
+│   │   └── Takes: 20-40 minutes
+│   └── add_state_filters.py          # Add state filtering to database
+│
+├── data/                             # Data Files & References
+│   ├── hospital_analytics.duckdb     # Alternative location (23 MB - testing version)
+│   │
+│   ├── source_data/                  # Raw CMS HCRIS Data (CSV format)
+│   │   ├── HOSP10FY2020/            # Fiscal Year 2020 data
+│   │   │   ├── HOSP10_2020_alpha.csv # Alpha worksheet data
+│   │   │   ├── HOSP10_2020_nmrc.csv  # Numeric worksheet data
+│   │   │   └── HOSP10_2020_rpt.csv   # Report data
+│   │   ├── HOSP10FY2021/            # Fiscal Year 2021 data
+│   │   ├── HOSP10FY2022/            # Fiscal Year 2022 data
+│   │   ├── HOSP10FY2023/            # Fiscal Year 2023 data
+│   │   └── HOSP10FY2024/            # Fiscal Year 2024 data
+│   │
+│   ├── Col_Names/                    # Column Mapping Files
+│   │   ├── Names_A000.csv            # Schedule A mappings (39 KB)
+│   │   ├── Names_B000.csv            # Schedule B mappings (7.5 KB)
+│   │   ├── Names_B100.csv            # Schedule B-1 mappings (193 KB)
+│   │   ├── Names_G000.csv            # Worksheet G mappings (28 KB)
+│   │   ├── Names_G200.csv            # Worksheet G-2 mappings (12 KB)
+│   │   └── Names_G300.csv            # Worksheet G-3 mappings (3.4 KB)
+│   │
+│   ├── other_data/                   # Reference Data
+│   │   ├── ccn_state_codes.csv       # State code mappings
+│   │   ├── ccn_grouped.csv           # Hospital type classifications
+│   │   ├── balance_sheet_columns.csv # Balance sheet column definitions
+│   │   └── CMS_CCN_CODES_R29SOMA.pdf # CMS provider number documentation
+│   │
+│   └── db_parquets/                  # Transformed Parquet Files (Generated)
+│       ├── balance_sheet_long/       # Balance sheet in long format
+│       ├── revenue_long/             # Revenue data in long format
+│       ├── revenue_expenses_long/    # Revenue & expenses in long format
+│       ├── costs_a000_long/          # Schedule A costs in long format
+│       ├── costs_b100_long/          # Schedule B-1 costs in long format
+│       └── fund_balance_changes_long/ # Fund balance changes in long format
+│
+├── logs/                             # Application Logs
+│   ├── hospital_dashboard.log        # Dashboard application logs
+│   ├── create_balance_sheet.log      # Balance sheet ETL logs
+│   ├── create_revenue.log            # Revenue ETL logs
+│   ├── create_revenue_expenses.log   # Revenue & expenses ETL logs
+│   ├── create_costs_a000.log         # Costs A000 ETL logs
+│   ├── create_costs_b100.log         # Costs B100 ETL logs
+│   └── create_fund_balance_changes.log # Fund balance changes ETL logs
+│
+├── revenue_long/                     # Legacy/temp parquet output (partitioned by FY/State)
+└── revenue_expenses_long/            # Legacy/temp parquet output (partitioned by FY/State)
+
+
+HOW IT WORKS
+============
+
+1. ETL Pipeline (One-time or when data updates)
+   Step 1: Create DuckDB tables from source CSV files
+     → python etl/create_duckdb_tables.py
+
+   Step 2-6: Transform data to long format
+     → python etl/create_balance_sheet.py
+     → python etl/create_revenue.py
+     → python etl/create_revenue_expenses.py
+     → python etl/create_costs_a000.py
+     → python etl/create_costs_b100.py
+     → python etl/create_fund_balance_changes.py
+
+   Output: Parquet files in data/db_parquets/
+
+2. Database Build (One-time or when data updates)
+   → python scripts/build_database.py
+
+   Reads: Parquet files from data/db_parquets/
+   Pre-computes: All KPIs and benchmarks for 6,000+ hospitals
+   Creates: Indexes for fast queries
+   Output: hospital_analytics.duckdb (~3.5 GB)
+   Time: 20-40 minutes
+
+3. Dashboard (Run anytime)
+   → python dashboard.py
+
+   - Connects to hospital_analytics.duckdb
+   - Loads hospital metadata
+   - Serves interactive KPI dashboard
+   - Provides multi-year financial statements
+   - Result: < 100ms per hospital selection
+
+
+FILE SIZES
+==========
+
+Total Size: ~4 GB
+
+Breakdown:
+- dashboard.py:                ~95 KB
+- ETL scripts (8 files):       ~107 KB
+- Utility scripts:             ~31 KB
+- Config & Utils:              ~7 KB
+- Source CSV data:             ~500 MB (varies by years included)
+- Mapping CSVs:                ~283 KB
+- Parquet files (db_parquets): ~200-300 MB
+- hospital_analytics.duckdb:   ~3.5 GB (main database)
+- Documentation:               ~38 KB
+- Jupyter notebooks:           ~48 KB
+
+
+QUICK START
+===========
+
+Step 1: Install dependencies
+  pip install -r requirements.txt
+
+Step 2: Run ETL pipeline (if starting from raw data)
+  cd etl
+  python create_duckdb_tables.py
+  python create_balance_sheet.py
+  python create_revenue.py
+  python create_revenue_expenses.py
+  python create_costs_a000.py
+  python create_costs_b100.py
+  python create_fund_balance_changes.py
+
+Step 3: Build optimized database
+  cd ../scripts
+  python build_database.py
+
+Step 4: Run dashboard
+  cd ..
+  python dashboard.py
+  # Open http://localhost:8050
+
+
+DATA FLOW
+=========
+
+Raw CMS Data (CSV)
+    ↓
+data/source_data/HOSP10FY20XX/
+    ↓
+create_duckdb_tables.py → DuckDB temp tables
+    ↓
+ETL scripts (create_*.py) → Transform & filter
+    ↓
+data/db_parquets/*_long/ → Parquet files
+    ↓
+build_database.py → Pre-compute KPIs & benchmarks
+    ↓
+hospital_analytics.duckdb → Optimized database
+    ↓
+dashboard.py → Interactive visualization
+
+
+KEY FEATURES
+============
+
+Data Pipeline:
+- 5 fiscal years of CMS HCRIS data (2020-2024)
+- 6,224 hospitals tracked
+- 17 KPIs per hospital-year combination
+- 4 benchmark levels (National, State, Type, State+Type)
+- Multi-fund balance sheet analysis
+
+Dashboard:
+- Interactive KPI cards with flip animation
+- Trend visualizations (sparklines)
+- Color-coded performance indicators
+- Multi-year financial statements
+- Fund type analysis (General, Specific Purpose, Endowment, Plant)
+- Real-time benchmark comparisons
+
+
+SUPPORT
+=======
+
+- README.md - User documentation and setup guide
+- TECHNICAL_ARCHITECTURE.md - Technical deep-dive for developers
+- QUICKSTART.md - Quick start guide
+- Script comments - Implementation details
+- Logs/ - Execution logs for debugging
