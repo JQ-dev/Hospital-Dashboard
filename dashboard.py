@@ -2717,7 +2717,9 @@ def load_detailed_costs(ccn, selected_year, active_subtab):
         # Create a simple table
         from dash import dash_table
 
-        # Format table
+        # Format table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=df.to_dict('records'),
             columns=[
@@ -2728,23 +2730,26 @@ def load_detailed_costs(ccn, selected_year, active_subtab):
                 {'name': 'Other', 'id': 'Other', 'type': 'numeric', 'format': {'specifier': '$,.0f'}},
                 {'name': 'Adjustments', 'id': 'Adjustments', 'type': 'numeric', 'format': {'specifier': '$,.0f'}},
             ],
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '8px',
-                'fontSize': '13px'
-            },
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'borderBottom': '2px solid #dee2e6'
-            },
-            style_data_conditional=[
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
+            style_cell_conditional=pro_style['style_cell_conditional'] + [
                 {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#f8f9fa'
+                    'if': {'column_id': 'Account_group'},
+                    'fontWeight': '600',
+                    'color': '#5a6c7d'
+                },
+                {
+                    'if': {'column_id': 'Account_name'},
+                    'minWidth': '200px',
+                    'fontWeight': '500'
                 }
-            ]
+            ],
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
+            page_size=50,
+            filter_action='native',
+            sort_action='native'
         )
 
         return html.Div([
@@ -2901,28 +2906,32 @@ def load_worksheet_b(ccn, selected_year, active_subtab):
                 'format': {'specifier': '$,.0f'}
             })
 
-        # Format table
+        # Format table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=pivot_df.to_dict('records'),
             columns=columns,
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '8px',
-                'fontSize': '13px',
-                'minWidth': '120px'
-            },
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'borderBottom': '2px solid #dee2e6'
-            },
-            style_data_conditional=[
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
+            style_cell_conditional=pro_style['style_cell_conditional'] + [
                 {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#f8f9fa'
+                    'if': {'column_id': 'Account_group'},
+                    'fontWeight': '600',
+                    'color': '#5a6c7d'
+                },
+                {
+                    'if': {'column_id': 'Account_name'},
+                    'minWidth': '200px',
+                    'fontWeight': '500'
                 }
-            ]
+            ],
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
+            page_size=50,
+            filter_action='native',
+            sort_action='native'
         )
 
         return html.Div([
@@ -3082,28 +3091,32 @@ def load_worksheet_g(ccn, selected_year, active_subtab):
                 'format': {'specifier': '$,.0f'}
             })
 
-        # Format table
+        # Format table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=pivot_df.to_dict('records'),
             columns=columns,
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '8px',
-                'fontSize': '13px',
-                'minWidth': '120px'
-            },
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'borderBottom': '2px solid #dee2e6'
-            },
-            style_data_conditional=[
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
+            style_cell_conditional=pro_style['style_cell_conditional'] + [
                 {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#f8f9fa'
+                    'if': {'column_id': 'Acc_level2'},
+                    'fontWeight': '600',
+                    'color': '#5a6c7d'
+                },
+                {
+                    'if': {'column_id': 'Acc_name'},
+                    'minWidth': '200px',
+                    'fontWeight': '500'
                 }
-            ]
+            ],
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
+            page_size=50,
+            filter_action='native',
+            sort_action='native'
         )
 
         return html.Div([
@@ -3271,27 +3284,32 @@ def load_worksheet_g1(ccn, selected_year, active_subtab):
                 'format': {'specifier': '$,.0f'}
             })
 
+        # Format table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=pivot_df.to_dict('records'),
             columns=columns,
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '8px',
-                'fontSize': '13px',
-                'minWidth': '120px'
-            },
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'borderBottom': '2px solid #dee2e6'
-            },
-            style_data_conditional=[
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
+            style_cell_conditional=pro_style['style_cell_conditional'] + [
                 {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#f8f9fa'
+                    'if': {'column_id': 'Acc_level2'},
+                    'fontWeight': '600',
+                    'color': '#5a6c7d'
+                },
+                {
+                    'if': {'column_id': 'Acc_name'},
+                    'minWidth': '200px',
+                    'fontWeight': '500'
                 }
-            ]
+            ],
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
+            page_size=50,
+            filter_action='native',
+            sort_action='native'
         )
 
         return html.Div([
@@ -3464,27 +3482,32 @@ def load_worksheet_g2(ccn, selected_year, active_subtab):
                 'format': {'specifier': '$,.0f'}
             })
 
+        # Format table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=pivot_df.to_dict('records'),
             columns=columns,
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '8px',
-                'fontSize': '13px',
-                'minWidth': '120px'
-            },
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'borderBottom': '2px solid #dee2e6'
-            },
-            style_data_conditional=[
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
+            style_cell_conditional=pro_style['style_cell_conditional'] + [
                 {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#f8f9fa'
+                    'if': {'column_id': 'Revenue_Group'},
+                    'fontWeight': '600',
+                    'color': '#5a6c7d'
+                },
+                {
+                    'if': {'column_id': 'Revenue_Subgroup_Detail'},
+                    'minWidth': '200px',
+                    'fontWeight': '500'
                 }
-            ]
+            ],
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
+            page_size=50,
+            filter_action='native',
+            sort_action='native'
         )
 
         return html.Div([
@@ -3648,27 +3671,27 @@ def load_worksheet_g3(ccn, selected_year, active_subtab):
                 'format': {'specifier': '$,.0f'}
             })
 
+        # Format table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=pivot_df.to_dict('records'),
             columns=columns,
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '8px',
-                'fontSize': '13px',
-                'minWidth': '120px'
-            },
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'borderBottom': '2px solid #dee2e6'
-            },
-            style_data_conditional=[
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
+            style_cell_conditional=pro_style['style_cell_conditional'] + [
                 {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#f8f9fa'
+                    'if': {'column_id': 'Account_Name'},
+                    'minWidth': '200px',
+                    'fontWeight': '500'
                 }
-            ]
+            ],
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
+            page_size=50,
+            filter_action='native',
+            sort_action='native'
         )
 
         return html.Div([
