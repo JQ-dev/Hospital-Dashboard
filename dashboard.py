@@ -321,6 +321,160 @@ class HospitalDataManager:
             None
         )
 
+        # =====================================================================
+        # HIERARCHICAL KPI CALCULATIONS (Level 1, 2, 3)
+        # =====================================================================
+        # These align with the three-level KPI hierarchy defined in kpi_hierarchy_config.py
+        # Some KPIs use available data, others are placeholders pending full HCRIS integration
+
+        # LEVEL 1 KPI 1: Net Income Margin (same as Net_Margin_Pct)
+        kpi_df['Net_Income_Margin'] = kpi_df['Net_Margin_Pct']
+
+        # Level 2.1.1: Operating_Expense_Ratio - already calculated above
+        # Level 3 for Operating_Expense_Ratio - placeholders (need HCRIS S-3 data)
+        kpi_df['FTE_per_Bed'] = None  # Needs: (S-3 Pt I Line 14 Col 6) ÷ (S-3 Pt I Line 7 Col 1)
+        kpi_df['Salary_Pct_of_Expenses'] = None  # Needs: (S-3 Pt II Line 1 Col 1) ÷ (G-3 Line 25)
+
+        # Level 2.1.2: Non_Operating_Income_Pct - placeholder
+        kpi_df['Non_Operating_Income_Pct'] = None  # Needs non-operating income data
+        kpi_df['Investment_Income_Share'] = None
+        kpi_df['Donation_Grant_Pct'] = None
+
+        # Level 2.1.3: Payer_Mix_Medicare_Pct - placeholder
+        kpi_df['Payer_Mix_Medicare_Pct'] = None  # Needs patient days by payer
+        kpi_df['Medicare_Inpatient_Days_Pct'] = None
+        kpi_df['Medicare_Outpatient_Revenue_Pct'] = None
+
+        # Level 2.1.4: Capital_Cost_Pct_of_Expenses - placeholder
+        kpi_df['Capital_Cost_Pct_of_Expenses'] = None  # Needs capital cost breakdown
+        kpi_df['Depreciation_Pct_of_Capital'] = None
+        kpi_df['Interest_Expense_Ratio'] = None
+
+        # LEVEL 1 KPI 2: AR_Days - already calculated above as 'AR_Days'
+
+        # Level 2.2.1: Denial_Rate - placeholder
+        kpi_df['Denial_Rate'] = None  # Needs claims/denial data
+        kpi_df['Medicare_Denial_Pct'] = None
+        kpi_df['Non_Medicare_Adjustment_Pct'] = None
+
+        # Level 2.2.2: Payer_Mix_Commercial_Pct - placeholder
+        kpi_df['Payer_Mix_Commercial_Pct'] = None  # Needs payer mix data
+        kpi_df['Commercial_Inpatient_Pct'] = None
+        kpi_df['Self_Pay_Pct'] = None
+
+        # Level 2.2.3: Billing_Efficiency_Ratio - approximate using available data
+        kpi_df['Billing_Efficiency_Ratio'] = None  # Needs adjusted discharges
+        kpi_df['Charges_per_Discharge'] = None  # Needs charges and discharge data
+        kpi_df['Adjustment_Pct_of_Gross_Rev'] = None
+
+        # Level 2.2.4: Collection_Rate - approximate
+        kpi_df['Collection_Rate'] = None  # Needs cash flow data
+        kpi_df['Cash_from_Operations_Pct'] = None
+        kpi_df['AR_Aging_Over_90_Days_Pct'] = None
+
+        # LEVEL 1 KPI 3: Operating_Expense_per_Adjusted_Discharge - placeholder
+        kpi_df['Operating_Expense_per_Adjusted_Discharge'] = None  # Needs adjusted discharge count
+
+        # Level 2.3.1: Labor_Cost_per_Discharge - placeholder
+        kpi_df['Labor_Cost_per_Discharge'] = None
+        kpi_df['Contract_Labor_Pct'] = None
+        kpi_df['Overtime_Hours_Pct'] = None
+
+        # Level 2.3.2: Supply_Cost_per_Discharge - placeholder
+        kpi_df['Supply_Cost_per_Discharge'] = None
+        kpi_df['Drug_Cost_Pct'] = None
+        kpi_df['Implant_Device_Pct'] = None
+
+        # Level 2.3.3: Overhead_Allocation_Ratio - placeholder
+        kpi_df['Overhead_Allocation_Ratio'] = None
+        kpi_df['Admin_General_Pct'] = None
+        kpi_df['Maintenance_Pct'] = None
+
+        # Level 2.3.4: Case_Mix_Index - placeholder
+        kpi_df['Case_Mix_Index'] = None
+        kpi_df['DRG_Weight_Average'] = None
+        kpi_df['Transfer_Adjusted_CMI'] = None
+
+        # LEVEL 1 KPI 4: Medicare_CCR - placeholder
+        kpi_df['Medicare_CCR'] = None  # Needs cost-to-charge data
+
+        # Level 2.4.1: Ancillary_Cost_Ratio - placeholder
+        kpi_df['Ancillary_Cost_Ratio'] = None
+        kpi_df['Lab_CCR'] = None
+        kpi_df['Radiology_CCR'] = None
+
+        # Level 2.4.2: Charge_Inflation_Rate - can calculate from revenue growth
+        kpi_df['Charge_Inflation_Rate'] = kpi_df['Revenue_Growth_Pct']  # Approximation
+        kpi_df['Inpatient_Charge_Pct'] = None
+        kpi_df['Outpatient_Charge_Pct'] = None
+
+        # Level 2.4.3: Adjustment_Impact_on_Costs - placeholder
+        kpi_df['Adjustment_Impact_on_Costs'] = None
+        kpi_df['Non_Allowable_Pct'] = None
+        kpi_df['RCE_Disallowance_Pct'] = None
+
+        # Level 2.4.4: Utilization_Mix - can approximate from revenue mix
+        kpi_df['Utilization_Mix'] = kpi_df['Outpatient_Revenue_Pct'] / 100  # Approximation
+        kpi_df['ER_Visit_Pct'] = None
+        kpi_df['Clinic_Visit_Pct'] = None
+
+        # LEVEL 1 KPI 5: Bad_Debt_Charity_Pct - placeholder
+        kpi_df['Bad_Debt_Charity_Pct'] = None  # Needs bad debt and charity care data
+
+        # Level 2.5.1: Charity_Care_Charge_Ratio - placeholder
+        kpi_df['Charity_Care_Charge_Ratio'] = None
+        kpi_df['Insured_Charity_Pct'] = None
+        kpi_df['Non_Covered_Charity_Pct'] = None
+
+        # Level 2.5.2: Bad_Debt_Recovery_Rate - placeholder
+        kpi_df['Bad_Debt_Recovery_Rate'] = None
+        kpi_df['Medicare_Bad_Debt_Pct'] = None
+        kpi_df['Non_Medicare_Bad_Debt_Pct'] = None
+
+        # Level 2.5.3: Uninsured_Patient_Pct - placeholder
+        kpi_df['Uninsured_Patient_Pct'] = None
+        kpi_df['Uninsured_Inpatient_Pct'] = None
+        kpi_df['Uninsured_OP_Pct'] = None
+
+        # Level 2.5.4: Medicaid_Shortfall_Pct - placeholder
+        kpi_df['Medicaid_Shortfall_Pct'] = None
+        kpi_df['Medicaid_Days_Pct'] = None
+        kpi_df['Medicaid_Payment_to_Cost'] = None
+
+        # LEVEL 1 KPI 6: Current_Ratio - already calculated above
+
+        # Level 2.6.1: Cash_Equivalents_Pct_of_Assets
+        kpi_df['Cash_Equivalents_Pct_of_Assets'] = np.where(
+            kpi_df['Total_Assets'] > 0,
+            (kpi_df['Cash_And_Securities'] / kpi_df['Total_Assets']) * 100,
+            None
+        )
+        kpi_df['Operating_Cash_Flow'] = None  # Needs cash flow statement
+        kpi_df['Investment_Returns'] = None
+
+        # Level 2.6.2: Current_Liabilities_Ratio
+        kpi_df['Current_Liabilities_Ratio'] = np.where(
+            kpi_df['Total_Liabilities'] > 0,
+            (kpi_df['Current_Liabilities'] / kpi_df['Total_Liabilities']) * 100,
+            None
+        )
+        kpi_df['Accounts_Payable_Pct'] = None  # Needs detailed liability breakdown
+        kpi_df['Short_Term_Debt_Pct'] = None
+
+        # Level 2.6.3: Inventory_Turnover - placeholder
+        kpi_df['Inventory_Turnover'] = None  # Needs inventory and supply expense data
+        kpi_df['Supply_Expense_Pct'] = None
+        kpi_df['Days_in_Inventory'] = None
+
+        # Level 2.6.4: Fund_Balance_Pct_Change
+        kpi_df['Fund_Balance_Pct_Change'] = kpi_df['Fund_Balance'].pct_change(periods=-1) * 100
+        kpi_df['Retained_Earnings_Pct'] = np.where(
+            kpi_df['Total_Liabilities'] > 0,
+            (kpi_df['Fund_Balance'] / kpi_df['Total_Liabilities']) * 100,
+            None
+        )
+        kpi_df['Depreciation_Impact'] = None
+
         return kpi_df
 
     def get_benchmarks(self, ccn, fiscal_year, benchmark_level='State_Hospital_Type'):
@@ -553,240 +707,26 @@ def load_valuation_expense_detail(ccn, fiscal_year):
 
 
 # ============================================================================
-# KPI METADATA & RANKING
+# THREE-LEVEL KPI HIERARCHY
+# Based on Hospital HCRIS Data (CMS Form 2552-10)
 # ============================================================================
 
-KPI_METADATA = {
-    # PROFITABILITY (3 KPIs)
-    'Operating_Margin_Pct': {
-        'name': 'Operating Margin',
-        'category': 'Profitability',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (3, 5),
-        'impact_score': 10,
-        'ease_of_change': 5,
-        'description': 'Core operational profitability. Critical for financial sustainability.',
-        'improvement_levers': ['Increase revenue', 'Reduce operating expenses', 'Optimize payer mix']
-    },
-    'Net_Margin_Pct': {
-        'name': 'Net Margin',
-        'category': 'Profitability',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (2, 4),
-        'impact_score': 10,
-        'ease_of_change': 4,
-        'description': 'Overall profitability after all expenses.',
-        'improvement_levers': ['Improve operating margin', 'Optimize capital structure', 'Reduce interest expense']
-    },
+# Import the complete KPI hierarchy from separate config file
+from kpi_hierarchy_config import (
+    KPI_HIERARCHY,
+    KPI_METADATA,
+    get_level_1_kpis,
+    get_level_2_kpis,
+    get_level_3_kpis,
+    get_kpi_lineage,
+    flatten_kpi_hierarchy
+)
 
-    # LIQUIDITY (2 KPIs)
-    'Current_Ratio': {
-        'name': 'Current Ratio',
-        'category': 'Liquidity',
-        'unit': 'x',
-        'format': '.2f',
-        'higher_is_better': True,
-        'target_range': (1.5, 2.0),
-        'impact_score': 8,
-        'ease_of_change': 6,
-        'description': 'Short-term financial health. Ability to meet current obligations.',
-        'improvement_levers': ['Improve collections', 'Manage payables', 'Reduce inventory']
-    },
-    'Days_Cash_On_Hand': {
-        'name': 'Days Cash on Hand',
-        'category': 'Liquidity',
-        'unit': 'days',
-        'format': '.0f',
-        'higher_is_better': True,
-        'target_range': (60, 150),
-        'impact_score': 9,
-        'ease_of_change': 4,
-        'description': 'Financial cushion. Number of days hospital can operate without revenue.',
-        'improvement_levers': ['Build reserves', 'Improve cash collections', 'Reduce cash outflows']
-    },
-
-    # REVENUE PERFORMANCE (3 KPIs)
-    'Revenue_Growth_Pct': {
-        'name': 'Revenue Growth',
-        'category': 'Revenue Performance',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (3, 7),
-        'impact_score': 8,
-        'ease_of_change': 4,
-        'description': 'Year-over-year revenue growth rate.',
-        'improvement_levers': ['Increase volume', 'Improve payer mix', 'Add service lines']
-    },
-    'Outpatient_Revenue_Pct': {
-        'name': 'Outpatient Revenue %',
-        'category': 'Revenue Mix',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (40, 60),
-        'impact_score': 7,
-        'ease_of_change': 3,
-        'description': 'Shift to outpatient care. Growing trend in healthcare delivery.',
-        'improvement_levers': ['Expand outpatient services', 'Build ambulatory centers', 'Shift procedures']
-    },
-    'Inpatient_Revenue_Pct': {
-        'name': 'Inpatient Revenue %',
-        'category': 'Revenue Mix',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': False,
-        'target_range': (40, 60),
-        'impact_score': 6,
-        'ease_of_change': 3,
-        'description': 'Traditional inpatient revenue share. Declining trend in industry.',
-        'improvement_levers': ['Optimize case mix', 'Improve ALOS', 'Focus on complex cases']
-    },
-
-    # COST MANAGEMENT (1 KPI)
-    'Operating_Expense_Ratio': {
-        'name': 'Operating Expense Ratio',
-        'category': 'Cost Management',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': False,
-        'target_range': (85, 95),
-        'impact_score': 9,
-        'ease_of_change': 5,
-        'description': 'Operating expenses as % of revenue. Lower is better.',
-        'improvement_levers': ['Reduce labor costs', 'Optimize supply chain', 'Improve efficiency']
-    },
-
-    # ASSET MANAGEMENT (4 KPIs)
-    'Asset_Turnover_Ratio': {
-        'name': 'Asset Turnover',
-        'category': 'Efficiency',
-        'unit': 'x',
-        'format': '.2f',
-        'higher_is_better': True,
-        'target_range': (0.8, 1.2),
-        'impact_score': 6,
-        'ease_of_change': 5,
-        'description': 'Asset utilization efficiency. Revenue generated per dollar of assets.',
-        'improvement_levers': ['Increase utilization', 'Divest underperforming assets', 'Grow revenue']
-    },
-    'Fixed_Asset_Turnover': {
-        'name': 'Fixed Asset Turnover',
-        'category': 'Efficiency',
-        'unit': 'x',
-        'format': '.2f',
-        'higher_is_better': True,
-        'target_range': (1.0, 2.0),
-        'impact_score': 5,
-        'ease_of_change': 4,
-        'description': 'Revenue generated per dollar of fixed assets (PP&E).',
-        'improvement_levers': ['Increase bed utilization', 'Extend equipment hours', 'Grow revenue']
-    },
-    'AR_Days': {
-        'name': 'AR Days',
-        'category': 'Revenue Cycle',
-        'unit': 'days',
-        'format': '.0f',
-        'higher_is_better': False,
-        'target_range': (40, 50),
-        'impact_score': 8,
-        'ease_of_change': 7,
-        'description': 'Revenue cycle efficiency. How quickly hospital collects payment.',
-        'improvement_levers': ['Improve billing processes', 'Reduce denials', 'Accelerate collections']
-    },
-    'Working_Capital': {
-        'name': 'Working Capital',
-        'category': 'Liquidity',
-        'unit': '$M',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (0, 100),
-        'impact_score': 7,
-        'ease_of_change': 5,
-        'description': 'Current Assets - Current Liabilities. Operational buffer.',
-        'improvement_levers': ['Improve collections', 'Manage inventory', 'Optimize payables']
-    },
-
-    # CAPITAL STRUCTURE (3 KPIs)
-    'Debt_to_Equity_Ratio': {
-        'name': 'Debt-to-Equity',
-        'category': 'Leverage',
-        'unit': 'x',
-        'format': '.2f',
-        'higher_is_better': False,
-        'target_range': (0.8, 1.5),
-        'impact_score': 7,
-        'ease_of_change': 2,
-        'description': 'Financial leverage. Balance between debt and equity financing.',
-        'improvement_levers': ['Pay down debt', 'Build equity', 'Refinance high-cost debt']
-    },
-    'Equity_Ratio_Pct': {
-        'name': 'Equity Ratio',
-        'category': 'Capital Structure',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (30, 50),
-        'impact_score': 6,
-        'ease_of_change': 3,
-        'description': 'Financial independence. Proportion of assets financed by equity.',
-        'improvement_levers': ['Build reserves', 'Generate positive margins', 'Retain earnings']
-    },
-    'Debt_Ratio_Pct': {
-        'name': 'Debt Ratio',
-        'category': 'Leverage',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': False,
-        'target_range': (40, 60),
-        'impact_score': 6,
-        'ease_of_change': 2,
-        'description': 'Total debt as % of total assets.',
-        'improvement_levers': ['Reduce debt', 'Increase assets', 'Improve profitability']
-    },
-
-    # ADDITIONAL FINANCIAL METRICS
-    'Total_Margin_Pct': {
-        'name': 'Total Margin',
-        'category': 'Profitability',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (3, 6),
-        'impact_score': 9,
-        'ease_of_change': 4,
-        'description': 'Net income including non-operating revenue as % of total revenue.',
-        'improvement_levers': ['Improve operations', 'Optimize investments', 'Manage non-operating income']
-    },
-    'Return_on_Assets_Pct': {
-        'name': 'Return on Assets (ROA)',
-        'category': 'Profitability',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (2, 5),
-        'impact_score': 7,
-        'ease_of_change': 4,
-        'description': 'Net income as % of total assets. Overall asset efficiency.',
-        'improvement_levers': ['Improve margins', 'Optimize asset base', 'Increase revenue']
-    },
-    'Return_on_Equity_Pct': {
-        'name': 'Return on Equity (ROE)',
-        'category': 'Profitability',
-        'unit': '%',
-        'format': '.1f',
-        'higher_is_better': True,
-        'target_range': (5, 10),
-        'impact_score': 7,
-        'ease_of_change': 4,
-        'description': 'Net income as % of equity. Return to stakeholders.',
-        'improvement_levers': ['Improve profitability', 'Optimize capital structure', 'Grow efficiently']
-    },
-}
+# Three-Level KPI Hierarchy Structure:
+# - Level 1: 6 top-level strategic KPIs (financial health, efficiency, sustainability)
+# - Level 2: 4 driver KPIs per Level 1 (24 total) - key components/influencers
+# - Level 3: 2 sub-driver KPIs per Level 2 (48 total) - granular breakdowns
+# Total: 78 KPIs across the hierarchy
 
 def calculate_importance_score(kpi_key):
     """Calculate BASE importance score = Impact × Ease of Change"""
