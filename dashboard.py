@@ -1355,6 +1355,64 @@ app.layout = dbc.Container([
                     ]),
                 ])
             ], className="mt-3")
+        ]),
+
+        # CMS Worksheets Tab
+        dbc.Tab(label="CMS Worksheets", tab_id="tab-cms-worksheets", children=[
+            html.Div([
+                # Hospital and Year selection for CMS Worksheets
+                dbc.Row([
+                    dbc.Col([
+                        html.Label("Select Hospital (CMS Data):", className="fw-bold"),
+                        dcc.Dropdown(
+                            id='cms-hospital-dropdown',
+                            placeholder="Select a hospital",
+                            className="mb-3"
+                        )
+                    ], width=6),
+                    dbc.Col([
+                        html.Label("Select Fiscal Year:", className="fw-bold"),
+                        dcc.Dropdown(
+                            id='cms-year-dropdown',
+                            placeholder="Select fiscal year",
+                            className="mb-3"
+                        )
+                    ], width=3)
+                ], className="mb-4"),
+
+                dbc.Row([
+                    dbc.Col([
+                        dbc.Tabs(id="cms-worksheet-tabs", active_tab="cms-tab-a000000", children=[
+                            dbc.Tab(label="A000000 - General Service Cost Centers", tab_id="cms-tab-a000000"),
+                            dbc.Tab(label="A6000A0 - Reclassifications", tab_id="cms-tab-a6000a0"),
+                            dbc.Tab(label="A700001 - Reconciliation of Capital Costs Centers", tab_id="cms-tab-a700001"),
+                            dbc.Tab(label="A700002 - Reconciliation of Capital Costs Centers", tab_id="cms-tab-a700002"),
+                            dbc.Tab(label="A700003 - Reconciliation of Capital Costs Centers", tab_id="cms-tab-a700003"),
+                            dbc.Tab(label="A800000 - Adjustments to Expenses", tab_id="cms-tab-a800000"),
+                            dbc.Tab(label="A810000 - Costs Incurred - Related Organizations", tab_id="cms-tab-a810000"),
+                            dbc.Tab(label="A820010 - Provider-Based Physicians Adjustments", tab_id="cms-tab-a820010"),
+                            dbc.Tab(label="B000001 - Cost Allocation - General Service Costs", tab_id="cms-tab-b000001"),
+                            dbc.Tab(label="B000002 - Cost Allocation - General Service Costs", tab_id="cms-tab-b000002"),
+                            dbc.Tab(label="B100000 - Cost Allocation - General Service Costs", tab_id="cms-tab-b100000"),
+                            dbc.Tab(label="C000001 - Cost Allocation - General Service Costs", tab_id="cms-tab-c000001"),
+                            dbc.Tab(label="G000000 - Balance Sheet", tab_id="cms-tab-g000000"),
+                            dbc.Tab(label="G100000 - Statement of Changes in Fund Balances", tab_id="cms-tab-g100000"),
+                            dbc.Tab(label="G200000 - Statement of Patient Revenues", tab_id="cms-tab-g200000"),
+                            dbc.Tab(label="G300000 - Statement of Revenues", tab_id="cms-tab-g300000"),
+                            dbc.Tab(label="S000001 - Settlement Summary", tab_id="cms-tab-s000001"),
+                            dbc.Tab(label="S100001 - Hospital Uncompensated & Indigent Care Data", tab_id="cms-tab-s100001"),
+                            dbc.Tab(label="S200001 - Hospital & Healthcare Complex ID Data", tab_id="cms-tab-s200001"),
+                            dbc.Tab(label="S300001 - Statistical Data", tab_id="cms-tab-s300001"),
+                            dbc.Tab(label="S300002 - Statistical Data", tab_id="cms-tab-s300002"),
+                            dbc.Tab(label="S300004 - Hospital Wage Related Costs", tab_id="cms-tab-s300004"),
+                            dbc.Tab(label="S300005 - Hospital Wage Related Costs", tab_id="cms-tab-s300005"),
+                            dbc.Tab(label="S410000 - Hospital Wage Related Costs", tab_id="cms-tab-s410000"),
+                            dbc.Tab(label="S500000 - Hospital Renal Dialysis Department", tab_id="cms-tab-s500000"),
+                        ]),
+                        html.Div(id='cms-worksheet-content', className="mt-4")
+                    ])
+                ])
+            ], className="mt-3")
         ])
     ]),
 
@@ -3509,6 +3567,304 @@ def load_fund_balance_changes(ccn, active_subtab):
         import traceback
         traceback.print_exc()
         return html.Div(f"Error loading fund balance changes: {str(e)}", className="alert alert-danger")
+
+
+# ============================================================================
+# CMS WORKSHEETS CALLBACKS
+# ============================================================================
+
+@app.callback(
+    [Output('cms-hospital-dropdown', 'options'),
+     Output('cms-hospital-dropdown', 'value')],
+    Input('main-tabs', 'active_tab')
+)
+def populate_cms_hospital_dropdown(active_tab):
+    """Populate hospital dropdown for CMS Worksheets tab"""
+    if active_tab != 'tab-cms-worksheets':
+        return [], None
+
+    try:
+        worksheets_db_path = Path(__file__).parent / 'data' / 'hospital_worksheets.duckdb'
+        con = duckdb.connect(str(worksheets_db_path), read_only=True)
+
+        providers = con.execute("""
+            SELECT DISTINCT Provider_Number, state_code
+            FROM provider_list
+            ORDER BY state_code, Provider_Number
+        """).df()
+
+        con.close()
+
+        options = [
+            {
+                'label': f"{row['Provider_Number']} ({row['state_code']})",
+                'value': row['Provider_Number']
+            }
+            for _, row in providers.iterrows()
+        ]
+
+        # Set first hospital as default
+        default_value = options[0]['value'] if options else None
+
+        return options, default_value
+    except Exception as e:
+        print(f"Error loading CMS hospitals: {e}")
+        return [], None
+
+
+@app.callback(
+    [Output('cms-year-dropdown', 'options'),
+     Output('cms-year-dropdown', 'value')],
+    Input('cms-hospital-dropdown', 'value')
+)
+def populate_cms_year_dropdown(provider_number):
+    """Populate year dropdown based on selected hospital"""
+    if not provider_number:
+        return [], None
+
+    try:
+        worksheets_db_path = Path(__file__).parent / 'data' / 'hospital_worksheets.duckdb'
+        con = duckdb.connect(str(worksheets_db_path), read_only=True)
+
+        years = con.execute("""
+            SELECT DISTINCT fiscal_year
+            FROM all_worksheets
+            WHERE Provider_Number = ?
+            ORDER BY fiscal_year DESC
+        """, [provider_number]).df()
+
+        con.close()
+
+        options = [{'label': str(year), 'value': year} for year in years['fiscal_year']]
+
+        # Set most recent year as default
+        default_value = options[0]['value'] if options else None
+
+        return options, default_value
+    except Exception as e:
+        print(f"Error loading years: {e}")
+        return [], None
+
+
+@app.callback(
+    Output('cms-worksheet-content', 'children'),
+    [Input('cms-worksheet-tabs', 'active_tab'),
+     Input('cms-hospital-dropdown', 'value'),
+     Input('cms-year-dropdown', 'value')]
+)
+def update_cms_worksheet_content(active_tab, ccn, selected_year):
+    """Update content based on selected CMS worksheet tab"""
+
+    if not ccn:
+        return html.Div("Please select a hospital", className="alert alert-info")
+
+    if not selected_year:
+        return html.Div("Please select a fiscal year", className="alert alert-info")
+
+    # Extract worksheet code from tab ID
+    worksheet_code = active_tab.replace('cms-tab-', '').upper()
+
+    # Worksheet names mapping
+    WORKSHEET_NAMES = {
+        'A000000': 'General Service Cost Centers',
+        'A6000A0': 'Reclassifications',
+        'A700001': 'Reconciliation of Capital Costs Centers',
+        'A700002': 'Reconciliation of Capital Costs Centers',
+        'A700003': 'Reconciliation of Capital Costs Centers',
+        'A800000': 'Adjustments to Expenses',
+        'A810000': 'Costs Incurred - Related Organizations',
+        'A820010': 'Provider-Based Physicians Adjustments',
+        'B000001': 'Cost Allocation - General Service Costs',
+        'B000002': 'Cost Allocation - General Service Costs',
+        'B100000': 'Cost Allocation - General Service Costs',
+        'C000001': 'Cost Allocation - General Service Costs',
+        'G000000': 'Balance Sheet',
+        'G100000': 'Statement of Changes in Fund Balances',
+        'G200000': 'Statement of Patient Revenues',
+        'G300000': 'Statement of Revenues',
+        'S000001': 'Settlement Summary',
+        'S100001': 'Hospital Uncompensated & Indigent Care Data',
+        'S200001': 'Hospital & Healthcare Complex ID Data',
+        'S300001': 'Statistical Data',
+        'S300002': 'Statistical Data',
+        'S300004': 'Hospital Wage Related Costs',
+        'S300005': 'Hospital Wage Related Costs',
+        'S410000': 'Hospital Wage Related Costs',
+        'S500000': 'Hospital Renal Dialysis Department',
+    }
+
+    worksheet_name = WORKSHEET_NAMES.get(worksheet_code, worksheet_code)
+
+    try:
+        # Connect to the worksheets database
+        worksheets_db_path = Path(__file__).parent / 'data' / 'hospital_worksheets.duckdb'
+        con = duckdb.connect(str(worksheets_db_path), read_only=True)
+
+        # Query worksheet data
+        table_name = f'worksheet_{worksheet_code.lower()}'
+
+        df = con.execute(f"""
+            SELECT
+                Line,
+                "Column",
+                line_level1,
+                line_level2,
+                col_level1,
+                col_level2,
+                Value
+            FROM {table_name}
+            WHERE Provider_Number = ?
+                AND fiscal_year = ?
+            ORDER BY Line, "Column"
+        """, [ccn, int(selected_year)]).df()
+
+        con.close()
+
+        if df.empty:
+            return html.Div(
+                f"No data available for {worksheet_name} in fiscal year {selected_year}",
+                className="alert alert-warning"
+            )
+
+        # Roll-up logic: Keep only rows/columns ending in "00", sum the detail lines
+        df['Line_Parent'] = df['Line'].str[:3] + '00'
+        df['Column_Parent'] = df['Column'].str[:3] + '00'
+
+        # Group by parent Line and Column, sum the values
+        rollup_df = df.groupby(['Line_Parent', 'Column_Parent'], as_index=False).agg({
+            'Value': 'sum',
+            'line_level1': 'first',
+            'line_level2': 'first',
+            'col_level1': 'first',
+            'col_level2': 'first'
+        })
+
+        # Rename back to Line and Column
+        rollup_df = rollup_df.rename(columns={'Line_Parent': 'Line', 'Column_Parent': 'Column'})
+        df = rollup_df
+
+        # Convert to string and fill NaN values with empty strings for display
+        df['line_level1'] = df['line_level1'].astype(str).replace('nan', '').replace('<NA>', '')
+        df['line_level2'] = df['line_level2'].astype(str).replace('nan', '').replace('<NA>', '')
+        df['col_level1'] = df['col_level1'].astype(str).replace('nan', '').replace('<NA>', '')
+        df['col_level2'] = df['col_level2'].astype(str).replace('nan', '').replace('<NA>', '')
+
+        # Filter out rows where ALL line and column levels are empty
+        df = df[
+            (df['line_level1'] != '') | (df['line_level2'] != '') |
+            (df['col_level1'] != '') | (df['col_level2'] != '')
+        ]
+
+        # Create row labels (Line + descriptions)
+        df['Row_Label'] = df.apply(
+            lambda x: f"{x['Line']} | {x['line_level1']} {x['line_level2']}".strip(),
+            axis=1
+        )
+
+        # Create column labels (Column + descriptions)
+        df['Col_Label'] = df.apply(
+            lambda x: f"{x['Column']} | {x['col_level1']} {x['col_level2']}".strip() if x['col_level1'] or x['col_level2'] else x['Column'],
+            axis=1
+        )
+
+        # Get unique columns in order
+        col_order = df[['Column', 'Col_Label']].drop_duplicates().sort_values('Column')
+
+        # Pivot the data
+        pivot_df = df.pivot_table(
+            index=['Line', 'Row_Label'],
+            columns='Col_Label',
+            values='Value',
+            aggfunc='first'
+        ).reset_index()
+
+        # Reorder columns based on original Column order
+        ordered_cols = ['Line', 'Row_Label'] + [col for col in col_order['Col_Label'] if col in pivot_df.columns]
+        pivot_df = pivot_df[ordered_cols]
+
+        # Create DataTable columns
+        columns = [
+            {'name': 'Line', 'id': 'Line', 'type': 'text'},
+            {'name': 'Description', 'id': 'Row_Label', 'type': 'text'}
+        ]
+
+        # Add value columns
+        for col in pivot_df.columns:
+            if col not in ['Line', 'Row_Label']:
+                columns.append({
+                    'name': col,
+                    'id': col,
+                    'type': 'numeric',
+                    'format': {'specifier': ',.2f'}
+                })
+
+        # Create table
+        table = dash_table.DataTable(
+            data=pivot_df.to_dict('records'),
+            columns=columns,
+            style_table={'overflowX': 'auto'},
+            style_cell={
+                'textAlign': 'left',
+                'padding': '10px',
+                'minWidth': '100px',
+                'maxWidth': '300px',
+                'whiteSpace': 'normal',
+                'height': 'auto',
+            },
+            style_cell_conditional=[
+                {
+                    'if': {'column_id': 'Line'},
+                    'width': '80px',
+                    'textAlign': 'center'
+                },
+                {
+                    'if': {'column_id': 'Row_Label'},
+                    'minWidth': '250px',
+                    'maxWidth': '400px',
+                },
+                {
+                    'if': {'column_type': 'numeric'},
+                    'textAlign': 'right',
+                    'minWidth': '120px'
+                }
+            ],
+            style_header={
+                'backgroundColor': '#f8f9fa',
+                'fontWeight': 'bold',
+                'border': '1px solid #dee2e6',
+                'textAlign': 'center'
+            },
+            style_data={
+                'border': '1px solid #dee2e6'
+            },
+            page_size=100,
+            filter_action='native',
+            sort_action='native',
+            export_format='xlsx',
+            export_headers='display'
+        )
+
+        return html.Div([
+            dbc.Row([
+                dbc.Col([
+                    html.H5(f"{worksheet_name} - Fiscal Year {selected_year}", className="mb-3"),
+                    html.P([
+                        html.Strong("Total rows: "), f"{len(pivot_df):,} | ",
+                        html.Strong("Total columns: "), f"{len(pivot_df.columns)-2:,}"
+                    ], className="text-muted mb-3"),
+                ])
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    table
+                ])
+            ])
+        ])
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return html.Div(f"Error loading worksheet: {str(e)}", className="alert alert-danger")
 
 
 # ============================================================================
