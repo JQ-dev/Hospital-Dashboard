@@ -1495,55 +1495,67 @@ app.layout = dbc.Container([
         # CMS Worksheets Tab
         dbc.Tab(label="CMS Worksheets", tab_id="tab-cms-worksheets", children=[
             html.Div([
-                # Hospital and Year selection for CMS Worksheets
+                # Dropdowns for Year, Hospital, and Worksheet selection
                 dbc.Row([
-                    dbc.Col([
-                        html.Label("Select Hospital (CMS Data):", className="fw-bold"),
-                        dcc.Dropdown(
-                            id='cms-hospital-dropdown',
-                            placeholder="Select a hospital",
-                            className="mb-3"
-                        )
-                    ], width=6),
                     dbc.Col([
                         html.Label("Select Fiscal Year:", className="fw-bold"),
                         dcc.Dropdown(
                             id='cms-year-dropdown',
                             placeholder="Select fiscal year",
-                            className="mb-3"
+                            className="mb-3",
+                            searchable=False
                         )
-                    ], width=3)
+                    ], width=2),
+                    dbc.Col([
+                        html.Label("Select Hospital:", className="fw-bold"),
+                        dcc.Dropdown(
+                            id='cms-hospital-dropdown',
+                            placeholder="Type to search hospital...",
+                            className="mb-3",
+                            searchable=True
+                        )
+                    ], width=5),
+                    dbc.Col([
+                        html.Label("Select Worksheet:", className="fw-bold"),
+                        dcc.Dropdown(
+                            id='cms-worksheet-dropdown',
+                            options=[
+                                {'label': 'A000000 - General Service Cost Centers', 'value': 'A000000'},
+                                {'label': 'A6000A0 - Reclassifications', 'value': 'A6000A0'},
+                                {'label': 'A700001 - Reconciliation of Capital Costs Centers', 'value': 'A700001'},
+                                {'label': 'A700002 - Reconciliation of Capital Costs Centers', 'value': 'A700002'},
+                                {'label': 'A700003 - Reconciliation of Capital Costs Centers', 'value': 'A700003'},
+                                {'label': 'A800000 - Adjustments to Expenses', 'value': 'A800000'},
+                                {'label': 'A810000 - Costs Incurred - Related Organizations', 'value': 'A810000'},
+                                {'label': 'A820010 - Provider-Based Physicians Adjustments', 'value': 'A820010'},
+                                {'label': 'B000001 - Cost Allocation - General Service Costs', 'value': 'B000001'},
+                                {'label': 'B000002 - Cost Allocation - General Service Costs', 'value': 'B000002'},
+                                {'label': 'B100000 - Cost Allocation - General Service Costs', 'value': 'B100000'},
+                                {'label': 'C000001 - Cost Allocation - General Service Costs', 'value': 'C000001'},
+                                {'label': 'G000000 - Balance Sheet', 'value': 'G000000'},
+                                {'label': 'G100000 - Statement of Changes in Fund Balances', 'value': 'G100000'},
+                                {'label': 'G200000 - Statement of Patient Revenues', 'value': 'G200000'},
+                                {'label': 'G300000 - Statement of Revenues', 'value': 'G300000'},
+                                {'label': 'S000001 - Settlement Summary', 'value': 'S000001'},
+                                {'label': 'S100001 - Hospital Uncompensated & Indigent Care Data', 'value': 'S100001'},
+                                {'label': 'S200001 - Hospital & Healthcare Complex ID Data', 'value': 'S200001'},
+                                {'label': 'S300001 - Statistical Data', 'value': 'S300001'},
+                                {'label': 'S300002 - Statistical Data', 'value': 'S300002'},
+                                {'label': 'S300004 - Hospital Wage Related Costs', 'value': 'S300004'},
+                                {'label': 'S300005 - Hospital Wage Related Costs', 'value': 'S300005'},
+                                {'label': 'S410000 - Hospital Wage Related Costs', 'value': 'S410000'},
+                                {'label': 'S500000 - Hospital Renal Dialysis Department', 'value': 'S500000'},
+                            ],
+                            placeholder="Type to search worksheet...",
+                            value='A000000',
+                            className="mb-3",
+                            searchable=True
+                        )
+                    ], width=5)
                 ], className="mb-4"),
 
                 dbc.Row([
                     dbc.Col([
-                        dbc.Tabs(id="cms-worksheet-tabs", active_tab="cms-tab-a000000", children=[
-                            dbc.Tab(label="A000000 - General Service Cost Centers", tab_id="cms-tab-a000000"),
-                            dbc.Tab(label="A6000A0 - Reclassifications", tab_id="cms-tab-a6000a0"),
-                            dbc.Tab(label="A700001 - Reconciliation of Capital Costs Centers", tab_id="cms-tab-a700001"),
-                            dbc.Tab(label="A700002 - Reconciliation of Capital Costs Centers", tab_id="cms-tab-a700002"),
-                            dbc.Tab(label="A700003 - Reconciliation of Capital Costs Centers", tab_id="cms-tab-a700003"),
-                            dbc.Tab(label="A800000 - Adjustments to Expenses", tab_id="cms-tab-a800000"),
-                            dbc.Tab(label="A810000 - Costs Incurred - Related Organizations", tab_id="cms-tab-a810000"),
-                            dbc.Tab(label="A820010 - Provider-Based Physicians Adjustments", tab_id="cms-tab-a820010"),
-                            dbc.Tab(label="B000001 - Cost Allocation - General Service Costs", tab_id="cms-tab-b000001"),
-                            dbc.Tab(label="B000002 - Cost Allocation - General Service Costs", tab_id="cms-tab-b000002"),
-                            dbc.Tab(label="B100000 - Cost Allocation - General Service Costs", tab_id="cms-tab-b100000"),
-                            dbc.Tab(label="C000001 - Cost Allocation - General Service Costs", tab_id="cms-tab-c000001"),
-                            dbc.Tab(label="G000000 - Balance Sheet", tab_id="cms-tab-g000000"),
-                            dbc.Tab(label="G100000 - Statement of Changes in Fund Balances", tab_id="cms-tab-g100000"),
-                            dbc.Tab(label="G200000 - Statement of Patient Revenues", tab_id="cms-tab-g200000"),
-                            dbc.Tab(label="G300000 - Statement of Revenues", tab_id="cms-tab-g300000"),
-                            dbc.Tab(label="S000001 - Settlement Summary", tab_id="cms-tab-s000001"),
-                            dbc.Tab(label="S100001 - Hospital Uncompensated & Indigent Care Data", tab_id="cms-tab-s100001"),
-                            dbc.Tab(label="S200001 - Hospital & Healthcare Complex ID Data", tab_id="cms-tab-s200001"),
-                            dbc.Tab(label="S300001 - Statistical Data", tab_id="cms-tab-s300001"),
-                            dbc.Tab(label="S300002 - Statistical Data", tab_id="cms-tab-s300002"),
-                            dbc.Tab(label="S300004 - Hospital Wage Related Costs", tab_id="cms-tab-s300004"),
-                            dbc.Tab(label="S300005 - Hospital Wage Related Costs", tab_id="cms-tab-s300005"),
-                            dbc.Tab(label="S410000 - Hospital Wage Related Costs", tab_id="cms-tab-s410000"),
-                            dbc.Tab(label="S500000 - Hospital Renal Dialysis Department", tab_id="cms-tab-s500000"),
-                        ]),
                         html.Div(id='cms-worksheet-content', className="mt-4")
                     ])
                 ])
@@ -2327,19 +2339,26 @@ def create_multiyear_financial_table(df, title, statement_type):
                                 )
                             table_rows.append(html.Tr(detail_row_cells))
 
-    # Create table header with years
-    header_cells = [html.Th("Account", className="text-start", style={'min-width': '300px'})]
+    # Create table header with years - Professional styling
+    header_cells = [html.Th("Account", className="text-start",
+                           style={'min-width': '300px', 'backgroundColor': '#34495e', 'color': 'white',
+                                  'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'})]
     for year in years:
-        header_cells.append(html.Th(str(int(year)), className="text-end", style={'min-width': '120px'}))
+        header_cells.append(html.Th(str(int(year)), className="text-end",
+                                   style={'min-width': '130px', 'backgroundColor': '#34495e', 'color': 'white',
+                                          'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'}))
 
-    # Create table
+    # Create table with professional styling
     table = dbc.Table([
-        html.Thead(html.Tr(header_cells), className="table-dark"),
+        html.Thead(html.Tr(header_cells)),
         html.Tbody(table_rows)
-    ], bordered=True, hover=True, responsive=True, className="table-sm", style={'font-size': '0.9rem'})
+    ], bordered=True, hover=True, responsive=True, className="table-sm",
+       style={'font-size': '0.9rem', 'borderRadius': '8px', 'overflow': 'hidden',
+              'boxShadow': '0 2px 8px rgba(0,0,0,0.08)', 'border': '1px solid #dee2e6'})
 
     return html.Div([
-        html.H5(title, className="mb-3"),
+        html.H5(title, className="mb-3",
+               style={'color': '#2c3e50', 'fontWeight': '600', 'fontSize': '1.3rem'}),
         html.P([
             html.Strong("Note: "),
             f"All amounts in millions (USD). Showing {len(years)} fiscal years: {min(years)} - {max(years)}"
@@ -3838,12 +3857,12 @@ def populate_cms_year_dropdown(provider_number):
 
 @app.callback(
     Output('cms-worksheet-content', 'children'),
-    [Input('cms-worksheet-tabs', 'active_tab'),
+    [Input('cms-worksheet-dropdown', 'value'),
      Input('cms-hospital-dropdown', 'value'),
      Input('cms-year-dropdown', 'value')]
 )
-def update_cms_worksheet_content(active_tab, ccn, selected_year):
-    """Update content based on selected CMS worksheet tab"""
+def update_cms_worksheet_content(worksheet_code, ccn, selected_year):
+    """Update content based on selected CMS worksheet dropdown"""
 
     if not ccn:
         return html.Div("Please select a hospital", className="alert alert-info")
@@ -3851,8 +3870,11 @@ def update_cms_worksheet_content(active_tab, ccn, selected_year):
     if not selected_year:
         return html.Div("Please select a fiscal year", className="alert alert-info")
 
-    # Extract worksheet code from tab ID
-    worksheet_code = active_tab.replace('cms-tab-', '').upper()
+    if not worksheet_code:
+        return html.Div("Please select a worksheet", className="alert alert-info")
+
+    # worksheet_code is now directly from the dropdown value
+    worksheet_code = worksheet_code.upper()
 
     # Worksheet names mapping
     WORKSHEET_NAMES = {
