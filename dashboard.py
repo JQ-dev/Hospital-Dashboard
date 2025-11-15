@@ -336,19 +336,23 @@ class HospitalDataManager:
             if self.use_precomputed:
                 con = self.get_connection()
                 try:
-                    # Build filter for benchmark level
+                    # Build filter for benchmark level using parameterized queries
                     if benchmark_level == 'National':
                         filter_sql = "Benchmark_Level = 'National'"
                         group_name = 'National'
+                        params = [int(fiscal_year)]
                     elif benchmark_level == 'State':
-                        filter_sql = f"Benchmark_Level = 'State' AND State_Code = '{state_code}'"
+                        filter_sql = "Benchmark_Level = 'State' AND State_Code = ?"
                         group_name = f'State {state_code}'
+                        params = [state_code, int(fiscal_year)]
                     elif benchmark_level == 'Hospital_Type':
-                        filter_sql = f"Benchmark_Level = 'Hospital_Type' AND Hospital_Type = '{hospital_type}'"
+                        filter_sql = "Benchmark_Level = 'Hospital_Type' AND Hospital_Type = ?"
                         group_name = hospital_type
+                        params = [hospital_type, int(fiscal_year)]
                     else:  # State_Hospital_Type
-                        filter_sql = f"Benchmark_Level = 'State_Hospital_Type' AND State_Code = '{state_code}' AND Hospital_Type = '{hospital_type}'"
+                        filter_sql = "Benchmark_Level = 'State_Hospital_Type' AND State_Code = ? AND Hospital_Type = ?"
                         group_name = f'{state_code} - {hospital_type}'
+                        params = [state_code, hospital_type, int(fiscal_year)]
 
                     # Get benchmarks from pre-computed table
                     benchmarks_df = con.execute(f"""
@@ -358,7 +362,7 @@ class HospitalDataManager:
                             P25, Median, P75, Mean
                         FROM hospital_benchmarks
                         WHERE {filter_sql} AND Fiscal_Year = ?
-                    """, [int(fiscal_year)]).df()
+                    """, params).df()
 
                     con.close()
 
@@ -391,20 +395,24 @@ class HospitalDataManager:
             # Otherwise calculate from raw data
             con = duckdb.connect(':memory:') if not self.use_database else self.get_connection()
 
-            # Build filter based on benchmark level
+            # Build filter based on benchmark level using parameterized queries
             if benchmark_level == 'National':
                 filter_sql = "1=1"
                 group_name = 'National'
+                query_params = [self.balance_sheet_path, int(fiscal_year)]
             elif benchmark_level == 'State':
-                filter_sql = f"State_Code = '{state_code}'"
+                filter_sql = "State_Code = ?"
                 group_name = f'State {state_code}'
+                query_params = [self.balance_sheet_path, int(fiscal_year), state_code]
             elif benchmark_level == 'Hospital_Type':
                 # Need to get all hospitals of this type
                 filter_sql = "1=1"  # Will filter in Python
                 group_name = hospital_type
+                query_params = [self.balance_sheet_path, int(fiscal_year)]
             else:  # State_Hospital_Type
-                filter_sql = f"State_Code = '{state_code}'"
+                filter_sql = "State_Code = ?"
                 group_name = f'{state_code} - {hospital_type}'
+                query_params = [self.balance_sheet_path, int(fiscal_year), state_code]
 
             # Get all hospitals for this benchmark group
             hospitals_query = f"""
@@ -412,7 +420,7 @@ class HospitalDataManager:
                 FROM read_parquet(?, hive_partitioning=1)
                 WHERE Fiscal_Year = ? AND {filter_sql}
             """
-            hospitals_df = con.execute(hospitals_query, [self.balance_sheet_path, int(fiscal_year)]).df()
+            hospitals_df = con.execute(hospitals_query, query_params).df()
 
             # Filter by hospital type if needed
             if benchmark_level in ['Hospital_Type', 'State_Hospital_Type']:
@@ -488,6 +496,60 @@ class HospitalDataManager:
                 'provider_count': 0,
                 'kpis': {}
             }
+
+
+# ============================================================================
+# VALUATION FUNCTIONS
+# ============================================================================
+
+def load_valuation_income_statement(ccn, fiscal_year):
+    """Load income statement data for valuation analysis"""
+    con = data_manager.get_connection()
+    try:
+        query = """
+        SELECT
+            Line_Name,
+            Section,
+            Subsection,
+            Value
+        FROM income_statement_long
+        WHERE Provider_Number = ?
+            AND Fiscal_Year = ?
+        ORDER BY Line
+        """
+        df = con.execute(query, [int(ccn), int(fiscal_year)]).df()
+        con.close()
+        return df
+    except Exception as e:
+        print(f"Error loading income statement for valuation: {e}")
+        con.close()
+        return pd.DataFrame()
+
+def load_valuation_expense_detail(ccn, fiscal_year):
+    """Load detailed expense breakdown for valuation analysis"""
+    con = data_manager.get_connection()
+    try:
+        query = """
+        SELECT
+            Expense_Category,
+            Category_Description,
+            Category_Type,
+            Column_Description,
+            SUM(Value) as Total_Expense
+        FROM expense_detail
+        WHERE Provider_Number = ?
+            AND Fiscal_Year = ?
+            AND Column_Description = 'Final_Adjusted'
+        GROUP BY Expense_Category, Category_Description, Category_Type, Column_Description
+        ORDER BY Total_Expense DESC
+        """
+        df = con.execute(query, [int(ccn), int(fiscal_year)]).df()
+        con.close()
+        return df
+    except Exception as e:
+        print(f"Error loading expense detail for valuation: {e}")
+        con.close()
+        return pd.DataFrame()
 
 
 # ============================================================================
@@ -1412,6 +1474,38 @@ app.layout = dbc.Container([
                         html.Div(id='cms-worksheet-content', className="mt-4")
                     ])
                 ])
+            ], className="mt-3")
+        ]),
+
+        # Valuation Analysis Tab
+        dbc.Tab(label="Valuation Analysis", tab_id="tab-valuation", children=[
+            html.Div([
+                html.H5("Interactive Hospital Valuation Dashboard", className="mt-3 mb-3 text-primary"),
+                html.P("Analyze how changes in revenue, expenses, and margins affect hospital valuation", className="text-muted mb-4"),
+
+                # Hospital and Year Selection for Valuation
+                dbc.Row([
+                    dbc.Col([
+                        html.Label("Select Fiscal Year:", className="fw-bold"),
+                        dcc.Dropdown(
+                            id='valuation-year-dropdown',
+                            placeholder="Select fiscal year",
+                            className="mb-3"
+                        )
+                    ], width=3),
+                    dbc.Col([
+                        html.Button('Load Valuation Data', id='valuation-load-button', n_clicks=0,
+                                    className="btn btn-primary mt-4")
+                    ], width=3)
+                ], className="mb-4"),
+
+                # Store components for valuation data
+                dcc.Store(id='valuation-income-data'),
+                dcc.Store(id='valuation-expense-data'),
+                dcc.Store(id='valuation-baseline-metrics'),
+
+                # Valuation content area
+                html.Div(id='valuation-content')
             ], className="mt-3")
         ])
     ]),
@@ -3701,6 +3795,11 @@ def update_cms_worksheet_content(active_tab, ccn, selected_year):
         con = duckdb.connect(str(worksheets_db_path), read_only=True)
 
         # Query worksheet data
+        # Sanitize worksheet_code to prevent SQL injection (only allow alphanumeric characters)
+        if not worksheet_code.replace('_', '').isalnum():
+            con.close()
+            return html.Div(f"Invalid worksheet code", className="alert alert-danger")
+
         table_name = f'worksheet_{worksheet_code.lower()}'
 
         df = con.execute(f"""
@@ -3865,6 +3964,388 @@ def update_cms_worksheet_content(active_tab, ccn, selected_year):
         import traceback
         traceback.print_exc()
         return html.Div(f"Error loading worksheet: {str(e)}", className="alert alert-danger")
+
+
+# ============================================================================
+# VALUATION TAB CALLBACKS
+# ============================================================================
+
+@app.callback(
+    Output('valuation-year-dropdown', 'options'),
+    Input('hospital-dropdown', 'value')
+)
+def populate_valuation_years(ccn):
+    """Populate year dropdown for valuation tab based on selected hospital"""
+    if not ccn:
+        return []
+
+    con = data_manager.get_connection()
+    try:
+        query = """
+        SELECT DISTINCT Fiscal_Year
+        FROM income_statement_long
+        WHERE Provider_Number = ?
+        ORDER BY Fiscal_Year DESC
+        """
+        df = con.execute(query, [int(ccn)]).df()
+        con.close()
+
+        if df.empty:
+            return []
+
+        years = df['Fiscal_Year'].tolist()
+        return [{'label': str(year), 'value': year} for year in years]
+    except:
+        con.close()
+        return []
+
+
+@app.callback(
+    [Output('valuation-income-data', 'data'),
+     Output('valuation-expense-data', 'data'),
+     Output('valuation-baseline-metrics', 'data'),
+     Output('valuation-content', 'children')],
+    [Input('valuation-load-button', 'n_clicks')],
+    [State('hospital-dropdown', 'value'),
+     State('valuation-year-dropdown', 'value')]
+)
+def load_valuation_data(n_clicks, ccn, fiscal_year):
+    """Load and display valuation data"""
+    if n_clicks == 0 or not ccn or not fiscal_year:
+        return None, None, None, html.Div([
+            html.P("Please select a fiscal year and click 'Load Valuation Data'.",
+                   className="text-center text-muted mt-4")
+        ])
+
+    # Load data
+    income_df = load_valuation_income_statement(ccn, fiscal_year)
+    expense_df = load_valuation_expense_detail(ccn, fiscal_year)
+
+    if income_df.empty:
+        return None, None, None, html.Div([
+            html.P("No income statement data found for the selected hospital and year.",
+                   className="text-center text-danger mt-4")
+        ])
+
+    # Calculate baseline metrics
+    baseline = {}
+    for _, row in income_df.iterrows():
+        if row['Line_Name'] == 'Net_Patient_Revenue':
+            baseline['net_revenue'] = row['Value']
+        elif row['Line_Name'] == 'Operating_Income':
+            baseline['operating_income'] = row['Value']
+        elif row['Line_Name'] == 'Net_Income':
+            baseline['net_income'] = row['Value']
+        elif row['Line_Name'] == 'Total_Operating_Expenses':
+            baseline['operating_expenses'] = row['Value']
+        elif row['Line_Name'] == 'Total_Other_Income':
+            baseline['other_income'] = row['Value']
+        elif row['Line_Name'] == 'Total_Other_Expenses':
+            baseline['other_expenses'] = row['Value']
+
+    # Calculate baseline EBITDA (simplified - using Operating Income as proxy)
+    baseline['ebitda'] = baseline.get('operating_income', 0)
+    baseline['operating_margin'] = (baseline.get('operating_income', 0) /
+                                     baseline.get('net_revenue', 1) * 100) if baseline.get('net_revenue', 0) != 0 else 0
+    baseline['ebitda_margin'] = (baseline.get('ebitda', 0) /
+                                  baseline.get('net_revenue', 1) * 100) if baseline.get('net_revenue', 0) != 0 else 0
+
+    # Create dashboard layout
+    valuation_layout = html.Div([
+        # Row 1: Key Metrics Cards
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("Net Patient Revenue", className="text-muted mb-2"),
+                        html.H4(f"${baseline.get('net_revenue', 0):,.0f}", className="text-primary mb-0")
+                    ])
+                ], className="shadow-sm")
+            ], width=3),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("Operating Income", className="text-muted mb-2"),
+                        html.H4(f"${baseline.get('operating_income', 0):,.0f}", className="text-success mb-0"),
+                        html.Small(f"{baseline['operating_margin']:.1f}% margin", className="text-muted")
+                    ])
+                ], className="shadow-sm")
+            ], width=3),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("EBITDA (Est.)", className="text-muted mb-2"),
+                        html.H4(f"${baseline.get('ebitda', 0):,.0f}", className="text-info mb-0"),
+                        html.Small(f"{baseline['ebitda_margin']:.1f}% margin", className="text-muted")
+                    ])
+                ], className="shadow-sm")
+            ], width=3),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H6("Valuation (8x EBITDA)", className="text-muted mb-2"),
+                        html.H4(f"${baseline.get('ebitda', 0) * 8:,.0f}", className="text-warning mb-0"),
+                        html.Small("Estimated Value", className="text-muted")
+                    ])
+                ], className="shadow-sm")
+            ], width=3)
+        ], className="mb-4"),
+
+        # Row 2: Sensitivity Analysis Controls
+        dbc.Card([
+            dbc.CardBody([
+                html.H5("Valuation Sensitivity Analysis", className="mb-3"),
+                html.P("Adjust the sliders below to see how changes affect valuation:", className="text-muted mb-4"),
+
+                # Revenue Change
+                html.Div([
+                    html.Label("Revenue Change (%)", className="fw-bold"),
+                    dcc.Slider(
+                        id='revenue-slider',
+                        min=-20, max=20, step=1, value=0,
+                        marks={i: f"{i:+d}%" for i in range(-20, 21, 5)},
+                        tooltip={"placement": "bottom", "always_visible": True}
+                    ),
+                ], className="mb-4"),
+
+                # Operating Margin Change
+                html.Div([
+                    html.Label("Operating Margin Change (percentage points)", className="fw-bold"),
+                    dcc.Slider(
+                        id='margin-slider',
+                        min=-10, max=10, step=0.5, value=0,
+                        marks={i: f"{i:+.0f}pp" for i in range(-10, 11, 2)},
+                        tooltip={"placement": "bottom", "always_visible": True}
+                    ),
+                ], className="mb-4"),
+
+                # Expense Change
+                html.Div([
+                    html.Label("Operating Expense Change (%)", className="fw-bold"),
+                    dcc.Slider(
+                        id='expense-slider',
+                        min=-20, max=20, step=1, value=0,
+                        marks={i: f"{i:+d}%" for i in range(-20, 21, 5)},
+                        tooltip={"placement": "bottom", "always_visible": True}
+                    ),
+                ], className="mb-4"),
+
+                # Valuation Multiple
+                html.Div([
+                    html.Label("EBITDA Valuation Multiple", className="fw-bold"),
+                    dcc.Slider(
+                        id='multiple-slider',
+                        min=4, max=14, step=0.5, value=8,
+                        marks={i: f"{i}x" for i in range(4, 15, 2)},
+                        tooltip={"placement": "bottom", "always_visible": True}
+                    ),
+                ], className="mb-3"),
+            ])
+        ], className="shadow-sm mb-4"),
+
+        # Row 3: Adjusted Metrics Display
+        html.Div(id='valuation-adjusted-metrics', className="mb-4"),
+
+        # Row 4: Visualizations
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(id='valuation-waterfall'),
+            ], width=6),
+            dbc.Col([
+                dcc.Graph(id='valuation-sensitivity'),
+            ], width=6)
+        ], className="mb-4"),
+
+        # Row 5: Expense Breakdown
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(id='valuation-expense-breakdown'),
+            ], width=6),
+            dbc.Col([
+                dcc.Graph(id='valuation-expense-type'),
+            ], width=6)
+        ])
+    ])
+
+    return (income_df.to_dict('records'),
+            expense_df.to_dict('records') if not expense_df.empty else [],
+            baseline,
+            valuation_layout)
+
+
+@app.callback(
+    [Output('valuation-adjusted-metrics', 'children'),
+     Output('valuation-waterfall', 'figure'),
+     Output('valuation-sensitivity', 'figure'),
+     Output('valuation-expense-breakdown', 'figure'),
+     Output('valuation-expense-type', 'figure')],
+    [Input('revenue-slider', 'value'),
+     Input('margin-slider', 'value'),
+     Input('expense-slider', 'value'),
+     Input('multiple-slider', 'value')],
+    [State('valuation-baseline-metrics', 'data'),
+     State('valuation-income-data', 'data'),
+     State('valuation-expense-data', 'data')]
+)
+def update_valuation_analysis(revenue_change, margin_change, expense_change, multiple,
+                                baseline, income_data, expense_data):
+    """Update valuation analysis based on slider inputs"""
+    if not baseline:
+        return html.Div(), {}, {}, {}, {}
+
+    # Calculate adjusted metrics
+    base_revenue = baseline.get('net_revenue', 0)
+    base_expenses = baseline.get('operating_expenses', 0)
+    base_operating_income = baseline.get('operating_income', 0)
+
+    # Apply changes
+    adj_revenue = base_revenue * (1 + revenue_change / 100)
+    adj_expenses = base_expenses * (1 + expense_change / 100)
+    adj_operating_income = adj_revenue - adj_expenses
+
+    # Apply margin change (as percentage point change)
+    if margin_change != 0:
+        target_margin = (base_operating_income / base_revenue * 100) + margin_change
+        adj_operating_income = adj_revenue * (target_margin / 100)
+        adj_expenses = adj_revenue - adj_operating_income
+
+    adj_ebitda = adj_operating_income
+    adj_valuation = adj_ebitda * multiple
+
+    # Calculate changes
+    revenue_change_amt = adj_revenue - base_revenue
+    expense_change_amt = adj_expenses - base_expenses
+    operating_income_change = adj_operating_income - base_operating_income
+    ebitda_change = adj_ebitda - baseline.get('ebitda', 0)
+    valuation_change = adj_valuation - (baseline.get('ebitda', 0) * 8)
+
+    # Adjusted metrics table
+    adjusted_metrics_layout = dbc.Card([
+        dbc.CardBody([
+            html.H5("Adjusted Valuation Metrics", className="mb-3"),
+            dbc.Table([
+                html.Thead([
+                    html.Tr([
+                        html.Th("Metric"),
+                        html.Th("Original", className="text-end"),
+                        html.Th("Adjusted", className="text-end"),
+                        html.Th("Change", className="text-end"),
+                        html.Th("% Change", className="text-end")
+                    ])
+                ]),
+                html.Tbody([
+                    html.Tr([
+                        html.Td("Net Patient Revenue"),
+                        html.Td(f"${base_revenue:,.0f}", className="text-end"),
+                        html.Td(f"${adj_revenue:,.0f}", className="text-end"),
+                        html.Td(f"${revenue_change_amt:+,.0f}", className=f"text-end {'text-success' if revenue_change_amt >= 0 else 'text-danger'}"),
+                        html.Td(f"{revenue_change:+.1f}%", className=f"text-end {'text-success' if revenue_change >= 0 else 'text-danger'}")
+                    ]),
+                    html.Tr([
+                        html.Td("Operating Expenses"),
+                        html.Td(f"${base_expenses:,.0f}", className="text-end"),
+                        html.Td(f"${adj_expenses:,.0f}", className="text-end"),
+                        html.Td(f"${expense_change_amt:+,.0f}", className=f"text-end {'text-danger' if expense_change_amt >= 0 else 'text-success'}"),
+                        html.Td(f"{(expense_change_amt/base_expenses*100) if base_expenses != 0 else 0:+.1f}%",
+                               className=f"text-end {'text-danger' if expense_change_amt >= 0 else 'text-success'}")
+                    ]),
+                    html.Tr([
+                        html.Td(html.Strong("Operating Income")),
+                        html.Td(html.Strong(f"${base_operating_income:,.0f}"), className="text-end"),
+                        html.Td(html.Strong(f"${adj_operating_income:,.0f}"), className="text-end"),
+                        html.Td(html.Strong(f"${operating_income_change:+,.0f}"),
+                               className=f"text-end {'text-success' if operating_income_change >= 0 else 'text-danger'}"),
+                        html.Td(html.Strong(f"{(operating_income_change/base_operating_income*100) if base_operating_income != 0 else 0:+.1f}%"),
+                               className=f"text-end {'text-success' if operating_income_change >= 0 else 'text-danger'}")
+                    ]),
+                    html.Tr([
+                        html.Td(html.Strong("EBITDA (Est.)")),
+                        html.Td(html.Strong(f"${baseline.get('ebitda', 0):,.0f}"), className="text-end"),
+                        html.Td(html.Strong(f"${adj_ebitda:,.0f}"), className="text-end"),
+                        html.Td(html.Strong(f"${ebitda_change:+,.0f}"),
+                               className=f"text-end {'text-success' if ebitda_change >= 0 else 'text-danger'}"),
+                        html.Td(html.Strong(f"{(ebitda_change/baseline.get('ebitda', 1)*100):+.1f}%"),
+                               className=f"text-end {'text-success' if ebitda_change >= 0 else 'text-danger'}")
+                    ]),
+                    html.Tr([
+                        html.Td(html.Strong(f"Valuation ({multiple}x EBITDA)"), className="fw-bold"),
+                        html.Td(html.Strong(f"${baseline.get('ebitda', 0) * 8:,.0f}"), className="text-end"),
+                        html.Td(html.Strong(f"${adj_valuation:,.0f}"), className="text-end text-warning"),
+                        html.Td(html.Strong(f"${valuation_change:+,.0f}"),
+                               className=f"text-end {'text-success' if valuation_change >= 0 else 'text-danger'}"),
+                        html.Td(html.Strong(f"{(valuation_change/(baseline.get('ebitda', 1) * 8)*100):+.1f}%"),
+                               className=f"text-end {'text-success' if valuation_change >= 0 else 'text-danger'}")
+                    ], className="table-warning")
+                ])
+            ], bordered=True, hover=True, className="mb-0")
+        ])
+    ], className="shadow-sm")
+
+    # Create waterfall chart
+    waterfall_fig = go.Figure(go.Waterfall(
+        orientation="v",
+        measure=["relative", "relative", "total"],
+        x=["Net Revenue", "Operating Expenses", "Operating Income"],
+        textposition="outside",
+        text=[f"${adj_revenue:,.0f}", f"-${adj_expenses:,.0f}", f"${adj_operating_income:,.0f}"],
+        y=[adj_revenue, -adj_expenses, None],
+        connector={"line": {"color": "rgb(63, 63, 63)"}},
+    ))
+
+    waterfall_fig.update_layout(
+        title="Adjusted Income Statement Flow",
+        showlegend=False,
+        height=400
+    )
+
+    # Create valuation sensitivity chart
+    scenarios = ['Base Case', 'Current Scenario']
+    valuations = [baseline.get('ebitda', 0) * 8, adj_valuation]
+    colors = ['#3498db', '#27ae60' if valuation_change >= 0 else '#e74c3c']
+
+    valuation_fig = go.Figure(data=[
+        go.Bar(x=scenarios, y=valuations, marker_color=colors, text=valuations,
+               texttemplate='$%{text:,.0f}', textposition='outside')
+    ])
+
+    valuation_fig.update_layout(
+        title=f"Valuation Comparison (Change: ${valuation_change:+,.0f})",
+        yaxis_title="Valuation ($)",
+        height=400,
+        showlegend=False
+    )
+
+    # Create expense breakdown charts
+    expense_cat_fig = {}
+    expense_type_fig = {}
+
+    if expense_data:
+        expense_df = pd.DataFrame(expense_data)
+
+        # Expense by category
+        expense_cat_fig = px.bar(
+            expense_df.nlargest(10, 'Total_Expense'),
+            x='Total_Expense',
+            y='Expense_Category',
+            orientation='h',
+            title="Top 10 Expense Categories",
+            labels={'Total_Expense': 'Total Expense ($)', 'Expense_Category': 'Category'},
+            color='Total_Expense',
+            color_continuous_scale='Reds'
+        )
+        expense_cat_fig.update_layout(height=400, showlegend=False)
+
+        # Expense by type
+        expense_type_summary = expense_df.groupby('Category_Type')['Total_Expense'].sum().reset_index()
+        expense_type_fig = px.pie(
+            expense_type_summary,
+            values='Total_Expense',
+            names='Category_Type',
+            title="Expense Distribution by Type"
+        )
+        expense_type_fig.update_layout(height=400)
+
+    return adjusted_metrics_layout, waterfall_fig, valuation_fig, expense_cat_fig, expense_type_fig
 
 
 # ============================================================================
