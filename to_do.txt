@@ -1,0 +1,87 @@
+### Hospital KPI Hierarchy from HCRIS Data
+
+Below is a hierarchical structure of KPIs, all derived exclusively from CMS Form 2552-10 (HCRIS) worksheets. The **Level 1** metrics are the top 6 independent KPIs from our previous discussion, focusing on financial health, efficiency, and sustainability.
+
+For each Level 1 KPI, I've identified **4 Level 2 KPIs** that are key drivers (components or influencers) of the parent, based on logical causation (e.g., cost drivers, revenue influencers, utilization factors). These are independent, with low overlap, and directly computable from HCRIS data.
+
+For each Level 2 KPI, I've identified **2 Level 3 KPIs** that drive or break down the Level 2 metric further.
+
+All formulas reference specific worksheets/lines/columns where possible, using the structure from CMS 2552-10. Metrics are ratios, rates, or per-unit to ensure comparability and independence. I've prioritized high-signal, actionable sub-metrics that a hospital manager would monitor.
+
+Presentation uses nested tables for clarity: outer for Level 1, inner for Levels 2-3.
+
+---
+
+#### **Level 1 KPI 1: Net Income Margin**  
+*(Formula: (G-3 Line 29) ÷ (G-3 Line 3); Reflects overall profitability.)*
+
+| Level 2 KPI (Driver) | Formula (HCRIS Source) | Why It Affects L1 | Level 3 KPI 1 (Sub-Driver) | L3.1 Formula | Level 3 KPI 2 (Sub-Driver) | L3.2 Formula |
+|----------------------|------------------------|-------------------|----------------------------|--------------|----------------------------|--------------|
+| **L2.1.1: Operating Expense Ratio** | (G-3 Line 25) ÷ (G-3 Line 3) | Higher expenses directly erode net income. | FTE per Bed | (S-3 Pt I Line 14 Col 6) ÷ (S-3 Pt I Line 7 Col 1) | Salary % of Total Expenses | (S-3 Pt II Line 1 Col 1) ÷ (G-3 Line 25) |
+| **L2.1.2: Non-Operating Income %** | (G-3 Line 28) ÷ (G-3 Line 3 + Line 28) | Boosts net income beyond core operations. | Investment Income Share | (G-1 Line 5 Col 3) ÷ (G-3 Line 28) | Donation/Grant % | (G-1 Line 6 Col 3) ÷ (G-3 Line 28) |
+| **L2.1.3: Payer Mix - Medicare %** | (S-3 Pt I Line 14 Col 2) ÷ (S-3 Pt I Line 14 Col 8) | Affects revenue stability and margins. | Medicare Inpatient Days % | (S-3 Pt I Line 8 Col 2) ÷ (S-3 Pt I Line 8 Col 8) | Medicare Outpatient Revenue % | (D Pt V Col 2 Sum) ÷ (G-3 Line 2) |
+| **L2.1.4: Capital Cost % of Expenses** | (A Line 1-3 Col 7 Sum) ÷ (G-3 Line 25) | High capital eats into margins if not managed. | Depreciation % of Capital | (A-7 Pt I Col 9) ÷ (A-7 Pt I Col 1) | Interest Expense Ratio | (A Line 116 Col 2) ÷ (A Line 1-3 Col 7 Sum) |
+
+---
+
+#### **Level 1 KPI 2: Days in Net Patient Accounts Receivable**  
+*(Formula: (G Balance Sheet Current Assets Net Patient AR) ÷ (G-3 Line 3 ÷ 365); Measures cash cycle efficiency.)*
+
+| Level 2 KPI (Driver) | Formula (HCRIS Source) | Why It Affects L1 | Level 3 KPI 1 (Sub-Driver) | L3.1 Formula | Level 3 KPI 2 (Sub-Driver) | L3.2 Formula |
+|----------------------|------------------------|-------------------|----------------------------|--------------|----------------------------|--------------|
+| **L2.2.1: Denial Rate** | (E Pt A Line 25) ÷ (E Pt A Line 1) | Denials delay collections. | Medicare Denial % | (E Pt A Line 25) ÷ (E Pt A Line 4) | Non-Medicare Adjustment % | (A-8 Col 2 Sum Non-Allowable) ÷ (G-3 Line 3) |
+| **L2.2.2: Payer Mix - Commercial %** | (S-3 Pt I Line 14 Col 7 - Cols 1-6 Sum) ÷ (S-3 Pt I Line 14 Col 8) | Slower payers increase AR days. | Commercial Inpatient % | (S-3 Pt I Line 8 Col 7 - Cols 1-6) ÷ (S-3 Pt I Line 8 Col 8) | Self-Pay % | (S-10 Line 20 Col 1) ÷ (G-3 Line 3) |
+| **L2.2.3: Billing Efficiency Ratio** | (G-3 Line 3) ÷ (S-3 Pt I Line 14 Col 15 Adjusted Discharges) | Inefficient billing prolongs AR. | Charges per Discharge | (C Pt I Col 8 Sum) ÷ (S-3 Pt I Line 1 Col 1) | Adjustment % of Gross Rev | (G-3 Line 3 - Net Rev Derived) ÷ (G-2 Pt I Col 3 Sum) |
+| **L2.2.4: Collection Rate** | (G Cash + Investments Increase from G-1) ÷ (G-3 Line 3) | Poor collections inflate AR days. | Cash from Operations % | (G-1 Line 1 Col 3) ÷ (G Cash Total) | AR Aging >90 Days % | (G Balance Sheet AR Allowances) ÷ (G AR Gross) |
+
+---
+
+#### **Level 1 KPI 3: Operating Expense per Adjusted Discharge**  
+*(Formula: (G-3 Line 25) ÷ [(S-3 Pt I Line 1 Col 1 × S-3 Pt I Line 1 Col 15 CMI) + (S-3 Pt I Line 15 Col 1 × 0.35)]; Gauges cost control.)*
+
+| Level 2 KPI (Driver) | Formula (HCRIS Source) | Why It Affects L1 | Level 3 KPI 1 (Sub-Driver) | L3.1 Formula | Level 3 KPI 2 (Sub-Driver) | L3.2 Formula |
+|----------------------|------------------------|-------------------|----------------------------|--------------|----------------------------|--------------|
+| **L2.3.1: Labor Cost per Discharge** | (S-3 Pt II Line 1 Col 1) ÷ (S-3 Pt I Line 1 Col 1 Adjusted) | Labor is ~50-60% of expenses. | Contract Labor % | (S-3 Pt V Line 11 Col 1) ÷ (S-3 Pt II Line 1 Col 1) | Overtime Hours % | (S-3 Pt II Line 10 Col 2) ÷ (S-3 Pt II Line 1 Col 2) |
+| **L2.3.2: Supply Cost per Discharge** | (A Line 71 Col 7) ÷ (S-3 Pt I Line 1 Col 1 Adjusted) | Supplies drive variable costs. | Drug Cost % | (A Line 15 Col 7) ÷ (A Line 71 Col 7) | Implant/Device % | (A Line 72 Col 7) ÷ (A Line 71 Col 7) |
+| **L2.3.3: Overhead Allocation Ratio** | (B Pt I Col 26 Sum General Svcs) ÷ (G-3 Line 25) | Overhead inflates per-unit costs. | A&G % of Total | (A Line 5 Col 7) ÷ (G-3 Line 25) | Maintenance % | (A Line 6 Col 7) ÷ (G-3 Line 25) |
+| **L2.3.4: Case Mix Adjustment Factor** | (S-3 Pt I Line 1 Col 15) | Higher acuity raises expenses per discharge. | DRG Weight Average | (S-3 Pt I Line 1 Col 15) | Transfer-Adjusted CMI | (S-3 Pt I Line 1 Col 15 Adjusted for Transfers) |
+
+---
+
+#### **Level 1 KPI 4: Medicare Cost-to-Charge Ratio (CCR) Trend**  
+*(Formula: (C Pt I Col 5 Sum) ÷ (C Pt I Col 8 Sum); Proxies reimbursement risk.)*
+
+| Level 2 KPI (Driver) | Formula (HCRIS Source) | Why It Affects L1 | Level 3 KPI 1 (Sub-Driver) | L3.1 Formula | Level 3 KPI 2 (Sub-Driver) | L3.2 Formula |
+|----------------------|------------------------|-------------------|----------------------------|--------------|----------------------------|--------------|
+| **L2.4.1: Ancillary Cost Ratio** | (C Pt I Lines 50-76 Col 5 Sum) ÷ (C Pt I Col 5 Total) | Ancillary drives CCR variability. | Lab CCR | (C Pt I Line 60 Col 5) ÷ (C Pt I Line 60 Col 8) | Radiology CCR | (C Pt I Line 54 Col 5) ÷ (C Pt I Line 54 Col 8) |
+| **L2.4.2: Charge Inflation Rate** | YoY Change in (C Pt I Col 8 Sum) | Rising charges lower CCR if costs lag. | Inpatient Charge % | (C Pt I Col 6 Sum) ÷ (C Pt I Col 8 Sum) | Outpatient Charge % | (C Pt I Col 7 Sum) ÷ (C Pt I Col 8 Sum) |
+| **L2.4.3: Adjustment Impact on Costs** | (A-8 Col 2 Sum) ÷ (C Pt I Col 5 Sum) | Adjustments reduce allowable costs, raising CCR. | Non-Allowable % | (A-8 Col 2 Negative Sum) ÷ (A Col 3 Sum) | RCE Disallowance % | (A-8-2 Col 18 Sum) ÷ (C Pt I Col 5 Sum) |
+| **L2.4.4: Utilization Mix** | (S-3 Pt I Line 15 Col 1 OP Visits) ÷ (S-3 Pt I Line 1 Col 1 + Line 15 Col 1 Adjusted) | OP shift affects aggregate CCR. | ER Visit % | (S-3 Pt I Line 15 Col 1 ER Portion) ÷ (S-3 Pt I Line 15 Col 1) | Clinic Visit % | (A Line 91 Col 7 Clinic) ÷ (C Pt I Col 5 OP Sum) |
+
+---
+
+#### **Level 1 KPI 5: Bad Debt + Charity as % of Net Revenue**  
+*(Formula: (S-10 Line 29 Col 3 + Line 23 Col 3) ÷ (G-3 Line 3 - Provisions); Measures uncompensated burden.)*
+
+| Level 2 KPI (Driver) | Formula (HCRIS Source) | Why It Affects L1 | Level 3 KPI 1 (Sub-Driver) | L3.1 Formula | Level 3 KPI 2 (Sub-Driver) | L3.2 Formula |
+|----------------------|------------------------|-------------------|----------------------------|--------------|----------------------------|--------------|
+| **L2.5.1: Charity Care Charge Ratio** | (S-10 Line 20 Col 3) ÷ (C Pt I Col 8 Sum) | High charity increases uncompensated %. | Insured Charity % | (S-10 Line 20 Col 2) ÷ (S-10 Line 20 Col 3) | Non-Covered Charity % | (S-10 Line 20 Col 1) ÷ (S-10 Line 20 Col 3) |
+| **L2.5.2: Bad Debt Recovery Rate** | (S-10 Line 26) ÷ (S-10 Line 25) | Low recoveries inflate bad debt %. | Medicare Bad Debt % | (E Pt A Line 64) ÷ (S-10 Line 25) | Non-Medicare Bad Debt % | (S-10 Line 25 - E Pt A Line 64) ÷ (S-10 Line 25) |
+| **L2.5.3: Uninsured Patient %** | (S-10 Line 20 Col 1 + Line 31) ÷ (S-3 Pt I Line 14 Col 8) | Uninsured drive charity/bad debt. | Uninsured Inpatient % | (S-10 Inpatient Portion Derived) ÷ (S-3 Pt I Line 8 Col 8) | Uninsured OP % | (S-10 OP Portion) ÷ (S-3 Pt I Line 15 Col 1) |
+| **L2.5.4: Medicaid Shortfall %** | (S-10 Line 18 - Line 19) ÷ (G-3 Line 3) | Shortfalls add to uncompensated load. | Medicaid Days % | (S-3 Pt I Line 14 Col 5+6) ÷ (S-3 Pt I Line 14 Col 8) | Medicaid Payment-to-Cost | (S-10 Line 18) ÷ (S-10 Line 19) |
+
+---
+
+#### **Level 1 KPI 6: Current Ratio (Unrestricted)**  
+*(Formula: (G Balance Sheet Line 1-12 Col 3 Sum Unrestricted) ÷ (G Line 46-58 Col 3 Sum); Assesses liquidity.)*
+
+| Level 2 KPI (Driver) | Formula (HCRIS Source) | Why It Affects L1 | Level 3 KPI 1 (Sub-Driver) | L3.1 Formula | Level 3 KPI 2 (Sub-Driver) | L3.2 Formula |
+|----------------------|------------------------|-------------------|----------------------------|--------------|----------------------------|--------------|
+| **L2.6.1: Cash + Equivalents % of Assets** | (G Line 1+2 Col 3) ÷ (G Line 59 Col 3) | Boosts current assets for liquidity. | Operating Cash Flow | (G-1 Line 1 Col 3) ÷ (G Line 1+2 Col 3) | Investment Returns | (G-1 Line 5 Col 3) ÷ (G Line 39 Col 3) |
+| **L2.6.2: Current Liabilities Ratio** | (G Line 46-58 Col 3 Sum) ÷ (G Line 75 Col 3) | High liabilities strain ratio. | Accounts Payable % | (G Line 47 Col 3) ÷ (G Line 46-58 Sum) | Short-Term Debt % | (G Line 46 Col 3) ÷ (G Line 46-58 Sum) |
+| **L2.6.3: Inventory Turnover** | (A Line 71 Col 2 Supplies) ÷ (G Inventory Avg from Beg/End) | Ties up current assets if low. | Supply Expense % | (A Line 71 Col 7) ÷ (G-3 Line 25) | Days in Inventory | (G Line 4 Col 3) ÷ ((A Line 71 Col 2) ÷ 365) |
+| **L2.6.4: Fund Balance % Change** | (G-1 Line 21 Col 3) ÷ (G Line 70 Col 3 Beg) | Positive changes build reserves. | Retained Earnings % | (G Line 73 Col 3) ÷ (G Line 75 Col 3) | Depreciation Impact | (G-1 Line 3 Col 3) ÷ (G-1 Line 21 Col 3) |
+
+---
+
+This hierarchy provides a drill-down view (6 L1 + 24 L2 + 48 L3 = 78 KPIs), enabling root-cause analysis. Monitor trends YoY from multiple HCRIS filings. For automation, parse worksheets via tools like Python/pandas (e.g., from CMS public files). Thresholds can be set based on peer benchmarks (e.g., via NASHP tools).
