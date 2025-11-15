@@ -829,6 +829,79 @@ def calculate_dynamic_priority(kpi_key, hospital_value, benchmark_median, higher
 
 
 # ============================================================================
+# PROFESSIONAL TABLE STYLING HELPER
+# ============================================================================
+
+def get_professional_datatable_style():
+    """
+    Returns professional styling for DataTable components
+    Inspired by financial presentation tables
+    """
+    return {
+        'style_table': {
+            'overflowX': 'auto',
+            'borderRadius': '8px',
+            'overflow': 'hidden',
+            'boxShadow': '0 2px 8px rgba(0,0,0,0.08)'
+        },
+        'style_cell': {
+            'textAlign': 'left',
+            'padding': '12px 14px',
+            'fontSize': '0.9rem',
+            'fontFamily': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            'border': '1px solid #e8e8e8',
+            'whiteSpace': 'normal',
+            'height': 'auto',
+            'minHeight': '44px'
+        },
+        'style_cell_conditional': [
+            {
+                'if': {'column_type': 'numeric'},
+                'textAlign': 'right',
+                'fontFamily': 'Monaco, Consolas, "Courier New", monospace',
+                'fontWeight': '500'
+            },
+            {
+                'if': {'column_id': 'Line'},
+                'width': '80px',
+                'textAlign': 'center',
+                'fontWeight': '600',
+                'color': '#5a6c7d'
+            }
+        ],
+        'style_header': {
+            'backgroundColor': '#34495e',
+            'color': 'white',
+            'fontWeight': '600',
+            'fontSize': '0.95rem',
+            'padding': '14px',
+            'textAlign': 'center',
+            'border': 'none',
+            'textTransform': 'none'
+        },
+        'style_data': {
+            'border': '1px solid #e8e8e8',
+            'color': '#2c3e50'
+        },
+        'style_data_conditional': [
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': '#f8f9fa'
+            },
+            {
+                'if': {'row_index': 'even'},
+                'backgroundColor': 'white'
+            },
+            {
+                'if': {'state': 'selected'},
+                'backgroundColor': '#e8f4f8',
+                'border': '1px solid #3498db'
+            }
+        ]
+    }
+
+
+# ============================================================================
 # DASH APP
 # ============================================================================
 
@@ -3897,45 +3970,42 @@ def update_cms_worksheet_content(active_tab, ccn, selected_year):
                     'format': {'specifier': ',.2f'}
                 })
 
-        # Create table
+        # Create table with professional styling
+        pro_style = get_professional_datatable_style()
+
         table = dash_table.DataTable(
             data=pivot_df.to_dict('records'),
             columns=columns,
-            style_table={'overflowX': 'auto'},
-            style_cell={
-                'textAlign': 'left',
-                'padding': '10px',
-                'minWidth': '100px',
-                'maxWidth': '300px',
-                'whiteSpace': 'normal',
-                'height': 'auto',
-            },
+            style_table=pro_style['style_table'],
+            style_cell=pro_style['style_cell'],
             style_cell_conditional=[
                 {
                     'if': {'column_id': 'Line'},
-                    'width': '80px',
-                    'textAlign': 'center'
+                    'width': '90px',
+                    'textAlign': 'center',
+                    'fontWeight': '600',
+                    'color': '#5a6c7d',
+                    'backgroundColor': '#f0f3f5'
                 },
                 {
                     'if': {'column_id': 'Row_Label'},
-                    'minWidth': '250px',
-                    'maxWidth': '400px',
+                    'minWidth': '280px',
+                    'maxWidth': '450px',
+                    'fontWeight': '500',
+                    'paddingLeft': '16px'
                 },
                 {
                     'if': {'column_type': 'numeric'},
                     'textAlign': 'right',
-                    'minWidth': '120px'
+                    'minWidth': '130px',
+                    'fontFamily': 'Monaco, Consolas, "Courier New", monospace',
+                    'fontWeight': '500',
+                    'paddingRight': '16px'
                 }
             ],
-            style_header={
-                'backgroundColor': '#f8f9fa',
-                'fontWeight': 'bold',
-                'border': '1px solid #dee2e6',
-                'textAlign': 'center'
-            },
-            style_data={
-                'border': '1px solid #dee2e6'
-            },
+            style_header=pro_style['style_header'],
+            style_data=pro_style['style_data'],
+            style_data_conditional=pro_style['style_data_conditional'],
             page_size=100,
             filter_action='native',
             sort_action='native',
@@ -4219,67 +4289,81 @@ def update_valuation_analysis(revenue_change, margin_change, expense_change, mul
     ebitda_change = adj_ebitda - baseline.get('ebitda', 0)
     valuation_change = adj_valuation - (baseline.get('ebitda', 0) * 8)
 
-    # Adjusted metrics table
+    # Adjusted metrics table with professional styling
     adjusted_metrics_layout = dbc.Card([
         dbc.CardBody([
-            html.H5("Adjusted Valuation Metrics", className="mb-3"),
-            dbc.Table([
-                html.Thead([
-                    html.Tr([
-                        html.Th("Metric"),
-                        html.Th("Original", className="text-end"),
-                        html.Th("Adjusted", className="text-end"),
-                        html.Th("Change", className="text-end"),
-                        html.Th("% Change", className="text-end")
+            html.H5("Adjusted Valuation Metrics",
+                   style={'color': '#2c3e50', 'fontWeight': '600', 'marginBottom': '20px', 'fontSize': '1.3rem'}),
+            html.Div([
+                dbc.Table([
+                    html.Thead([
+                        html.Tr([
+                            html.Th("Metric", style={'backgroundColor': '#34495e', 'color': 'white', 'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'}),
+                            html.Th("Original", className="text-end", style={'backgroundColor': '#34495e', 'color': 'white', 'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'}),
+                            html.Th("Adjusted", className="text-end", style={'backgroundColor': '#34495e', 'color': 'white', 'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'}),
+                            html.Th("Change ($)", className="text-end", style={'backgroundColor': '#34495e', 'color': 'white', 'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'}),
+                            html.Th("Change (%)", className="text-end", style={'backgroundColor': '#34495e', 'color': 'white', 'padding': '14px', 'fontWeight': '600', 'fontSize': '0.95rem'})
+                        ])
+                    ]),
+                    html.Tbody([
+                        # Revenue Row
+                        html.Tr([
+                            html.Td("Net Patient Revenue", style={'padding': '12px', 'fontWeight': '500', 'color': '#2c3e50'}),
+                            html.Td(f"${base_revenue:,.0f}", className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(f"${adj_revenue:,.0f}", className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(f"${revenue_change_amt:+,.0f}", className="text-end",
+                                   style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#27ae60' if revenue_change_amt >= 0 else '#e74c3c', 'fontWeight': '600'}),
+                            html.Td(f"{revenue_change:+.1f}%", className="text-end",
+                                   style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#27ae60' if revenue_change >= 0 else '#e74c3c', 'fontWeight': '600'})
+                        ], style={'backgroundColor': 'white'}),
+                        # Expenses Row
+                        html.Tr([
+                            html.Td("Operating Expenses", style={'padding': '12px', 'fontWeight': '500', 'color': '#2c3e50'}),
+                            html.Td(f"${base_expenses:,.0f}", className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(f"${adj_expenses:,.0f}", className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(f"${expense_change_amt:+,.0f}", className="text-end",
+                                   style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#e74c3c' if expense_change_amt >= 0 else '#27ae60', 'fontWeight': '600'}),
+                            html.Td(f"{(expense_change_amt/base_expenses*100) if base_expenses != 0 else 0:+.1f}%", className="text-end",
+                                   style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#e74c3c' if expense_change_amt >= 0 else '#27ae60', 'fontWeight': '600'})
+                        ], style={'backgroundColor': '#f8f9fa'}),
+                        # Operating Income Row (Highlighted)
+                        html.Tr([
+                            html.Td(html.Strong("Operating Income"), style={'padding': '12px', 'color': '#2c3e50', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"${base_operating_income:,.0f}"), className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(html.Strong(f"${adj_operating_income:,.0f}"), className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(html.Strong(f"${operating_income_change:+,.0f}"),
+                                   className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#27ae60' if operating_income_change >= 0 else '#e74c3c', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"{(operating_income_change/base_operating_income*100) if base_operating_income != 0 else 0:+.1f}%"),
+                                   className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#27ae60' if operating_income_change >= 0 else '#e74c3c', 'fontWeight': '700'})
+                        ], style={'backgroundColor': '#e8f4f8', 'borderTop': '2px solid #3498db', 'borderBottom': '2px solid #3498db'}),
+                        # EBITDA Row (Highlighted)
+                        html.Tr([
+                            html.Td(html.Strong("EBITDA (Est.)"), style={'padding': '12px', 'color': '#2c3e50', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"${baseline.get('ebitda', 0):,.0f}"), className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(html.Strong(f"${adj_ebitda:,.0f}"), className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem'}),
+                            html.Td(html.Strong(f"${ebitda_change:+,.0f}"),
+                                   className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#27ae60' if ebitda_change >= 0 else '#e74c3c', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"{(ebitda_change/baseline.get('ebitda', 1)*100):+.1f}%"),
+                                   className="text-end", style={'padding': '12px', 'fontFamily': 'monospace', 'fontSize': '0.95rem', 'color': '#27ae60' if ebitda_change >= 0 else '#e74c3c', 'fontWeight': '700'})
+                        ], style={'backgroundColor': '#f8f9fa'}),
+                        # Valuation Row (Most Important - Gold Highlight)
+                        html.Tr([
+                            html.Td(html.Strong(f"Enterprise Valuation ({multiple}x EBITDA)"), style={'padding': '14px', 'color': '#2c3e50', 'fontWeight': '700', 'fontSize': '1.05rem'}),
+                            html.Td(html.Strong(f"${baseline.get('ebitda', 0) * 8:,.0f}"), className="text-end",
+                                   style={'padding': '14px', 'fontFamily': 'monospace', 'fontSize': '1.05rem', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"${adj_valuation:,.0f}"), className="text-end",
+                                   style={'padding': '14px', 'fontFamily': 'monospace', 'fontSize': '1.05rem', 'color': '#f39c12', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"${valuation_change:+,.0f}"),
+                                   className="text-end", style={'padding': '14px', 'fontFamily': 'monospace', 'fontSize': '1.05rem', 'color': '#27ae60' if valuation_change >= 0 else '#e74c3c', 'fontWeight': '700'}),
+                            html.Td(html.Strong(f"{(valuation_change/(baseline.get('ebitda', 1) * 8)*100):+.1f}%"),
+                                   className="text-end", style={'padding': '14px', 'fontFamily': 'monospace', 'fontSize': '1.05rem', 'color': '#27ae60' if valuation_change >= 0 else '#e74c3c', 'fontWeight': '700'})
+                        ], style={'backgroundColor': '#fff9e6', 'borderTop': '3px solid #f39c12', 'borderBottom': '3px solid #f39c12'})
                     ])
-                ]),
-                html.Tbody([
-                    html.Tr([
-                        html.Td("Net Patient Revenue"),
-                        html.Td(f"${base_revenue:,.0f}", className="text-end"),
-                        html.Td(f"${adj_revenue:,.0f}", className="text-end"),
-                        html.Td(f"${revenue_change_amt:+,.0f}", className=f"text-end {'text-success' if revenue_change_amt >= 0 else 'text-danger'}"),
-                        html.Td(f"{revenue_change:+.1f}%", className=f"text-end {'text-success' if revenue_change >= 0 else 'text-danger'}")
-                    ]),
-                    html.Tr([
-                        html.Td("Operating Expenses"),
-                        html.Td(f"${base_expenses:,.0f}", className="text-end"),
-                        html.Td(f"${adj_expenses:,.0f}", className="text-end"),
-                        html.Td(f"${expense_change_amt:+,.0f}", className=f"text-end {'text-danger' if expense_change_amt >= 0 else 'text-success'}"),
-                        html.Td(f"{(expense_change_amt/base_expenses*100) if base_expenses != 0 else 0:+.1f}%",
-                               className=f"text-end {'text-danger' if expense_change_amt >= 0 else 'text-success'}")
-                    ]),
-                    html.Tr([
-                        html.Td(html.Strong("Operating Income")),
-                        html.Td(html.Strong(f"${base_operating_income:,.0f}"), className="text-end"),
-                        html.Td(html.Strong(f"${adj_operating_income:,.0f}"), className="text-end"),
-                        html.Td(html.Strong(f"${operating_income_change:+,.0f}"),
-                               className=f"text-end {'text-success' if operating_income_change >= 0 else 'text-danger'}"),
-                        html.Td(html.Strong(f"{(operating_income_change/base_operating_income*100) if base_operating_income != 0 else 0:+.1f}%"),
-                               className=f"text-end {'text-success' if operating_income_change >= 0 else 'text-danger'}")
-                    ]),
-                    html.Tr([
-                        html.Td(html.Strong("EBITDA (Est.)")),
-                        html.Td(html.Strong(f"${baseline.get('ebitda', 0):,.0f}"), className="text-end"),
-                        html.Td(html.Strong(f"${adj_ebitda:,.0f}"), className="text-end"),
-                        html.Td(html.Strong(f"${ebitda_change:+,.0f}"),
-                               className=f"text-end {'text-success' if ebitda_change >= 0 else 'text-danger'}"),
-                        html.Td(html.Strong(f"{(ebitda_change/baseline.get('ebitda', 1)*100):+.1f}%"),
-                               className=f"text-end {'text-success' if ebitda_change >= 0 else 'text-danger'}")
-                    ]),
-                    html.Tr([
-                        html.Td(html.Strong(f"Valuation ({multiple}x EBITDA)"), className="fw-bold"),
-                        html.Td(html.Strong(f"${baseline.get('ebitda', 0) * 8:,.0f}"), className="text-end"),
-                        html.Td(html.Strong(f"${adj_valuation:,.0f}"), className="text-end text-warning"),
-                        html.Td(html.Strong(f"${valuation_change:+,.0f}"),
-                               className=f"text-end {'text-success' if valuation_change >= 0 else 'text-danger'}"),
-                        html.Td(html.Strong(f"{(valuation_change/(baseline.get('ebitda', 1) * 8)*100):+.1f}%"),
-                               className=f"text-end {'text-success' if valuation_change >= 0 else 'text-danger'}")
-                    ], className="table-warning")
-                ])
-            ], bordered=True, hover=True, className="mb-0")
-        ])
-    ], className="shadow-sm")
+                ], className="mb-0",
+                   style={'border': '1px solid #dee2e6', 'borderRadius': '8px', 'overflow': 'hidden', 'boxShadow': '0 2px 8px rgba(0,0,0,0.08)'})
+            ])
+        ], style={'padding': '24px'})
+    ], className="shadow-sm", style={'borderRadius': '10px', 'border': 'none'})
 
     # Create waterfall chart
     waterfall_fig = go.Figure(go.Waterfall(
