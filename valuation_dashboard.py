@@ -18,7 +18,7 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 app.title = "Hospital Valuation Dashboard"
 
 # Database path
-DB_PATH = Path(__file__).parent / "hospital_analytics.duckdb"
+DB_PATH = Path(__file__).parent / "data" / "hospital_analytics.duckdb"
 
 # Connect to DuckDB
 def get_db_connection():
@@ -50,18 +50,18 @@ def load_income_statement(provider_number, fiscal_year):
     """Load income statement data for a provider"""
     conn = get_db_connection()
     try:
-        query = f"""
+        query = """
         SELECT
             Line_Name,
             Section,
             Subsection,
             Value
         FROM income_statement_long
-        WHERE Provider_Number = '{provider_number}'
-            AND Fiscal_Year = {fiscal_year}
+        WHERE Provider_Number = ?
+            AND Fiscal_Year = ?
         ORDER BY Line
         """
-        df = conn.execute(query).df()
+        df = conn.execute(query, [provider_number, int(fiscal_year)]).df()
         conn.close()
         return df
     except Exception as e:
@@ -73,7 +73,7 @@ def load_expense_detail(provider_number, fiscal_year):
     """Load detailed expense breakdown"""
     conn = get_db_connection()
     try:
-        query = f"""
+        query = """
         SELECT
             Expense_Category,
             Category_Description,
@@ -81,13 +81,13 @@ def load_expense_detail(provider_number, fiscal_year):
             Column_Description,
             SUM(Value) as Total_Expense
         FROM expense_detail
-        WHERE Provider_Number = '{provider_number}'
-            AND Fiscal_Year = {fiscal_year}
+        WHERE Provider_Number = ?
+            AND Fiscal_Year = ?
             AND Column_Description = 'Final_Adjusted'
         GROUP BY Expense_Category, Category_Description, Category_Type, Column_Description
         ORDER BY Total_Expense DESC
         """
-        df = conn.execute(query).df()
+        df = conn.execute(query, [provider_number, int(fiscal_year)]).df()
         conn.close()
         return df
     except Exception as e:
@@ -170,13 +170,13 @@ def populate_years(provider_number):
 
     conn = get_db_connection()
     try:
-        query = f"""
+        query = """
         SELECT DISTINCT Fiscal_Year
         FROM income_statement_long
-        WHERE Provider_Number = '{provider_number}'
+        WHERE Provider_Number = ?
         ORDER BY Fiscal_Year DESC
         """
-        df = conn.execute(query).df()
+        df = conn.execute(query, [provider_number]).df()
         conn.close()
 
         if df.empty:
