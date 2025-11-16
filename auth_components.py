@@ -79,7 +79,7 @@ def create_login_layout():
                             html.P([
                                 "Don't have an account? ",
                                 dbc.Button("Sign up here", id="show-register-link",
-                                      color="link", size="sm",
+                                      color="link", size="sm", n_clicks=0,
                                       style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
                             ], className="text-center mb-0")
                         ])
@@ -298,7 +298,7 @@ def create_company_register_form():
             html.P([
                 "Already have an account? ",
                 dbc.Button("Sign in here", id="show-login-link",
-                      color="link", size="sm",
+                      color="link", size="sm", n_clicks=0,
                       style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
             ], className="text-center mb-0")
         ])
@@ -403,7 +403,7 @@ def create_employee_register_form():
             html.P([
                 "Already have an account? ",
                 dbc.Button("Sign in here", id="show-login-link-employee",
-                      color="link", size="sm",
+                      color="link", size="sm", n_clicks=0,
                       style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
             ], className="text-center mb-0")
         ])
@@ -489,7 +489,7 @@ def create_individual_register_form():
             html.P([
                 "Already have an account? ",
                 dbc.Button("Sign in here", id="show-login-link-individual",
-                      color="link", size="sm",
+                      color="link", size="sm", n_clicks=0,
                       style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
             ], className="text-center mb-0")
         ])
