@@ -521,19 +521,24 @@ def handle_logout(n_clicks, session_data):
      Input('show-login-link-individual', 'n_clicks')],
     prevent_initial_call=True
 )
-def navigate(register_clicks, *login_clicks):
+def navigate(register_clicks, login_clicks, login_employee_clicks, login_individual_clicks):
     """Handle navigation between login and register pages"""
     ctx = callback_context
 
-    if not ctx.triggered:
+    # More robust check for triggered component
+    if not ctx.triggered or not ctx.triggered[0]:
         return dash.no_update
 
-    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    # Get the ID of the component that triggered the callback
+    triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-    if button_id == 'show-register-link':
+    # Route based on which link was clicked
+    if triggered_id == 'show-register-link':
         return '/register'
-    else:
+    elif triggered_id in ['show-login-link', 'show-login-link-employee', 'show-login-link-individual']:
         return '/'
+
+    return dash.no_update
 
 
 # ============================================================================
