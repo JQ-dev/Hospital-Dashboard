@@ -525,19 +525,27 @@ def navigate(register_clicks, login_clicks, login_employee_clicks, login_individ
     """Handle navigation between login and register pages"""
     ctx = callback_context
 
+    print(f"[NAVIGATION] Callback triggered! ctx.triggered: {ctx.triggered}")
+    print(f"[NAVIGATION] Clicks - register: {register_clicks}, login: {login_clicks}, employee: {login_employee_clicks}, individual: {login_individual_clicks}")
+
     # More robust check for triggered component
     if not ctx.triggered or not ctx.triggered[0]:
+        print("[NAVIGATION] No trigger detected, returning no_update")
         return dash.no_update
 
     # Get the ID of the component that triggered the callback
     triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    print(f"[NAVIGATION] Triggered ID: {triggered_id}")
 
     # Route based on which link was clicked
     if triggered_id == 'show-register-link':
+        print("[NAVIGATION] Navigating to /register")
         return '/register'
     elif triggered_id in ['show-login-link', 'show-login-link-employee', 'show-login-link-individual']:
+        print("[NAVIGATION] Navigating to /")
         return '/'
 
+    print("[NAVIGATION] No match, returning no_update")
     return dash.no_update
 
 
