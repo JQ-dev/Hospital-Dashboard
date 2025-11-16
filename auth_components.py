@@ -67,7 +67,7 @@ def create_login_layout():
                             dbc.Button(
                                 "Sign In",
                                 id="login-button",
-                                color="primary",
+                                color="success",
                                 className="w-100 mb-3",
                                 size="lg",
                                 style={'fontWeight': '500'}
@@ -78,9 +78,9 @@ def create_login_layout():
                             # Register link
                             html.P([
                                 "Don't have an account? ",
-                                html.Span("Sign up here", id="show-register-link",
-                                      style={'fontWeight': '600', 'cursor': 'pointer', 'color': '#0d6efd',
-                                             'textDecoration': 'underline'})
+                                dbc.Button("Sign up here", id="show-register-link",
+                                      color="link", size="sm",
+                                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
                             ], className="text-center mb-0")
                         ])
                     ], className="shadow-sm", style={'borderRadius': '12px'}),
@@ -297,9 +297,9 @@ def create_company_register_form():
 
             html.P([
                 "Already have an account? ",
-                html.Span("Sign in here", id="show-login-link",
-                      style={'fontWeight': '600', 'cursor': 'pointer', 'color': '#0d6efd',
-                             'textDecoration': 'underline'})
+                dbc.Button("Sign in here", id="show-login-link",
+                      color="link", size="sm",
+                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
             ], className="text-center mb-0")
         ])
     ], className="shadow-sm", style={'borderRadius': '12px'})
@@ -402,9 +402,9 @@ def create_employee_register_form():
 
             html.P([
                 "Already have an account? ",
-                html.Span("Sign in here", id="show-login-link-employee",
-                      style={'fontWeight': '600', 'cursor': 'pointer', 'color': '#0d6efd',
-                             'textDecoration': 'underline'})
+                dbc.Button("Sign in here", id="show-login-link-employee",
+                      color="link", size="sm",
+                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
             ], className="text-center mb-0")
         ])
     ], className="shadow-sm", style={'borderRadius': '12px'})
@@ -488,9 +488,9 @@ def create_individual_register_form():
 
             html.P([
                 "Already have an account? ",
-                html.Span("Sign in here", id="show-login-link-individual",
-                      style={'fontWeight': '600', 'cursor': 'pointer', 'color': '#0d6efd',
-                             'textDecoration': 'underline'})
+                dbc.Button("Sign in here", id="show-login-link-individual",
+                      color="link", size="sm",
+                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
             ], className="text-center mb-0")
         ])
     ], className="shadow-sm", style={'borderRadius': '12px'})
