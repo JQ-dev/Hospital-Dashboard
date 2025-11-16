@@ -76,11 +76,11 @@ def create_login_layout():
                             html.Hr(),
 
                             # Register link
-                            html.P([
-                                "Don't have an account? ",
+                            html.Div([
+                                html.Span("Don't have an account? ", style={'marginRight': '5px'}),
                                 dbc.Button("Sign up here", id="show-register-link",
                                       color="link", size="sm", n_clicks=0,
-                                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
+                                      style={'fontWeight': '600', 'padding': '0', 'textDecoration': 'none'})
                             ], className="text-center mb-0")
                         ])
                     ], className="shadow-sm", style={'borderRadius': '12px'}),
@@ -295,11 +295,11 @@ def create_company_register_form():
 
             html.Hr(),
 
-            html.P([
-                "Already have an account? ",
+            html.Div([
+                html.Span("Already have an account? ", style={'marginRight': '5px'}),
                 dbc.Button("Sign in here", id="show-login-link",
                       color="link", size="sm", n_clicks=0,
-                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
+                      style={'fontWeight': '600', 'padding': '0', 'textDecoration': 'none'})
             ], className="text-center mb-0")
         ])
     ], className="shadow-sm", style={'borderRadius': '12px'})
@@ -400,11 +400,11 @@ def create_employee_register_form():
 
             html.Hr(),
 
-            html.P([
-                "Already have an account? ",
+            html.Div([
+                html.Span("Already have an account? ", style={'marginRight': '5px'}),
                 dbc.Button("Sign in here", id="show-login-link-employee",
                       color="link", size="sm", n_clicks=0,
-                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
+                      style={'fontWeight': '600', 'padding': '0', 'textDecoration': 'none'})
             ], className="text-center mb-0")
         ])
     ], className="shadow-sm", style={'borderRadius': '12px'})
@@ -486,11 +486,11 @@ def create_individual_register_form():
 
             html.Hr(),
 
-            html.P([
-                "Already have an account? ",
+            html.Div([
+                html.Span("Already have an account? ", style={'marginRight': '5px'}),
                 dbc.Button("Sign in here", id="show-login-link-individual",
                       color="link", size="sm", n_clicks=0,
-                      style={'fontWeight': '600', 'padding': '0', 'verticalAlign': 'baseline'})
+                      style={'fontWeight': '600', 'padding': '0', 'textDecoration': 'none'})
             ], className="text-center mb-0")
         ])
     ], className="shadow-sm", style={'borderRadius': '12px'})
