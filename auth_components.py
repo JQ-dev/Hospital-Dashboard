@@ -80,7 +80,8 @@ def create_login_layout():
                                 html.Span("Don't have an account? ", style={'marginRight': '5px'}),
                                 dbc.Button("Sign up here", id="show-register-link",
                                       color="link", size="sm", n_clicks=0,
-                                      style={'fontWeight': '600', 'padding': '0', 'textDecoration': 'none'})
+                                      style={'fontWeight': '700', 'padding': '4px 8px',
+                                             'textDecoration': 'underline', 'fontSize': '16px'})
                             ], className="text-center mb-0")
                         ])
                     ], className="shadow-sm", style={'borderRadius': '12px'}),
