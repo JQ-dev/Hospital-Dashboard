@@ -1,14 +1,25 @@
-# Hospital Analytics Dashboard - Python Dependencies
+# Hospital KPI Dashboard - Complete Requirements
+# For deployment to free cloud services (Render, Railway, Fly.io, etc.)
 
 # Core Dashboard Framework
 dash>=2.14.0
 dash-bootstrap-components>=1.5.0
 plotly>=5.18.0
+flask>=3.0.0
+
+# Production Server
+gunicorn>=21.2.0
+
+# Authentication & Security
+bcrypt>=4.0.1
 
 # Data Processing
 duckdb>=0.9.0
 pandas>=2.1.0
 numpy>=1.25.0
+
+# Environment Variables
+python-dotenv>=1.0.0
 
 # Optional: Development Tools
 # ipython>=8.12.0

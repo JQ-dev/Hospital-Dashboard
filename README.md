@@ -2,6 +2,31 @@
 
 A professional interactive dashboard for analyzing hospital financial performance using CMS HCRIS data.
 
+## 🚀 New: Authentication & Cloud Deployment
+
+**Deploy to free cloud services in 5 minutes!**
+
+- ✅ **Secure Authentication** - Multi-user support (companies, employees, individuals)
+- ✅ **Cloud Ready** - One-click deploy to Render, Railway, or Fly.io
+- ✅ **100% Free Tier** - No credit card required
+- ✅ **HTTPS Included** - Secure by default
+
+**Quick Links:**
+- 🔐 [Authentication Quick Start](AUTH_QUICKSTART.md) - Set up login in 3 minutes
+- 🚀 [Deploy in 5 Minutes](DEPLOY_QUICKSTART.md) - Get your app live now
+- 📖 [Full Deployment Guide](DEPLOYMENT_GUIDE.md) - All platforms covered
+- 📚 [Authentication Guide](AUTHENTICATION_GUIDE.md) - Complete API reference
+
+**Run with Authentication:**
+```bash
+pip install -r requirements.txt
+python app_with_auth.py  # Or python app.py for production
+```
+
+Access at: `http://localhost:8050` → Create account → Start analyzing!
+
+---
+
 ## Features
 
 - **Interactive KPI Cards**: 17 key financial metrics with trend visualization
