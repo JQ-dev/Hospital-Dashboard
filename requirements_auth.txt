@@ -1,0 +1,16 @@
+# Authentication System Requirements
+# Install with: pip install -r requirements_auth.txt
+
+# Core authentication
+bcrypt>=4.0.1
+
+# Web framework
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+flask>=3.0.0
+
+# For full dashboard (optional)
+plotly>=5.17.0
+pandas>=2.1.0
+numpy>=1.24.0
+duckdb>=0.9.0
