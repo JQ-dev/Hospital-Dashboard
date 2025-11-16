@@ -52,7 +52,8 @@ def create_login_layout():
                                 type="password",
                                 placeholder="Enter your password",
                                 className="mb-3",
-                                style={'fontSize': '15px'}
+                                style={'fontSize': '15px'},
+                                n_submit=0
                             ),
 
                             # Remember me checkbox

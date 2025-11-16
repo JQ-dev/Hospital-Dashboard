@@ -253,15 +253,16 @@ def update_register_form(account_type):
     [Output('login-alert', 'children'),
      Output('session-store', 'data'),
      Output('url', 'pathname', allow_duplicate=True)],
-    Input('login-button', 'n_clicks'),
+    [Input('login-button', 'n_clicks'),
+     Input('login-password', 'n_submit')],
     [State('login-email', 'value'),
      State('login-password', 'value'),
      State('session-store', 'data')],
     prevent_initial_call=True
 )
-def handle_login(n_clicks, email, password, current_session):
+def handle_login(n_clicks, n_submit, email, password, current_session):
     """Handle login form submission"""
-    if not n_clicks:
+    if not n_clicks and not n_submit:
         return dash.no_update, dash.no_update, dash.no_update
 
     # Validate inputs
