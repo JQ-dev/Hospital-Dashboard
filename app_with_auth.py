@@ -176,6 +176,7 @@ def get_authenticated_layout(user_info):
             ])
 
         ], fluid=True)
+        ], fluid=True)
     ], fluid=True)
 
 
