@@ -53,11 +53,50 @@ app = dash.Dash(
 
 def get_authenticated_layout(user_info):
     """Layout for authenticated users"""
-    from dashboard import app as dashboard_app
-
-    # Get the main dashboard layout
-    # For now, we'll show a placeholder - in production, integrate full dashboard
     return dbc.Container([
+        # Welcome Modal
+        dbc.Modal([
+            dbc.ModalHeader(dbc.ModalTitle([
+                html.I(className="fas fa-info-circle me-2"),
+                "Welcome to Hospital KPI Dashboard"
+            ])),
+            dbc.ModalBody([
+                html.H5("Your Comprehensive Healthcare Analytics Platform"),
+                html.P("This dashboard provides real-time insights into hospital financial performance using 78 hierarchical KPIs."),
+                html.Hr(),
+                html.H6("Key Features:"),
+                dbc.ListGroup([
+                    dbc.ListGroupItem([
+                        html.I(className="fas fa-chart-line me-2 text-primary"),
+                        html.Strong("3-Level KPI Hierarchy: "),
+                        "6 Strategic → 24 Driver → 48 Sub-driver metrics"
+                    ]),
+                    dbc.ListGroupItem([
+                        html.I(className="fas fa-balance-scale me-2 text-success"),
+                        html.Strong("Benchmark Comparisons: "),
+                        "Compare against National, State, and Hospital Type peers"
+                    ]),
+                    dbc.ListGroupItem([
+                        html.I(className="fas fa-exclamation-triangle me-2 text-warning"),
+                        html.Strong("Priority Ranking: "),
+                        "KPIs automatically ranked by performance gap and importance"
+                    ]),
+                    dbc.ListGroupItem([
+                        html.I(className="fas fa-chart-area me-2 text-info"),
+                        html.Strong("Trend Analysis: "),
+                        "Multi-year performance tracking with sparklines"
+                    ])
+                ], flush=True, className="mb-3"),
+                html.P("The top 4 priority KPIs are displayed below. Click on any card to view detailed analytics.",
+                       className="text-muted mb-0")
+            ]),
+            dbc.ModalFooter(
+                dbc.Button("Get Started", id="close-welcome-modal", color="primary")
+            ),
+        ], id="welcome-modal", size="lg", is_open=True),
+
+        # Main content
+        dbc.Container([
         # Top navigation bar
         dbc.Navbar(
             dbc.Container([
@@ -102,85 +141,39 @@ def get_authenticated_layout(user_info):
                 ])
             ], color="success", className="mb-4"),
 
-            # Quick stats
+            # Hospital Selector and KPI Cards
             dbc.Row([
                 dbc.Col([
-                    dbc.Card([
-                        dbc.CardBody([
-                            html.H5([html.I(className="fas fa-hospital me-2"), "Hospitals"], className="text-muted mb-2"),
-                            html.H2("24", className="mb-0", style={'color': '#3498db'})
-                        ])
-                    ], className="shadow-sm mb-4")
-                ], width=3),
+                    html.H4("Select Hospital", className="mb-3"),
+                    dcc.Dropdown(
+                        id='auth-hospital-dropdown',
+                        placeholder="Select a hospital...",
+                        className="mb-4"
+                    )
+                ], width=6),
                 dbc.Col([
-                    dbc.Card([
-                        dbc.CardBody([
-                            html.H5([html.I(className="fas fa-chart-line me-2"), "KPIs Tracked"], className="text-muted mb-2"),
-                            html.H2("78", className="mb-0", style={'color': '#2ecc71'})
-                        ])
-                    ], className="shadow-sm mb-4")
-                ], width=3),
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardBody([
-                            html.H5([html.I(className="fas fa-calendar me-2"), "Latest Data"], className="text-muted mb-2"),
-                            html.H2("2023", className="mb-0", style={'color': '#e74c3c'})
-                        ])
-                    ], className="shadow-sm mb-4")
-                ], width=3),
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardBody([
-                            html.H5([html.I(className="fas fa-users me-2"), "Team Members"], className="text-muted mb-2"),
-                            html.H2(user_info.get('max_employees', '1'), className="mb-0", style={'color': '#f39c12'})
-                        ])
-                    ], className="shadow-sm mb-4")
-                ], width=3)
+                    html.H4("Benchmark Group", className="mb-3"),
+                    dcc.Dropdown(
+                        id='auth-benchmark-dropdown',
+                        options=[
+                            {'label': 'National', 'value': 'national'},
+                            {'label': 'State', 'value': 'state'},
+                            {'label': 'Hospital Type', 'value': 'type'}
+                        ],
+                        value='national',
+                        className="mb-4"
+                    )
+                ], width=6)
             ]),
 
-            # Getting started guide
-            dbc.Card([
-                dbc.CardHeader(html.H5([
-                    html.I(className="fas fa-rocket me-2"),
-                    "Getting Started"
-                ], className="mb-0")),
-                dbc.CardBody([
-                    html.P("Welcome to the Hospital KPI Dashboard! Here's how to get started:", className="mb-3"),
-                    dbc.ListGroup([
-                        dbc.ListGroupItem([
-                            html.I(className="fas fa-database me-2 text-primary"),
-                            html.Strong("Step 1: "),
-                            "Review the 78-KPI hierarchical structure (6 Level 1, 24 Level 2, 48 Level 3)"
-                        ]),
-                        dbc.ListGroupItem([
-                            html.I(className="fas fa-hospital me-2 text-success"),
-                            html.Strong("Step 2: "),
-                            "Select hospitals to analyze from the available HCRIS data"
-                        ]),
-                        dbc.ListGroupItem([
-                            html.I(className="fas fa-chart-bar me-2 text-info"),
-                            html.Strong("Step 3: "),
-                            "Explore KPI drill-downs from strategic metrics to granular sub-drivers"
-                        ]),
-                        dbc.ListGroupItem([
-                            html.I(className="fas fa-users me-2 text-warning"),
-                            html.Strong("Step 4: "),
-                            "Compare against benchmarks (National, State, Hospital Type)"
-                        ])
-                    ], flush=True)
-                ])
-            ], className="shadow-sm mb-4"),
-
-            # Dashboard integration note
-            dbc.Alert([
-                html.I(className="fas fa-info-circle me-2"),
-                html.Strong("Note: "),
-                "Full dashboard integration is in progress. The complete KPI dashboard with ",
-                "interactive visualizations will be available here soon. ",
-                "For now, you can access the dashboard by running ",
-                html.Code("python dashboard.py"),
-                " separately."
-            ], color="info")
+            # Top 4 Priority KPIs
+            html.H4("Top 4 Priority KPIs", className="mb-3"),
+            html.Div(id='auth-kpi-cards-container', children=[
+                dbc.Alert([
+                    html.I(className="fas fa-info-circle me-2"),
+                    "Select a hospital above to view KPI analysis"
+                ], color="info")
+            ])
 
         ], fluid=True)
     ], fluid=True)
@@ -547,6 +540,127 @@ def navigate(register_clicks, login_clicks, login_employee_clicks, login_individ
 
     print("[NAVIGATION] No match, returning no_update")
     return dash.no_update
+
+
+# ============================================================================
+# DASHBOARD INTEGRATION CALLBACKS
+# ============================================================================
+
+@app.callback(
+    Output('welcome-modal', 'is_open'),
+    Input('close-welcome-modal', 'n_clicks'),
+    prevent_initial_call=True
+)
+def close_welcome(n_clicks):
+    """Close welcome modal"""
+    return False
+
+
+@app.callback(
+    Output('auth-hospital-dropdown', 'options'),
+    Input('url', 'pathname')
+)
+def load_hospital_list(pathname):
+    """Load hospital dropdown options"""
+    if pathname == '/' or pathname == '/dashboard':
+        try:
+            from data_manager import DataManager
+            data_manager = DataManager()
+            hospitals = data_manager.get_hospital_list()
+
+            options = [
+                {'label': f"{row['Provider_Name']} (CCN: {row['CCN']})", 'value': row['CCN']}
+                for _, row in hospitals.iterrows()
+            ]
+            return options
+        except Exception as e:
+            print(f"Error loading hospitals: {e}")
+            return []
+    return []
+
+
+@app.callback(
+    Output('auth-kpi-cards-container', 'children'),
+    [Input('auth-hospital-dropdown', 'value'),
+     Input('auth-benchmark-dropdown', 'value')],
+    prevent_initial_call=True
+)
+def load_top_kpis(ccn, benchmark_level):
+    """Load top 4 priority KPIs for selected hospital"""
+    if not ccn:
+        return dbc.Alert([
+            html.I(className="fas fa-info-circle me-2"),
+            "Select a hospital above to view KPI analysis"
+        ], color="info")
+
+    try:
+        from data_manager import DataManager
+        from dashboard import create_kpi_card, calculate_dynamic_priority, calculate_importance_score, calculate_trend
+        from kpi_hierarchy_config import KPI_METADATA
+        import pandas as pd
+
+        data_manager = DataManager()
+
+        # Get KPI data
+        kpi_data = data_manager.calculate_kpis(ccn)
+        if kpi_data.empty:
+            return dbc.Alert("No data available for this hospital", color="warning")
+
+        latest_year = kpi_data['Fiscal_Year'].max()
+
+        # Get benchmarks
+        benchmark_data = data_manager.get_benchmarks(ccn, latest_year, benchmark_level)
+
+        # Rank KPIs by priority
+        kpi_rankings = []
+        for kpi_key in KPI_METADATA.keys():
+            if kpi_key not in kpi_data.columns:
+                continue
+
+            kpi_meta = KPI_METADATA.get(kpi_key, {})
+            higher_is_better = kpi_meta.get('higher_is_better', True)
+
+            kpi_values = kpi_data[kpi_key].values
+            kpi_value = kpi_values[0] if len(kpi_values) > 0 else None
+
+            benchmark_kpis = benchmark_data.get('kpis', {})
+            kpi_benchmark = benchmark_kpis.get(kpi_key, {})
+            median = kpi_benchmark.get('Median')
+
+            dynamic_priority = calculate_dynamic_priority(kpi_key, kpi_value, median, higher_is_better)
+
+            kpi_rankings.append({
+                'kpi_key': kpi_key,
+                'dynamic_priority': dynamic_priority,
+                'kpi_value': kpi_value,
+                'kpi_values': kpi_values
+            })
+
+        # Sort by priority and get top 4
+        kpi_rankings.sort(key=lambda x: x['dynamic_priority'], reverse=True)
+        top_4 = kpi_rankings[:4]
+
+        # Create cards
+        kpi_cards = []
+        for idx, ranking in enumerate(top_4):
+            card = create_kpi_card(
+                kpi_key=ranking['kpi_key'],
+                kpi_value=ranking['kpi_value'],
+                kpi_trend_values=ranking['kpi_values'],
+                fiscal_years=kpi_data['Fiscal_Year'].values,
+                benchmark_data=benchmark_data,
+                rank=idx + 1,
+                importance_score=ranking['dynamic_priority']
+            )
+            kpi_cards.append(dbc.Col(card, width=12, lg=6, className="mb-4"))
+
+        return dbc.Row(kpi_cards)
+
+    except Exception as e:
+        print(f"Error loading KPIs: {e}")
+        import traceback
+        traceback.print_exc()
+        return dbc.Alert(f"Error loading KPI data: {str(e)}", color="danger")
 
 
 # ============================================================================
