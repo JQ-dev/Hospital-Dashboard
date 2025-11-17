@@ -15,7 +15,7 @@ Data Source: Parquet files (no database needed)
 """
 
 import dash
-from dash import dcc, html, Input, Output, State, callback, ALL, MATCH, dash_table
+from dash import dcc, html, Input, Output, State, callback, ALL, dash_table
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import plotly.express as px
@@ -43,20 +43,10 @@ from config.paths import (
 class HospitalDataManager:
     """Manages data access for hospital KPIs and benchmarks from database"""
 
-    def __init__(self,
-                 db_path='data/hospital_analytics.duckdb',
-                 worksheet_db_path='data/hospital_worksheets.duckdb'):
-        """
-        Initialize with database connections
-
-        Args:
-            db_path: Path to main analytics database (pre-computed KPIs)
-            worksheet_db_path: Path to worksheet database (detailed HCRIS data)
-        """
+    def __init__(self, db_path='data/hospital_analytics.duckdb'):
+        """Initialize with database connection"""
         self.db_path = db_path
-        self.worksheet_db_path = worksheet_db_path
         self.use_database = Path(db_path).exists()
-        self.use_worksheets = Path(worksheet_db_path).exists()
 
         # Check if this is an optimized database (has pre-computed tables)
         if self.use_database:
@@ -67,664 +57,31 @@ class HospitalDataManager:
                 con.close()
 
                 if self.use_precomputed:
-                    print(f"[OK] Using optimized database with pre-computed KPIs: {db_path}")
+                    print(f"Using optimized database with pre-computed KPIs: {db_path}")
                 else:
-                    print(f"[OK] Using database: {db_path}")
+                    print(f"Using database: {db_path}")
             except Exception as e:
-                print(f"[ERROR] Database file exists but cannot be opened (may be building): {e}")
-                print("        Falling back to parquet files")
+                print(f"Database file exists but cannot be opened (may be building): {e}")
+                print("Falling back to parquet files")
                 self.use_database = False
                 self.use_precomputed = False
                 self.balance_sheet_path = str(BALANCE_SHEET_OUTPUT / '**/*.parquet')
                 self.revenue_path = str(REVENUE_OUTPUT / '**/*.parquet')
                 self.revenue_expenses_path = str(REVENUE_EXPENSES_OUTPUT / '**/*.parquet')
         else:
-            print(f"[WARN] Database not found at {db_path}, falling back to parquet files")
+            print(f"Database not found at {db_path}, falling back to parquet files")
             self.use_precomputed = False
             # Fallback to parquet paths (use centralized config)
             self.balance_sheet_path = str(BALANCE_SHEET_OUTPUT / '**/*.parquet')
             self.revenue_path = str(REVENUE_OUTPUT / '**/*.parquet')
             self.revenue_expenses_path = str(REVENUE_EXPENSES_OUTPUT / '**/*.parquet')
 
-        # Check worksheet database availability
-        if self.use_worksheets:
-            try:
-                con = duckdb.connect(worksheet_db_path, read_only=True)
-                worksheet_tables = con.execute("SHOW TABLES").df()['name'].tolist()
-                self.worksheet_tables = [t for t in worksheet_tables if t.startswith('worksheet_')]
-                self.worksheet_count = len(self.worksheet_tables)
-                con.close()
-
-                print(f"[OK] Connected to worksheet database: {worksheet_db_path}")
-                print(f"     Found {self.worksheet_count} worksheet tables")
-            except Exception as e:
-                print(f"[ERROR] Worksheet database exists but cannot be opened: {e}")
-                self.use_worksheets = False
-                self.worksheet_tables = []
-                self.worksheet_count = 0
-        else:
-            print(f"[WARN] Worksheet database not found at {worksheet_db_path}")
-            print(f"       Level 2 and Level 3 KPIs will not be available")
-            self.worksheet_tables = []
-            self.worksheet_count = 0
-
     def get_connection(self):
-        """Get database connection for main analytics database"""
+        """Get database connection"""
         if self.use_database:
             return duckdb.connect(self.db_path, read_only=True)
         else:
             return duckdb.connect(':memory:')
-
-    def get_worksheet_connection(self):
-        """Get database connection for worksheet database"""
-        if self.use_worksheets:
-            return duckdb.connect(self.worksheet_db_path, read_only=True)
-        else:
-            return None
-
-    def get_available_worksheets(self):
-        """Get list of available worksheet tables"""
-        if not self.use_worksheets:
-            return pd.DataFrame(columns=['worksheet', 'table_name', 'record_count'])
-
-        try:
-            con = self.get_worksheet_connection()
-
-            # Get summary of all worksheets
-            worksheets_info = []
-            for table in self.worksheet_tables:
-                worksheet_code = table.replace('worksheet_', '').upper()
-                count = con.execute(f"SELECT COUNT(*) as cnt FROM {table}").fetchone()[0]
-                worksheets_info.append({
-                    'worksheet': worksheet_code,
-                    'table_name': table,
-                    'record_count': count
-                })
-
-            con.close()
-            return pd.DataFrame(worksheets_info)
-        except Exception as e:
-            print(f"Error getting worksheets: {e}")
-            return pd.DataFrame(columns=['worksheet', 'table_name', 'record_count'])
-
-    def verify_worksheet_access(self):
-        """Verify that all worksheet tables are accessible"""
-        if not self.use_worksheets:
-            return {
-                'status': 'error',
-                'message': 'Worksheet database not available',
-                'tables_accessible': 0,
-                'tables_total': 0
-            }
-
-        try:
-            con = self.get_worksheet_connection()
-            accessible = 0
-            errors = []
-
-            for table in self.worksheet_tables:
-                try:
-                    # Try to query each table
-                    con.execute(f"SELECT * FROM {table} LIMIT 1")
-                    accessible += 1
-                except Exception as e:
-                    errors.append(f"{table}: {str(e)}")
-
-            con.close()
-
-            return {
-                'status': 'success' if accessible == len(self.worksheet_tables) else 'partial',
-                'message': f'{accessible}/{len(self.worksheet_tables)} worksheet tables accessible',
-                'tables_accessible': accessible,
-                'tables_total': len(self.worksheet_tables),
-                'errors': errors
-            }
-        except Exception as e:
-            return {
-                'status': 'error',
-                'message': f'Error verifying worksheet access: {str(e)}',
-                'tables_accessible': 0,
-                'tables_total': len(self.worksheet_tables)
-            }
-
-    def calculate_level2_kpis(self, ccn, fiscal_year):
-        """
-        Calculate Level 2 KPIs from worksheet data
-
-        Args:
-            ccn: Provider number
-            fiscal_year: Fiscal year
-
-        Returns:
-            Dictionary with Level 2 KPIs organized by parent Level 1 KPI
-        """
-        if not self.use_worksheets:
-            return None
-
-        try:
-            con = self.get_worksheet_connection()
-            l2_kpis = {}
-
-            # ==================================================================
-            # L1.1 DRIVERS: Net Income Margin
-            # ==================================================================
-
-            # L2.1.2: Non-Operating Income %
-            non_op_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) LIKE '%Non-Operating%'
-                        OR CAST(line_level1 AS VARCHAR) LIKE '%non-operating%'
-                        THEN Value ELSE 0 END) as non_operating_income,
-                    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) LIKE '%Total Revenue%'
-                        OR CAST(line_level1 AS VARCHAR) LIKE '%total revenue%'
-                        THEN Value ELSE 0 END) as total_revenue,
-                    SUM(CASE WHEN Line IN ('00300', '02800') THEN Value ELSE 0 END) as total_rev_alt
-                FROM worksheet_g300000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if non_op_data:
-                non_op, total_rev, total_rev_alt = non_op_data
-                # Use alternative calculation if total_rev is 0
-                total_revenue_final = total_rev if total_rev and total_rev > 0 else total_rev_alt
-                if total_revenue_final and total_revenue_final > 0:
-                    l2_kpis['L2_1_2_Non_Operating_Income_Pct'] = (non_op / total_revenue_final) * 100 if non_op else 0
-                else:
-                    l2_kpis['L2_1_2_Non_Operating_Income_Pct'] = None
-            else:
-                l2_kpis['L2_1_2_Non_Operating_Income_Pct'] = None
-
-            # L2.1.3: Payer Mix - Medicare %
-            medicare_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00600' THEN Value ELSE 0 END) as medicare_days,
-                    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_days
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '01400'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if medicare_data and medicare_data[1] and medicare_data[1] > 0:
-                l2_kpis['L2_1_3_Payer_Mix_Medicare_Pct'] = (medicare_data[0] / medicare_data[1]) * 100
-            else:
-                l2_kpis['L2_1_3_Payer_Mix_Medicare_Pct'] = None
-
-            # L2.1.4: Capital Cost % of Expenses
-            capital_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line BETWEEN '00100' AND '00300' THEN Value ELSE 0 END) as capital_costs
-                FROM worksheet_a700001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND "Column" = '00007'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            expense_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '02500' THEN Value ELSE 0 END) as total_expenses
-                FROM worksheet_g300000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if capital_data and expense_data and expense_data[0] and expense_data[0] > 0:
-                l2_kpis['L2_1_4_Capital_Cost_Pct_of_Expenses'] = (capital_data[0] / expense_data[0]) * 100 if capital_data[0] else 0
-            else:
-                l2_kpis['L2_1_4_Capital_Cost_Pct_of_Expenses'] = None
-
-            # ==================================================================
-            # L1.2 DRIVERS: Days in AR
-            # ==================================================================
-
-            # L2.2.2: Payer Mix - Commercial %
-            commercial_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00600' THEN Value ELSE 0 END) as medicare_days,
-                    SUM(CASE WHEN "Column" = '00700' THEN Value ELSE 0 END) as medicaid_days,
-                    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_days
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '01400'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if commercial_data and commercial_data[2] and commercial_data[2] > 0:
-                # Commercial = Total - (Medicare + Medicaid)
-                medicare_days = commercial_data[0] or 0
-                medicaid_days = commercial_data[1] or 0
-                total_days = commercial_data[2]
-                commercial_days = total_days - medicare_days - medicaid_days
-                l2_kpis['L2_2_2_Payer_Mix_Commercial_Pct'] = (commercial_days / total_days) * 100 if commercial_days > 0 else 0
-            else:
-                l2_kpis['L2_2_2_Payer_Mix_Commercial_Pct'] = None
-
-            # ==================================================================
-            # L1.3 DRIVERS: Operating Expense per Adjusted Discharge
-            # ==================================================================
-
-            # L2.3.4: Case Mix Index
-            cmi_data = con.execute("""
-                SELECT Value
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '00100'
-                  AND "Column" = '01500'
-                LIMIT 1
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if cmi_data and cmi_data[0]:
-                l2_kpis['L2_3_4_Case_Mix_Index'] = cmi_data[0]
-            else:
-                l2_kpis['L2_3_4_Case_Mix_Index'] = None
-
-            # ==================================================================
-            # L1.5 DRIVERS: Bad Debt + Charity as % of Net Revenue
-            # ==================================================================
-
-            # L2.5.1: Charity Care Charge Ratio
-            charity_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '02000' THEN Value ELSE 0 END) as charity_charges
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND "Column" = '00003'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            total_charges = con.execute("""
-                SELECT SUM(Value) as total_charges
-                FROM worksheet_g200000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if charity_data and total_charges and total_charges[0] and total_charges[0] > 0:
-                l2_kpis['L2_5_1_Charity_Care_Charge_Ratio'] = (charity_data[0] / total_charges[0]) * 100 if charity_data[0] else 0
-            else:
-                l2_kpis['L2_5_1_Charity_Care_Charge_Ratio'] = None
-
-            # L2.5.2: Bad Debt Recovery Rate
-            bad_debt_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '02600' THEN Value ELSE 0 END) as bad_debt_recovered,
-                    SUM(CASE WHEN Line = '02500' THEN Value ELSE 0 END) as bad_debt_expense
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if bad_debt_data and bad_debt_data[1] and bad_debt_data[1] > 0:
-                l2_kpis['L2_5_2_Bad_Debt_Recovery_Rate'] = (bad_debt_data[0] / bad_debt_data[1]) * 100 if bad_debt_data[0] else 0
-            else:
-                l2_kpis['L2_5_2_Bad_Debt_Recovery_Rate'] = None
-
-            # L2.5.3: Uninsured Patient %
-            uninsured_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '02000' THEN Value ELSE 0 END) as charity_uninsured,
-                    SUM(CASE WHEN Line = '03100' THEN Value ELSE 0 END) as other_uninsured
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND "Column" = '00001'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            total_patients = con.execute("""
-                SELECT SUM(CASE WHEN Line = '01400' AND "Column" = '00008' THEN Value ELSE 0 END) as total_days
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if uninsured_data and total_patients and total_patients[0] and total_patients[0] > 0:
-                total_uninsured = (uninsured_data[0] or 0) + (uninsured_data[1] or 0)
-                l2_kpis['L2_5_3_Uninsured_Patient_Pct'] = (total_uninsured / total_patients[0]) * 100
-            else:
-                l2_kpis['L2_5_3_Uninsured_Patient_Pct'] = None
-
-            # L2.5.4: Medicaid Shortfall %
-            medicaid_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '01800' THEN Value ELSE 0 END) as medicaid_revenue,
-                    SUM(CASE WHEN Line = '01900' THEN Value ELSE 0 END) as medicaid_cost
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if medicaid_data and expense_data and expense_data[0] and expense_data[0] > 0:
-                shortfall = (medicaid_data[1] or 0) - (medicaid_data[0] or 0)
-                l2_kpis['L2_5_4_Medicaid_Shortfall_Pct'] = (shortfall / expense_data[0]) * 100 if shortfall > 0 else 0
-            else:
-                l2_kpis['L2_5_4_Medicaid_Shortfall_Pct'] = None
-
-            # ==================================================================
-            # L1.6 DRIVERS: Current Ratio
-            # ==================================================================
-
-            # L2.6.2: Current Liabilities Ratio
-            liabilities_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) = 'CURRENT LIABILITIES' THEN Value ELSE 0 END) as current_liabilities,
-                    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) IN ('CURRENT LIABILITIES', 'LONG TERM LIABILITIES')
-                        THEN Value ELSE 0 END) as total_liabilities
-                FROM worksheet_g000000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if liabilities_data and liabilities_data[1] and liabilities_data[1] > 0:
-                l2_kpis['L2_6_2_Current_Liabilities_Ratio'] = (liabilities_data[0] / liabilities_data[1]) * 100 if liabilities_data[0] else 0
-            else:
-                l2_kpis['L2_6_2_Current_Liabilities_Ratio'] = None
-
-            # L2.6.4: Fund Balance % Change
-            fund_balance_data = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '00200' AND "Column" = '00200' THEN Value ELSE 0 END) as fund_balance_change,
-                    SUM(CASE WHEN Line = '00100' AND "Column" = '00200' THEN Value ELSE 0 END) as beginning_balance
-                FROM worksheet_g100000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if fund_balance_data and fund_balance_data[1] and fund_balance_data[1] != 0:
-                l2_kpis['L2_6_4_Fund_Balance_Pct_Change'] = (fund_balance_data[0] / fund_balance_data[1]) * 100 if fund_balance_data[0] else 0
-            else:
-                l2_kpis['L2_6_4_Fund_Balance_Pct_Change'] = None
-
-            con.close()
-            return l2_kpis
-
-        except Exception as e:
-            print(f"Error calculating Level 2 KPIs: {e}")
-            import traceback
-            traceback.print_exc()
-            return None
-
-    def calculate_level3_kpis(self, ccn, fiscal_year):
-        """
-        Calculate Level 3 KPIs (sub-drivers of Level 2 KPIs) from worksheet data
-
-        Args:
-            ccn: Provider number
-            fiscal_year: Fiscal year
-
-        Returns:
-            Dictionary with Level 3 KPI values, organized by Level 2 parent
-        """
-        if not self.use_worksheets:
-            return None
-
-        try:
-            con = self.get_worksheet_connection()
-            l3_kpis = {}
-
-            # ========================================================================
-            # L2.1.2 DRIVERS: Non-Operating Income %
-            # ========================================================================
-
-            # L3.1.2.1: Investment Income Share = (G-1 Line 5 Col 3) / (G-3 Line 28)
-            # L3.1.2.2: Donation/Grant % = (G-1 Line 6 Col 3) / (G-3 Line 28)
-
-            # Get non-operating income from G-3
-            non_op_income = con.execute("""
-                SELECT SUM(Value) as non_op_income
-                FROM worksheet_g300000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND CAST(line_level1 AS VARCHAR) LIKE '%Non-Operating%'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            # Get investment income and donations from G-1
-            fund_balance_detail = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '00500' AND "Column" = '00300' THEN Value ELSE 0 END) as investment_income,
-                    SUM(CASE WHEN Line = '00600' AND "Column" = '00300' THEN Value ELSE 0 END) as donations
-                FROM worksheet_g100000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if non_op_income and non_op_income[0] and non_op_income[0] != 0:
-                if fund_balance_detail:
-                    if fund_balance_detail[0] is not None:
-                        l3_kpis['L3_1_2_1_Investment_Income_Share'] = (fund_balance_detail[0] / non_op_income[0]) * 100
-                    if fund_balance_detail[1] is not None:
-                        l3_kpis['L3_1_2_2_Donation_Grant_Pct'] = (fund_balance_detail[1] / non_op_income[0]) * 100
-
-            # ========================================================================
-            # L2.1.3 DRIVERS: Medicare Mix %
-            # ========================================================================
-
-            # L3.1.3.1: Medicare Inpatient Days % = (S-3 Line 8 Col 00600) / (S-3 Line 8 Col 00800)
-            # L3.1.3.2: Medicare Outpatient Revenue % - BLOCKED (needs Worksheet D)
-
-            medicare_inpatient = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00600' THEN Value ELSE 0 END) as medicare_ip_days,
-                    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_ip_days
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '00800'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if medicare_inpatient and medicare_inpatient[1] and medicare_inpatient[1] > 0:
-                l3_kpis['L3_1_3_1_Medicare_Inpatient_Days_Pct'] = (medicare_inpatient[0] / medicare_inpatient[1]) * 100
-
-            # ========================================================================
-            # L2.1.4 DRIVERS: Capital Cost % of Expenses
-            # ========================================================================
-
-            # L3.1.4.1: Depreciation % of Capital = (A-7 Pt I Col 9) / (A-7 Pt I Col 1)
-            # L3.1.4.2: Interest Expense Ratio = (A Line 116 Col 2) / (Capital Costs)
-
-            # Get capital costs detail from A-7 worksheets
-            capital_detail = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00900' THEN Value ELSE 0 END) as depreciation,
-                    SUM(CASE WHEN "Column" = '00100' THEN Value ELSE 0 END) as capital_total
-                FROM worksheet_a700001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if capital_detail and capital_detail[1] and capital_detail[1] > 0:
-                if capital_detail[0] is not None:
-                    l3_kpis['L3_1_4_1_Depreciation_Pct_of_Capital'] = (capital_detail[0] / capital_detail[1]) * 100
-
-            # Get interest expense from A-0
-            interest_expense = con.execute("""
-                SELECT SUM(Value) as interest_expense
-                FROM worksheet_a000000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '11600'
-                  AND "Column" = '00200'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            # Get total capital costs for ratio
-            total_capital = con.execute("""
-                SELECT SUM(Value) as capital_costs
-                FROM worksheet_a700001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND "Column" = '00700'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if interest_expense and interest_expense[0] and total_capital and total_capital[0] and total_capital[0] > 0:
-                l3_kpis['L3_1_4_2_Interest_Expense_Ratio'] = (interest_expense[0] / total_capital[0]) * 100
-
-            # ========================================================================
-            # L2.2.2 DRIVERS: Commercial Mix %
-            # ========================================================================
-
-            # L3.2.2.1: Commercial Inpatient % = (S-3 Line 8 Col 7 - Cols 1-6 Sum) / (S-3 Line 8 Col 8)
-            # L3.2.2.2: Self-Pay % = (S-10 Line 20 Col 1) / (G-3 Line 3)
-
-            commercial_inpatient = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00700' THEN Value ELSE 0 END) as commercial_and_other,
-                    SUM(CASE WHEN "Column" IN ('00100','00200','00300','00400','00500','00600') THEN Value ELSE 0 END) as medicare_medicaid_sum,
-                    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_ip_days
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '00800'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if commercial_inpatient and commercial_inpatient[2] and commercial_inpatient[2] > 0:
-                commercial_ip = commercial_inpatient[0] - commercial_inpatient[1]
-                l3_kpis['L3_2_2_1_Commercial_Inpatient_Pct'] = (commercial_ip / commercial_inpatient[2]) * 100
-
-            # Get self-pay from S-10 and total revenue from G-3
-            selfpay_data = con.execute("""
-                SELECT SUM(Value) as charity_uninsured
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '02000'
-                  AND "Column" = '00001'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            total_revenue = con.execute("""
-                SELECT SUM(Value) as total_revenue
-                FROM worksheet_g300000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND CAST(line_level1 AS VARCHAR) = 'NET PATIENT REVENUE'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if selfpay_data and selfpay_data[0] and total_revenue and total_revenue[0] and total_revenue[0] > 0:
-                l3_kpis['L3_2_2_2_Self_Pay_Pct'] = (selfpay_data[0] / total_revenue[0]) * 100
-
-            # ========================================================================
-            # L2.5.1 DRIVERS: Charity Care Charge Ratio
-            # ========================================================================
-
-            # L3.5.1.1: Insured Charity % = (S-10 Line 20 Col 2) / (S-10 Line 20 Col 3)
-            # L3.5.1.2: Non-Covered Charity % = (S-10 Line 20 Col 1) / (S-10 Line 20 Col 3)
-
-            charity_breakdown = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00001' THEN Value ELSE 0 END) as non_covered_charity,
-                    SUM(CASE WHEN "Column" = '00002' THEN Value ELSE 0 END) as insured_charity,
-                    SUM(CASE WHEN "Column" = '00003' THEN Value ELSE 0 END) as total_charity
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '02000'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if charity_breakdown and charity_breakdown[2] and charity_breakdown[2] > 0:
-                if charity_breakdown[1] is not None:
-                    l3_kpis['L3_5_1_1_Insured_Charity_Pct'] = (charity_breakdown[1] / charity_breakdown[2]) * 100
-                if charity_breakdown[0] is not None:
-                    l3_kpis['L3_5_1_2_Non_Covered_Charity_Pct'] = (charity_breakdown[0] / charity_breakdown[2]) * 100
-
-            # ========================================================================
-            # L2.5.4 DRIVERS: Medicaid Shortfall %
-            # ========================================================================
-
-            # L3.5.4.1: Medicaid Days % = (S-3 Line 14 Col 5+6) / (S-3 Line 14 Col 8)
-            # L3.5.4.2: Medicaid Payment-to-Cost = (Medicaid Revenue) / (Medicaid Cost)
-
-            medicaid_days = con.execute("""
-                SELECT
-                    SUM(CASE WHEN "Column" = '00700' THEN Value ELSE 0 END) as medicaid_days,
-                    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_days
-                FROM worksheet_s300001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line = '01400'
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if medicaid_days and medicaid_days[1] and medicaid_days[1] > 0:
-                l3_kpis['L3_5_4_1_Medicaid_Days_Pct'] = (medicaid_days[0] / medicaid_days[1]) * 100
-
-            # Medicaid payment-to-cost from S-10
-            medicaid_ptc = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '01800' THEN Value ELSE 0 END) as medicaid_revenue,
-                    SUM(CASE WHEN Line = '01900' THEN Value ELSE 0 END) as medicaid_cost
-                FROM worksheet_s100001
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-                  AND Line IN ('01800', '01900')
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if medicaid_ptc and medicaid_ptc[1] and medicaid_ptc[1] > 0:
-                l3_kpis['L3_5_4_2_Medicaid_Payment_to_Cost'] = (medicaid_ptc[0] / medicaid_ptc[1]) * 100
-
-            # ========================================================================
-            # L2.6.2 DRIVERS: Current Liabilities Ratio
-            # ========================================================================
-
-            # L3.6.2.1: Accounts Payable % = (G Line 47 Col 3) / (Current Liabilities Sum)
-            # L3.6.2.2: Short-Term Debt % = (G Line 46 Col 3) / (Current Liabilities Sum)
-
-            current_liabilities_detail = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '04700' AND "Column" = '00300' THEN Value ELSE 0 END) as accounts_payable,
-                    SUM(CASE WHEN Line = '04600' AND "Column" = '00300' THEN Value ELSE 0 END) as short_term_debt,
-                    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) = 'CURRENT LIABILITIES' THEN Value ELSE 0 END) as current_liabilities_total
-                FROM worksheet_g000000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if current_liabilities_detail and current_liabilities_detail[2] and current_liabilities_detail[2] > 0:
-                if current_liabilities_detail[0] is not None:
-                    l3_kpis['L3_6_2_1_Accounts_Payable_Pct'] = (current_liabilities_detail[0] / current_liabilities_detail[2]) * 100
-                if current_liabilities_detail[1] is not None:
-                    l3_kpis['L3_6_2_2_Short_Term_Debt_Pct'] = (current_liabilities_detail[1] / current_liabilities_detail[2]) * 100
-
-            # ========================================================================
-            # L2.6.4 DRIVERS: Fund Balance % Change
-            # ========================================================================
-
-            # L3.6.4.1: Retained Earnings % = (G Line 73 Col 3) / (G Line 75 Col 3)
-            # L3.6.4.2: Depreciation Impact = (G-1 Line 3 Col 3) / (G-1 Line 21 Col 3)
-
-            equity_detail = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '07300' AND "Column" = '00300' THEN Value ELSE 0 END) as retained_earnings,
-                    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) = 'TOTAL EQUITIES' THEN Value ELSE 0 END) as total_equity
-                FROM worksheet_g000000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if equity_detail and equity_detail[1] and equity_detail[1] > 0:
-                if equity_detail[0] is not None:
-                    l3_kpis['L3_6_4_1_Retained_Earnings_Pct'] = (equity_detail[0] / equity_detail[1]) * 100
-
-            # Depreciation impact from G-1
-            depreciation_impact = con.execute("""
-                SELECT
-                    SUM(CASE WHEN Line = '00300' AND "Column" = '00300' THEN Value ELSE 0 END) as depreciation,
-                    SUM(CASE WHEN Line = '02100' AND "Column" = '00300' THEN Value ELSE 0 END) as fund_balance_change
-                FROM worksheet_g100000
-                WHERE Provider_Number = ?
-                  AND fiscal_year = ?
-            """, [str(ccn), int(fiscal_year)]).fetchone()
-
-            if depreciation_impact and depreciation_impact[1] and depreciation_impact[1] != 0:
-                if depreciation_impact[0] is not None:
-                    l3_kpis['L3_6_4_2_Depreciation_Impact'] = (depreciation_impact[0] / depreciation_impact[1]) * 100
-
-            con.close()
-            return l3_kpis
-
-        except Exception as e:
-            print(f"Error calculating Level 3 KPIs: {e}")
-            import traceback
-            traceback.print_exc()
-            return None
 
     def get_available_hospitals(self):
         """Get list of available hospitals with metadata"""
@@ -1141,7 +498,7 @@ class HospitalDataManager:
                     elif benchmark_level == 'State':
                         filter_sql = "Benchmark_Level = 'State' AND State_Code = ?"
                         group_name = f'State {state_code}'
-                        params = [int(state_code), int(fiscal_year)]  # Convert state_code to int
+                        params = [state_code, int(fiscal_year)]
                     elif benchmark_level == 'Hospital_Type':
                         filter_sql = "Benchmark_Level = 'Hospital_Type' AND Hospital_Type = ?"
                         group_name = hospital_type
@@ -1149,7 +506,7 @@ class HospitalDataManager:
                     else:  # State_Hospital_Type
                         filter_sql = "Benchmark_Level = 'State_Hospital_Type' AND State_Code = ? AND Hospital_Type = ?"
                         group_name = f'{state_code} - {hospital_type}'
-                        params = [int(state_code), hospital_type, int(fiscal_year)]  # Convert state_code to int
+                        params = [state_code, hospital_type, int(fiscal_year)]
 
                     # Get benchmarks from pre-computed table
                     benchmarks_df = con.execute(f"""
@@ -1370,38 +727,6 @@ from kpi_hierarchy_config import (
 # - Level 2: 4 driver KPIs per Level 1 (24 total) - key components/influencers
 # - Level 3: 2 sub-driver KPIs per Level 2 (48 total) - granular breakdowns
 # Total: 78 KPIs across the hierarchy
-
-# Mapping from database column names to KPI_METADATA keys
-# This allows us to show KPIs even when column names don't match metadata keys
-DB_COLUMN_TO_KPI_KEY = {
-    # Level 1 KPIs - Map database columns to KPI_METADATA keys
-    'Net_Margin_Pct': 'Net_Income_Margin',
-    'AR_Days': 'AR_Days',  # Already matches
-    'Operating_Expense_Ratio': 'Operating_Expense_per_Adjusted_Discharge',  # Maps to L1 KPI
-    'Current_Ratio': 'Current_Ratio',  # Already matches
-    'Medicare_CCR': 'Medicare_CCR',  # NEW: Medicare Cost-to-Charge Ratio
-    'Bad_Debt_Charity_Pct': 'Bad_Debt_Charity_Pct',  # NEW: Bad Debt + Charity %
-
-    # Level 2/3 KPIs
-    'Operating_Margin_Pct': 'Operating_Expense_Ratio',  # L2 KPI
-    'Total_Margin_Pct': 'Total_Margin',
-    'Days_Cash_On_Hand': 'Cash_Days_on_Hand',
-
-    # Additional KPIs that match
-    'Outpatient_Revenue_Pct': 'Outpatient_Revenue_Pct',
-    'Inpatient_Revenue_Pct': 'Inpatient_Revenue_Pct',
-    'Asset_Turnover_Ratio': 'Asset_Turnover_Ratio',
-    'Fixed_Asset_Turnover': 'Fixed_Asset_Turnover',
-    'Debt_to_Equity_Ratio': 'Debt_to_Equity_Ratio',
-    'Equity_Ratio_Pct': 'Equity_Ratio_Pct',
-    'Debt_Ratio_Pct': 'Debt_Ratio_Pct',
-    'Return_on_Assets_Pct': 'Return_on_Assets_Pct',
-    'Return_on_Equity_Pct': 'Return_on_Equity_Pct',
-    'Revenue_Growth_Pct': 'Revenue_Growth_Pct',
-}
-
-# Create a reverse mapping for L2/L3 KPIs
-KPI_KEY_TO_DB_COLUMN = {v: k for k, v in DB_COLUMN_TO_KPI_KEY.items()}
 
 def calculate_importance_score(kpi_key):
     """Calculate BASE importance score = Impact × Ease of Change"""
@@ -1760,506 +1085,6 @@ def create_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
     return card
 
 
-def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
-                                     all_benchmarks, rank, l2_kpis=None, l3_kpis=None, ccn=None, fiscal_year=None, db_column=None):
-    """
-    Create enhanced Level 1 KPI card with:
-    - 5-year trend visualization
-    - All 4 benchmark levels (ordered from most to least specific):
-      1. Hospital Type and State (most specific)
-      2. Hospitals in State
-      3. Hospital Type
-      4. Hospital Nationwide (broadest)
-    - KPI description and explanation
-    - Expandable Level 2/3 drivers
-    - Clean, aesthetic layout
-
-    Args:
-        kpi_key: KPI identifier
-        kpi_value: Current value
-        kpi_trend_values: 5-year historical values
-        fiscal_years: Years for trend
-        all_benchmarks: Dict with benchmarks (state_hospital_type, state, hospital_type, national)
-        rank: KPI priority rank
-        l2_kpis: Level 2 KPI values
-        l3_kpis: Level 3 KPI values
-        ccn: Provider number
-        fiscal_year: Current fiscal year
-    """
-    meta = KPI_METADATA.get(kpi_key, {})
-    kpi_name = meta.get('name', kpi_key)
-    category = meta.get('category', 'General')
-    description = meta.get('description', 'No description available')
-    unit = meta.get('unit', '')
-    fmt = meta.get('format', '.1f')
-    higher_is_better = meta.get('higher_is_better', True)
-
-    # Calculate 5-year trend
-    trend_direction, trend_pct = calculate_trend(kpi_trend_values)
-
-    # Create 5-year trend sparkline
-    sparkline_fig = create_sparkline(kpi_trend_values, fiscal_years)
-
-    # Trend indicator
-    if higher_is_better:
-        trend_color = 'success' if trend_direction == 'up' else ('danger' if trend_direction == 'down' else 'secondary')
-        trend_icon = 'fa-arrow-up' if trend_direction == 'up' else ('fa-arrow-down' if trend_direction == 'down' else 'fa-minus')
-    else:
-        trend_color = 'danger' if trend_direction == 'up' else ('success' if trend_direction == 'down' else 'secondary')
-        trend_icon = 'fa-arrow-down' if trend_direction == 'up' else ('fa-arrow-up' if trend_direction == 'down' else 'fa-minus')
-
-    # Build benchmark comparison table for ALL levels
-    # Order: State & Type (most specific), State, Hospital Type, National (broadest)
-    benchmark_rows = []
-    benchmark_levels = [
-        ('state_hospital_type', 'Hospital Type and State', all_benchmarks.get('state_hospital_type')),
-        ('state', 'Hospitals in State', all_benchmarks.get('state')),
-        ('hospital_type', 'Hospital Type', all_benchmarks.get('hospital_type')),
-        ('national', 'Hospital Nationwide', all_benchmarks.get('national'))
-    ]
-
-    for level_key, level_name, benchmark_data in benchmark_levels:
-        if benchmark_data:
-            # Use db_column if provided (benchmarks use database column names, not KPI metadata keys)
-            bench_lookup_key = db_column if db_column else kpi_key
-            kpi_bench = benchmark_data.get('kpis', {}).get(bench_lookup_key, {})
-            p25 = kpi_bench.get('P25')
-            median = kpi_bench.get('Median')
-            p75 = kpi_bench.get('P75')
-            peer_count = benchmark_data.get('provider_count', 0)
-
-            # Determine performance vs this benchmark
-            if median and kpi_value is not None and not pd.isna(kpi_value):
-                perf_label, perf_color = calculate_percentile_rank(kpi_value, p25, median, p75)
-                perf_badge = dbc.Badge(perf_label, color=perf_color, className="ms-2", style={'fontSize': '0.7rem'})
-            else:
-                perf_badge = dbc.Badge("N/A", color="secondary", className="ms-2", style={'fontSize': '0.7rem'})
-
-            benchmark_rows.append(
-                html.Tr([
-                    html.Td([
-                        html.Strong(level_name, style={'fontSize': '0.85rem'}),
-                        html.Br(),
-                        html.Small(f"{peer_count} peers", className="text-muted", style={'fontSize': '0.7rem'})
-                    ]),
-                    html.Td(f"{format(p25, fmt)}{unit}" if p25 else "—", style={'fontSize': '0.85rem', 'textAlign': 'center'}),
-                    html.Td([
-                        html.Strong(f"{format(median, fmt)}{unit}" if median else "—"),
-                        perf_badge
-                    ], style={'fontSize': '0.85rem', 'textAlign': 'center'}),
-                    html.Td(f"{format(p75, fmt)}{unit}" if p75 else "—", style={'fontSize': '0.85rem', 'textAlign': 'center'}),
-                ], style={'borderBottom': '1px solid #dee2e6'})
-            )
-        else:
-            benchmark_rows.append(
-                html.Tr([
-                    html.Td(html.Strong(level_name, style={'fontSize': '0.85rem'})),
-                    html.Td("—", colSpan=3, className="text-muted text-center", style={'fontSize': '0.85rem'})
-                ], style={'borderBottom': '1px solid #dee2e6'})
-            )
-
-    benchmark_table = dbc.Table([
-        html.Thead([
-            html.Tr([
-                html.Th("Benchmark", style={'fontSize': '0.75rem', 'color': '#6c757d'}),
-                html.Th("P25", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
-                html.Th("Median", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
-                html.Th("P75", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
-            ])
-        ]),
-        html.Tbody(benchmark_rows)
-    ], size="sm", borderless=True, className="mb-0")
-
-    # Create card
-    card = dbc.Card([
-        # Header with rank, category, and drill-down button
-        dbc.CardHeader([
-            dbc.Row([
-                dbc.Col([
-                    html.Div([
-                        html.Span(f"#{rank}", className="badge bg-primary me-2", style={'fontSize': '0.8rem'}),
-                        html.Span(category, className="text-muted", style={'fontSize': '0.8rem'})
-                    ])
-                ], width=8),
-                dbc.Col([
-                    dcc.Link(
-                        html.Button([
-                            html.I(className="fas fa-chart-line me-1"),
-                            "Drill Down"
-                        ], className="btn btn-sm btn-outline-primary", style={'fontSize': '0.75rem'}),
-                        href=f"/level2/{kpi_key}",
-                        style={'textDecoration': 'none'}
-                    )
-                ], width=4, className="text-end")
-            ])
-        ], className="py-2", style={'background': '#f8f9fa', 'borderBottom': '2px solid #dee2e6'}),
-
-        dbc.CardBody([
-            # KPI Name
-            html.H5(kpi_name, className="mb-2", style={'fontWeight': '600', 'color': '#212529'}),
-
-            # Current Value with Trend
-            html.Div([
-                html.H2([
-                    f"{format(kpi_value, fmt)}{unit}" if not pd.isna(kpi_value) else "N/A",
-                    html.Span([
-                        html.I(className=f"fas {trend_icon} ms-3"),
-                        f" {abs(trend_pct):.1f}%"
-                    ], className=f"text-{trend_color}", style={'fontSize': '1rem', 'fontWeight': 'normal'})
-                ], className="mb-3", style={'fontWeight': '700', 'color': '#212529'}),
-            ]),
-
-            # Description
-            html.P(description, className="text-muted mb-3", style={'fontSize': '0.9rem', 'lineHeight': '1.4'}),
-
-            # 5-Year Trend Title
-            html.H6("5-Year Trend", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
-
-            # Sparkline
-            dcc.Graph(
-                figure=sparkline_fig,
-                config={'displayModeBar': False},
-                style={'height': '60px', 'marginBottom': '1rem'}
-            ),
-
-            # Benchmark Comparison Title
-            html.H6("Benchmark Comparison", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
-
-            # Benchmark Table
-            benchmark_table,
-
-        ], className="p-3")
-    ], className="shadow-sm h-100", style={'border': '1px solid #dee2e6', 'borderRadius': '0.5rem'})
-
-    return card
-
-
-def create_hierarchical_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
-                                  benchmark_data, rank, importance_score, l2_kpis=None, l3_kpis=None, ccn=None, fiscal_year=None):
-    """
-    Create a hierarchical KPI card with expandable Level 2 and Level 3 drivers
-
-    Args:
-        kpi_key: Level 1 KPI identifier
-        kpi_value: Current value
-        kpi_trend_values: Historical values
-        fiscal_years: Years for trend
-        benchmark_data: Benchmark comparison data
-        rank: KPI rank
-        importance_score: Importance score
-        l2_kpis: Dictionary of Level 2 KPI values (optional)
-        l3_kpis: Dictionary of Level 3 KPI values (optional)
-        ccn: Provider number for calculating L2/L3 KPIs on demand
-        fiscal_year: Fiscal year for L2/L3 KPI calculation
-    """
-    meta = KPI_METADATA.get(kpi_key, {})
-    kpi_name = meta.get('name', kpi_key)
-    category = meta.get('category', 'General')
-    unit = meta.get('unit', '')
-    fmt = meta.get('format', '.1f')
-
-    # L2 KPI metadata mapping with L3 sub-drivers (using KPI_METADATA keys, not DB columns)
-    # Maps ALL 6 Level 1 KPIs from to_do.txt to their Level 2 drivers (with L3 sub-drivers where implemented)
-    L2_KPI_INFO = {
-        # L1 KPI 1: Net Income Margin
-        'Net_Income_Margin': {
-            'kpis': [
-                {'key': 'L2_1_1_Operating_Expense_Ratio', 'name': 'Operating Expense Ratio', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {
-                    'key': 'L2_1_2_Non_Operating_Income_Pct', 'name': 'Non-Operating Income %', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_1_2_1_Investment_Income_Share', 'name': 'Investment Income Share', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_1_2_2_Donation_Grant_Pct', 'name': 'Donation/Grant %', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-                {
-                    'key': 'L2_1_3_Payer_Mix_Medicare_Pct', 'name': 'Payer Mix - Medicare %', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_1_3_1_Medicare_Inpatient_Days_Pct', 'name': 'Medicare Inpatient Days %', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-                {
-                    'key': 'L2_1_4_Capital_Cost_Pct_of_Expenses', 'name': 'Capital Cost % of Expenses', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_1_4_1_Depreciation_Pct_of_Capital', 'name': 'Depreciation % of Capital', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_1_4_2_Interest_Expense_Ratio', 'name': 'Interest Expense Ratio', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-            ]
-        },
-        # L1 KPI 2: Days in AR
-        'AR_Days': {
-            'kpis': [
-                {'key': 'L2_2_1_Denial_Rate', 'name': 'Denial Rate', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {
-                    'key': 'L2_2_2_Payer_Mix_Commercial_Pct', 'name': 'Payer Mix - Commercial %', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_2_2_1_Commercial_Inpatient_Pct', 'name': 'Commercial Inpatient %', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_2_2_2_Self_Pay_Pct', 'name': 'Self-Pay %', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-                {'key': 'L2_2_3_Billing_Efficiency_Ratio', 'name': 'Billing Efficiency Ratio', 'unit': 'ratio', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_2_4_Collection_Rate', 'name': 'Collection Rate', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-            ]
-        },
-        # L1 KPI 3: Operating Expense per Adjusted Discharge
-        'Operating_Expense_per_Adjusted_Discharge': {
-            'kpis': [
-                {'key': 'L2_3_1_Labor_Cost_per_Discharge', 'name': 'Labor Cost per Discharge', 'unit': '$', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_3_2_Supply_Cost_per_Discharge', 'name': 'Supply Cost per Discharge', 'unit': '$', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_3_3_Overhead_Allocation_Ratio', 'name': 'Overhead Allocation Ratio', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_3_4_Case_Mix_Index', 'name': 'Case Mix Index', 'unit': 'ratio', 'fmt': '.3f', 'l3_kpis': []},
-            ]
-        },
-        # L1 KPI 4: Medicare CCR
-        'Medicare_CCR': {
-            'kpis': [
-                {'key': 'L2_4_1_Ancillary_Cost_Ratio', 'name': 'Ancillary Cost Ratio', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_4_2_Charge_Inflation_Rate', 'name': 'Charge Inflation Rate', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_4_3_Adjustment_Impact', 'name': 'Adjustment Impact on Costs', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_4_4_Utilization_Mix', 'name': 'Utilization Mix', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-            ]
-        },
-        # L1 KPI 5: Bad Debt + Charity %
-        'Bad_Debt_Charity_Pct': {
-            'kpis': [
-                {
-                    'key': 'L2_5_1_Charity_Care_Charge_Ratio', 'name': 'Charity Care Charge Ratio', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_5_1_1_Insured_Charity_Pct', 'name': 'Insured Charity %', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_5_1_2_Non_Covered_Charity_Pct', 'name': 'Non-Covered Charity %', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-                {'key': 'L2_5_2_Bad_Debt_Recovery_Rate', 'name': 'Bad Debt Recovery Rate', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {'key': 'L2_5_3_Uninsured_Patient_Pct', 'name': 'Uninsured Patient %', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {
-                    'key': 'L2_5_4_Medicaid_Shortfall_Pct', 'name': 'Medicaid Shortfall %', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_5_4_1_Medicaid_Days_Pct', 'name': 'Medicaid Days %', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_5_4_2_Medicaid_Payment_to_Cost', 'name': 'Medicaid Payment-to-Cost', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-            ]
-        },
-        # L1 KPI 6: Current Ratio
-        'Current_Ratio': {
-            'kpis': [
-                {'key': 'L2_6_1_Cash_Pct_of_Assets', 'name': 'Cash + Equivalents % of Assets', 'unit': '%', 'fmt': '.2f', 'l3_kpis': []},
-                {
-                    'key': 'L2_6_2_Current_Liabilities_Ratio', 'name': 'Current Liabilities Ratio', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_6_2_1_Accounts_Payable_Pct', 'name': 'Accounts Payable %', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_6_2_2_Short_Term_Debt_Pct', 'name': 'Short-Term Debt %', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-                {'key': 'L2_6_3_Inventory_Turnover', 'name': 'Inventory Turnover', 'unit': 'ratio', 'fmt': '.2f', 'l3_kpis': []},
-                {
-                    'key': 'L2_6_4_Fund_Balance_Pct_Change', 'name': 'Fund Balance % Change', 'unit': '%', 'fmt': '.2f',
-                    'l3_kpis': [
-                        {'key': 'L3_6_4_1_Retained_Earnings_Pct', 'name': 'Retained Earnings %', 'unit': '%', 'fmt': '.2f'},
-                        {'key': 'L3_6_4_2_Depreciation_Impact', 'name': 'Depreciation Impact', 'unit': '%', 'fmt': '.2f'},
-                    ]
-                },
-            ]
-        }
-    }
-
-    # Check if this KPI has L2 drivers
-    has_l2_kpis = kpi_key in L2_KPI_INFO and l2_kpis is not None
-    l2_info = L2_KPI_INFO.get(kpi_key, {})
-    l2_kpi_list = l2_info.get('kpis', [])
-
-    # Create basic card (same as create_kpi_card)
-    benchmark_kpis = benchmark_data.get('kpis', {})
-    kpi_benchmark = benchmark_kpis.get(kpi_key, {})
-    p25 = kpi_benchmark.get('P25')
-    median = kpi_benchmark.get('Median')
-    p75 = kpi_benchmark.get('P75')
-    mean = kpi_benchmark.get('Mean')
-
-    perf_label, perf_color = calculate_percentile_rank(kpi_value, p25, median, p75)
-    trend, trend_pct = calculate_trend(kpi_trend_values)
-
-    # Trend icon
-    trend_icon = {
-        'up': 'fa-arrow-up',
-        'down': 'fa-arrow-down',
-        'stable': 'fa-minus'
-    }.get(trend, 'fa-minus')
-
-    trend_color = {
-        'up': 'success',
-        'down': 'danger',
-        'stable': 'secondary'
-    }.get(trend, 'secondary')
-
-    # Build L2 KPI section with L3 drill-down
-    l2_section = []
-    if has_l2_kpis and l2_kpi_list:
-        l2_cards = []
-        for l2_idx, l2_meta in enumerate(l2_kpi_list):
-            l2_key = l2_meta['key']
-            l2_name = l2_meta['name']
-            l2_unit = l2_meta['unit']
-            l2_fmt = l2_meta['fmt']
-            l2_value = l2_kpis.get(l2_key) if l2_kpis else None
-            l3_kpi_list = l2_meta.get('l3_kpis', [])
-
-            if l2_value is not None:
-                l2_display = f"{l2_value:{l2_fmt}}{l2_unit}"
-                l2_color = "light"
-            else:
-                l2_display = "N/A"
-                l2_color = "secondary"
-
-            # Build L3 KPI section for this L2 KPI
-            l3_section = []
-            has_l3_kpis = len(l3_kpi_list) > 0 and l3_kpis is not None
-
-            if has_l3_kpis:
-                l3_items = []
-                for l3_meta in l3_kpi_list:
-                    l3_key = l3_meta['key']
-                    l3_name = l3_meta['name']
-                    l3_unit = l3_meta['unit']
-                    l3_fmt = l3_meta['fmt']
-                    l3_value = l3_kpis.get(l3_key) if l3_kpis else None
-
-                    if l3_value is not None:
-                        l3_display = f"{l3_value:{l3_fmt}}{l3_unit}"
-                    else:
-                        l3_display = "N/A"
-
-                    l3_items.append(
-                        html.Div([
-                            html.Small(l3_name, className="text-muted", style={'fontSize': '0.75rem'}),
-                            html.Span(f": {l3_display}", className="fw-bold ms-1", style={'fontSize': '0.85rem'})
-                        ], className="mb-1")
-                    )
-
-                # L3 collapse section with expand button
-                l3_section = [
-                    html.Div([
-                        dbc.Button(
-                            [html.I(className="fas fa-chevron-down me-1",
-                                   id={'type': 'expand-l3-icon', 'index': f"{kpi_key}_{l2_key}"},
-                                   style={'fontSize': '0.7rem'}),
-                             html.Small("Sub-Drivers", style={'fontSize': '0.75rem'})],
-                            id={'type': 'expand-l3-btn', 'index': f"{kpi_key}_{l2_key}"},
-                            color="link",
-                            size="sm",
-                            className="p-0 text-decoration-none"
-                        ),
-                        dbc.Collapse([
-                            html.Div(l3_items, className="mt-2 ps-2 border-start border-2 border-primary")
-                        ], id={'type': 'l3-collapse', 'index': f"{kpi_key}_{l2_key}"}, is_open=False)
-                    ], className="mt-2")
-                ]
-
-            # Create L2 card with optional L3 section
-            l2_card_content = [
-                html.Small(l2_name, className="text-muted d-block mb-1"),
-                html.H6(l2_display, className="mb-0")
-            ]
-
-            if l3_section:
-                l2_card_content.extend(l3_section)
-
-            l2_cards.append(
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardBody(l2_card_content, className="py-2")
-                    ], color=l2_color, outline=True, className="mb-2")
-                ], width=12)
-            )
-
-        l2_section = [
-            html.Hr(className="my-2"),
-            dbc.Collapse([
-                html.Div([
-                    html.Small("KEY DRIVERS", className="text-muted fw-bold d-block mb-2"),
-                    dbc.Row(l2_cards)
-                ], className="p-2 bg-light rounded")
-            ], id={'type': 'l2-collapse', 'index': kpi_key}, is_open=False)
-        ]
-
-    # Expand button (only if has L2 KPIs)
-    expand_button = []
-    if has_l2_kpis:
-        expand_button = [
-            html.Hr(),
-            dbc.Button(
-                [html.I(className="fas fa-chevron-down me-2", id={'type': 'expand-icon', 'index': kpi_key}),
-                 "View Drivers"],
-                id={'type': 'expand-btn', 'index': kpi_key},
-                color="outline-secondary",
-                size="sm",
-                className="w-100"
-            )
-        ]
-
-    card = dbc.Card([
-        dbc.CardHeader([
-            html.Div([
-                html.Span(f"#{rank}", className="badge bg-primary me-2"),
-                html.Span(category, className="text-muted small")
-            ], className="d-flex justify-content-between align-items-center")
-        ]),
-        dbc.CardBody([
-            # KPI Name
-            html.H6(kpi_name, className="card-title mb-3"),
-
-            # KPI Value
-            html.H3([
-                f"{format(kpi_value, fmt)}{unit}" if not pd.isna(kpi_value) else "N/A",
-                html.Span([
-                    html.I(className=f"fas {trend_icon} ms-2"),
-                    f" {abs(trend_pct):.1f}%"
-                ], className=f"text-{trend_color} ms-2", style={'fontSize': '16px'})
-            ], className="mb-2"),
-
-            # Trend Sparkline
-            html.Div([
-                dcc.Graph(
-                    figure=create_sparkline(kpi_trend_values, fiscal_years),
-                    config={'displayModeBar': False},
-                    style={'height': '50px'}
-                )
-            ], className="mt-2 mb-3"),
-
-            # Benchmark Comparison
-            html.Div([
-                html.Hr(),
-                html.Small("Benchmark Comparison", className="text-muted d-block mb-2"),
-                html.Div([
-                    html.Strong(f"Mean: {format(mean, fmt)}{unit}" if mean else "Mean: N/A",
-                               className="text-primary me-3"),
-                    dbc.Badge(perf_label if perf_label else "N/A", color=perf_color, className="me-2")
-                ], className="mb-2"),
-                dbc.Progress([
-                    dbc.Progress(value=25, color="danger", bar=True),
-                    dbc.Progress(value=25, color="warning", bar=True),
-                    dbc.Progress(value=25, color="info", bar=True),
-                    dbc.Progress(value=25, color="success", bar=True),
-                ], className="mb-2", style={'height': '8px'}),
-                dbc.Row([
-                    dbc.Col(html.Small(f"P25: {format(p25, fmt)}{unit}" if p25 else "N/A"), width=4),
-                    dbc.Col(html.Small(f"Median: {format(median, fmt)}{unit}" if median else "N/A"), width=4),
-                    dbc.Col(html.Small(f"P75: {format(p75, fmt)}{unit}" if p75 else "N/A"), width=4)
-                ])
-            ]),
-
-            # Level 2 KPIs (collapsible)
-            *l2_section,
-
-            # Expand button (if has L2)
-            *expand_button
-        ])
-    ], className="shadow-sm mb-3", style={'height': '100%'})
-
-    return card
-
-
 # ============================================================================
 # APP LAYOUT
 # ============================================================================
@@ -2273,27 +1098,20 @@ def format_currency(value):
     value_in_millions = value / 1e6
     return f"{value_in_millions:.2f}"
 
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
-])
-
-# Main dashboard layout (Level 1)
-def get_main_dashboard_layout():
-    return dbc.Container([
-        # Header
-        dbc.Row([
-            dbc.Col([
-                html.H1([
-                    html.I(className="fas fa-hospital me-3"),
-                    "Hospital Financial Analytics Dashboard"
-                ], className="mt-4 mb-2"),
-                html.P(
-                    "Interactive performance dashboard with KPIs, benchmarks, and detailed financial statements",
-                    className="lead text-muted mb-4"
-                )
-            ])
-        ]),
+app.layout = dbc.Container([
+    # Header
+    dbc.Row([
+        dbc.Col([
+            html.H1([
+                html.I(className="fas fa-hospital me-3"),
+                "Hospital Financial Analytics Dashboard"
+            ], className="mt-4 mb-2"),
+            html.P(
+                "Interactive performance dashboard with KPIs, benchmarks, and detailed financial statements",
+                className="lead text-muted mb-4"
+            )
+        ])
+    ]),
 
     # Hospital Selection (shared across tabs)
     dbc.Row([
@@ -2327,7 +1145,25 @@ def get_main_dashboard_layout():
         # KPI Dashboard Tab
         dbc.Tab(label="KPI Dashboard", tab_id="tab-kpi", children=[
             html.Div([
-                # Summary Stats (Benchmark dropdown removed - all levels now shown on each card)
+                # Benchmark Level Control
+                dbc.Row([
+                    dbc.Col([
+                        html.Label("Benchmark Level", className="mt-3"),
+                        dcc.Dropdown(
+                            id='benchmark-dropdown',
+                            options=[
+                                {'label': 'National - All Hospitals', 'value': 'National'},
+                                {'label': 'State - Same State', 'value': 'State'},
+                                {'label': 'Hospital Type - Same Type', 'value': 'Hospital_Type'},
+                                {'label': 'State + Type - Most Specific', 'value': 'State_Hospital_Type'}
+                            ],
+                            value='State',
+                            clearable=False
+                        )
+                    ], width=6)
+                ], className="mb-4"),
+
+                # Summary Stats
                 dbc.Row([
                     dbc.Col([
                         dbc.Card([
@@ -2708,163 +1544,13 @@ def get_main_dashboard_layout():
         ),
     ], id="data-modal", size="xl", is_open=False, scrollable=True),
 
-        # Footer
-        html.Hr(className="my-5"),
-        html.Footer([
-            html.P(id='footer-datasource', className="text-center text-muted")
-        ])
+    # Footer
+    html.Hr(className="my-5"),
+    html.Footer([
+        html.P(id='footer-datasource', className="text-center text-muted")
+    ])
 
-    ], fluid=True, className="py-4")
-
-
-# Level 2 drill-down layout
-def get_level2_page_layout(kpi_key, ccn='310001'):
-    """
-    Level 2 drill-down page showing:
-    - L1 KPI card at top left
-    - Explanatory text at top right
-    - 4 Level 2 driver cards below
-    """
-
-    # Get the Level 1 KPI metadata from hierarchy
-    # KPI_HIERARCHY is imported at module level from kpi_hierarchy_config
-    l1_hierarchy = KPI_HIERARCHY.get(kpi_key, {})
-    kpi_name = l1_hierarchy.get('name', kpi_key)
-
-    # Get L2 drivers from hierarchy (nested under 'level_2_kpis')
-    l2_drivers_dict = l1_hierarchy.get('level_2_kpis', {})
-    l2_driver_keys = list(l2_drivers_dict.keys())
-
-    # Get KPI data for this provider
-    kpi_data = data_manager.calculate_kpis(ccn)
-    latest_year = kpi_data['Fiscal_Year'].max()
-    latest_data = kpi_data[kpi_data['Fiscal_Year'] == latest_year].iloc[0]
-
-    # Get all benchmarks for this provider
-    all_benchmarks = {
-        'state_hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'State_Hospital_Type'),
-        'state': data_manager.get_benchmarks(ccn, latest_year, 'State'),
-        'hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'Hospital_Type'),
-        'national': data_manager.get_benchmarks(ccn, latest_year, 'National')
-    }
-
-    # Get database column name for the L1 KPI
-    l1_db_column = None
-    for db_col, meta_key in DB_COLUMN_TO_KPI_KEY.items():
-        if meta_key == kpi_key:
-            l1_db_column = db_col
-            break
-
-    # Get the value for the L1 KPI
-    l1_value = latest_data.get(l1_db_column) if l1_db_column else None
-
-    # Get trend data (last 5 years)
-    trend_data = kpi_data[kpi_data['Fiscal_Year'] >= latest_year - 4]
-    l1_trend_values = trend_data[l1_db_column].values if l1_db_column else []
-    fiscal_years = trend_data['Fiscal_Year'].values
-
-    # Create Level 1 card
-    l1_card = create_enhanced_level1_kpi_card(
-        kpi_key=kpi_key,
-        kpi_value=l1_value,
-        kpi_trend_values=l1_trend_values,
-        fiscal_years=fiscal_years,
-        all_benchmarks=all_benchmarks,
-        rank=1,
-        ccn=ccn,
-        fiscal_year=latest_year,
-        db_column=l1_db_column
-    )
-
-    # Create Level 2 driver cards
-    l2_cards = []
-    for i, driver_key in enumerate(l2_driver_keys, 1):
-        # Get database column name for this L2 driver
-        l2_db_column = None
-        for db_col, meta_key in DB_COLUMN_TO_KPI_KEY.items():
-            if meta_key == driver_key:
-                l2_db_column = db_col
-                break
-
-        # Get the value for this L2 driver
-        l2_value = latest_data.get(l2_db_column) if l2_db_column else None
-        l2_trend_values = trend_data[l2_db_column].values if l2_db_column else []
-
-        # Create L2 card
-        l2_card = create_enhanced_level1_kpi_card(
-            kpi_key=driver_key,
-            kpi_value=l2_value,
-            kpi_trend_values=l2_trend_values,
-            fiscal_years=fiscal_years,
-            all_benchmarks=all_benchmarks,
-            rank=i,
-            ccn=ccn,
-            fiscal_year=latest_year,
-            db_column=l2_db_column
-        )
-        l2_cards.append(dbc.Col(l2_card, width=12, lg=6, className="mb-4"))
-
-    return dbc.Container([
-        # Back button
-        dbc.Row([
-            dbc.Col([
-                dcc.Link(
-                    html.Button([
-                        html.I(className="fas fa-arrow-left me-2"),
-                        "Back to Dashboard"
-                    ], className="btn btn-outline-secondary mt-3"),
-                    href="/",
-                    style={'textDecoration': 'none'}
-                )
-            ])
-        ], className="mb-4"),
-
-        # Header with L1 card on left, explanatory text on right
-        dbc.Row([
-            dbc.Col([
-                l1_card
-            ], width=12, lg=6, className="mb-4"),
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardBody([
-                        html.H5("Understanding the Drivers", className="card-title"),
-                        html.P([
-                            f"The {kpi_name} KPI is influenced by {len(l2_driver_keys)} key drivers shown below. ",
-                            "Each driver card displays its own performance metrics and benchmarks, ",
-                            "helping you understand which specific factors are affecting the overall metric."
-                        ], className="text-muted"),
-                        html.Hr(),
-                        html.H6("How to Use This View:"),
-                        html.Ul([
-                            html.Li("Compare each driver's performance against benchmarks"),
-                            html.Li("Identify which drivers are performing well or need improvement"),
-                            html.Li("Use the trend data to see if drivers are improving over time"),
-                            html.Li("Click on individual drivers to explore their sub-components (Level 3)")
-                        ], className="text-muted small")
-                    ])
-                ], className="h-100 border-info")
-            ], width=12, lg=6, className="mb-4")
-        ]),
-
-        # Level 2 driver cards
-        html.H4(f"{kpi_name} Drivers", className="mb-3"),
-        dbc.Row(l2_cards)
-
-    ], fluid=True, className="py-4")
-
-
-# URL routing callback
-@app.callback(
-    Output('page-content', 'children'),
-    Input('url', 'pathname')
-)
-def display_page(pathname):
-    """Route between main dashboard and Level 2 drill-down pages"""
-    if pathname and pathname.startswith('/level2/'):
-        kpi_key = pathname.split('/')[-1]
-        # TODO: Get the current CCN from somewhere (for now use default)
-        return get_level2_page_layout(kpi_key)
-    return get_main_dashboard_layout()
+], fluid=True, className="py-4")
 
 
 # ============================================================================
@@ -2878,12 +1564,13 @@ def display_page(pathname):
      Output('peer-count', 'children'),
      Output('kpi-cards-container', 'children')],
     [Input('hospital-dropdown', 'value'),
+     Input('benchmark-dropdown', 'value'),
      Input('sort-importance', 'n_clicks'),
      Input('sort-performance', 'n_clicks'),
      Input('sort-trend', 'n_clicks')]
 )
-def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
-    """Main callback to update entire dashboard - shows all benchmark levels on each card"""
+def update_dashboard(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
+    """Main callback to update entire dashboard"""
 
     # Get hospital metadata
     hospital_type = data_manager.classify_hospital_type(ccn)
@@ -2897,75 +1584,28 @@ def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
 
     latest_year = kpi_data['Fiscal_Year'].max()
 
-    # Calculate Level 2 KPIs
-    print(f"Calculating Level 2 KPIs for {ccn}, year {latest_year}...")
-    l2_kpis = data_manager.calculate_level2_kpis(ccn, latest_year)
-    if l2_kpis:
-        print(f"Level 2 KPIs calculated: {sum(1 for v in l2_kpis.values() if v is not None)}/{len(l2_kpis)} KPIs")
-    else:
-        print("Level 2 KPIs not available (worksheet database not connected)")
-
-    # Calculate Level 3 KPIs
-    print(f"Calculating Level 3 KPIs for {ccn}, year {latest_year}...")
-    l3_kpis = data_manager.calculate_level3_kpis(ccn, latest_year)
-    if l3_kpis:
-        print(f"Level 3 KPIs calculated: {sum(1 for v in l3_kpis.values() if v is not None)}/{len(l3_kpis)} KPIs")
-    else:
-        print("Level 3 KPIs not available (worksheet database not connected)")
-
-    # Calculate ALL 4 benchmark levels (for new enhanced card design)
-    # Order: State & Type (most specific), State, Hospital Type, National (broadest)
-    print(f"Calculating benchmarks for {ccn} at all levels...")
-    all_benchmarks = {
-        'state_hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'State_Hospital_Type'),
-        'state': data_manager.get_benchmarks(ccn, latest_year, 'State'),
-        'hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'Hospital_Type'),
-        'national': data_manager.get_benchmarks(ccn, latest_year, 'National')
-    }
-    # Use state & type (most specific) as primary benchmark for display purposes (shown in header)
-    benchmark_data = all_benchmarks['state_hospital_type']
-    print(f"Benchmarks calculated: State & Type={all_benchmarks['state_hospital_type']['provider_count']}, State={all_benchmarks['state']['provider_count']}, Type={all_benchmarks['hospital_type']['provider_count']}, National={all_benchmarks['national']['provider_count']} peers")
+    # Get benchmarks (NOTE: This calculates on the fly from parquet files - may be slow)
+    print(f"Calculating benchmarks for {ccn} at {benchmark_level} level...")
+    benchmark_data = data_manager.get_benchmarks(ccn, latest_year, benchmark_level)
+    print(f"Benchmarks calculated: {benchmark_data['provider_count']} peers")
 
     # Create KPI cards
     kpi_cards = []
     kpi_rankings = []
 
-    # Define the 6 Level 1 KPIs from to_do.txt - ONLY show these
-    LEVEL_1_KPIS = {
-        'Net_Income_Margin',                      # L1 KPI 1: Net Income Margin
-        'AR_Days',                                # L1 KPI 2: Days in Net Patient AR
-        'Operating_Expense_per_Adjusted_Discharge',  # L1 KPI 3: Operating Expense per Adjusted Discharge
-        'Medicare_CCR',                           # L1 KPI 4: Medicare Cost-to-Charge Ratio
-        'Bad_Debt_Charity_Pct',                   # L1 KPI 5: Bad Debt + Charity %
-        'Current_Ratio'                           # L1 KPI 6: Current Ratio
-    }
-
-    # Loop through database columns and map to KPI_METADATA keys
-    for db_col in kpi_data.columns:
-        # Skip non-KPI columns
-        if db_col in ['Provider_Number', 'Fiscal_Year']:
-            continue
-
-        # Map database column to KPI metadata key
-        kpi_key = DB_COLUMN_TO_KPI_KEY.get(db_col, db_col)
-
-        # Skip if not in metadata
-        if kpi_key not in KPI_METADATA:
-            continue
-
-        # FILTER: Only show Level 1 KPIs from to_do.txt
-        if kpi_key not in LEVEL_1_KPIS:
+    for kpi_key in KPI_METADATA.keys():
+        if kpi_key not in kpi_data.columns:
             continue
 
         # Get KPI metadata
         kpi_meta = KPI_METADATA.get(kpi_key, {})
         higher_is_better = kpi_meta.get('higher_is_better', True)
 
-        # Get KPI values across years (use database column name)
-        kpi_values = kpi_data[db_col].values
+        # Get KPI values across years
+        kpi_values = kpi_data[kpi_key].values
         kpi_value = kpi_values[0] if len(kpi_values) > 0 else None
 
-        # Get benchmark (use metadata key)
+        # Get benchmark
         benchmark_kpis = benchmark_data.get('kpis', {})
         kpi_benchmark = benchmark_kpis.get(kpi_key, {})
         median = kpi_benchmark.get('Median')
@@ -2987,7 +1627,6 @@ def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
 
         kpi_rankings.append({
             'kpi_key': kpi_key,
-            'db_column': db_col,  # Store for data access
             'dynamic_priority': dynamic_priority,
             'importance': calculate_importance_score(kpi_key),
             'perf_gap': abs(perf_gap),
@@ -3009,23 +1648,18 @@ def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
     else:
         kpi_rankings.sort(key=lambda x: x['dynamic_priority'], reverse=True)
 
-    # Create cards in sorted order (use ENHANCED cards with all benchmark levels)
+    # Create cards in sorted order
     for idx, ranking in enumerate(kpi_rankings):
-        card = create_enhanced_level1_kpi_card(
+        card = create_kpi_card(
             kpi_key=ranking['kpi_key'],
             kpi_value=ranking['kpi_value'],
             kpi_trend_values=ranking['kpi_values'],
             fiscal_years=kpi_data['Fiscal_Year'].values,
-            all_benchmarks=all_benchmarks,  # Pass all 4 benchmark levels
+            benchmark_data=benchmark_data,
             rank=idx + 1,
-            l2_kpis=l2_kpis,
-            l3_kpis=l3_kpis,
-            ccn=ccn,
-            fiscal_year=latest_year,
-            db_column=ranking['db_column']  # Pass database column name for benchmark lookup
+            importance_score=ranking['dynamic_priority']
         )
-        # 3 cards per row: width=12 (full on mobile), lg=4 (3 per row on desktop)
-        kpi_cards.append(dbc.Col(card, width=12, lg=4))
+        kpi_cards.append(dbc.Col(card, width=12, lg=6, xl=4))
 
     # Layout cards in grid
     cards_grid = dbc.Row(kpi_cards)
@@ -3037,42 +1671,6 @@ def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
         f"{benchmark_data.get('provider_count', 0):,}",
         cards_grid
     )
-
-
-# Expand/Collapse Level 2 KPIs callback
-@app.callback(
-    [Output({'type': 'l2-collapse', 'index': MATCH}, 'is_open'),
-     Output({'type': 'expand-icon', 'index': MATCH}, 'className')],
-    [Input({'type': 'expand-btn', 'index': MATCH}, 'n_clicks')],
-    [State({'type': 'l2-collapse', 'index': MATCH}, 'is_open')],
-    prevent_initial_call=True
-)
-def toggle_l2_kpis(n_clicks, is_open):
-    """Toggle Level 2 KPIs visibility"""
-    if n_clicks:
-        new_state = not is_open
-        # Change icon based on state
-        icon_class = "fas fa-chevron-up me-2" if new_state else "fas fa-chevron-down me-2"
-        return new_state, icon_class
-    return is_open, "fas fa-chevron-down me-2"
-
-
-# Level 3 expand/collapse callback
-@app.callback(
-    [Output({'type': 'l3-collapse', 'index': MATCH}, 'is_open'),
-     Output({'type': 'expand-l3-icon', 'index': MATCH}, 'className')],
-    [Input({'type': 'expand-l3-btn', 'index': MATCH}, 'n_clicks')],
-    [State({'type': 'l3-collapse', 'index': MATCH}, 'is_open')],
-    prevent_initial_call=True
-)
-def toggle_l3_kpis(n_clicks, is_open):
-    """Toggle Level 3 KPIs visibility"""
-    if n_clicks:
-        new_state = not is_open
-        # Change icon based on state
-        icon_class = "fas fa-chevron-up me-1" if new_state else "fas fa-chevron-down me-1"
-        return new_state, icon_class
-    return is_open, "fas fa-chevron-down me-1"
 
 
 # Modal callbacks
