@@ -35,10 +35,25 @@ from auth_components import (
 server = flask.Flask(__name__)
 server.secret_key = secrets.token_hex(32)  # Secret key for Flask sessions
 
+# ============================================================================
+# FLASK ROUTES FOR LANDING PAGE
+# ============================================================================
+
+@server.route('/')
+def landing_page():
+    """Serve the static landing page at root"""
+    return flask.send_file('index.html')
+
+@server.route('/styles.css')
+def styles():
+    """Serve the CSS file for landing page"""
+    return flask.send_file('styles.css')
+
 # Initialize Dash app with Bootstrap theme
 app = dash.Dash(
     __name__,
     server=server,
+    url_base_pathname='/app/',  # Dash app runs at /app/
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
         'https://use.fontawesome.com/releases/v6.1.1/css/all.css'
@@ -795,7 +810,8 @@ if __name__ == '__main__':
     print("Hospital KPI Dashboard with Authentication")
     print("="*70)
     print("\nServer starting...")
-    print("Access the dashboard at: http://127.0.0.1:8050")
+    print("Landing Page: http://127.0.0.1:8050")
+    print("Dashboard App: http://127.0.0.1:8050/app")
     print("\nSupported account types:")
     print("  - Company (organizations with employees)")
     print("  - Employee (part of a company)")
