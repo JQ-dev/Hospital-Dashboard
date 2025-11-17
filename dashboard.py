@@ -1520,9 +1520,29 @@ def get_professional_datatable_style():
 # DASH APP
 # ============================================================================
 
+# Initialize Flask server
+import flask
+server = flask.Flask(__name__)
+
+# ============================================================================
+# FLASK ROUTES FOR LANDING PAGE
+# ============================================================================
+
+@server.route('/')
+def landing_page():
+    """Serve the static landing page at root"""
+    return flask.send_file('index.html')
+
+@server.route('/styles.css')
+def styles():
+    """Serve the CSS file for landing page"""
+    return flask.send_file('styles.css')
+
 # Initialize app
 app = dash.Dash(
     __name__,
+    server=server,
+    url_base_pathname='/app/',  # Dash app runs at /app/
     external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
     suppress_callback_exceptions=True
 )
@@ -5837,6 +5857,7 @@ if __name__ == '__main__':
         print(f"Data source: Parquet files (no database)")
 
     print(f"Available hospitals: {len(hospital_options)}")
-    print(f"Dashboard running at: http://localhost:8050")
+    print(f"Landing Page: http://localhost:8050")
+    print(f"Dashboard App: http://localhost:8050/app")
     print("="*80 + "\n")
     app.run(debug=True, port=8050)
