@@ -1141,7 +1141,7 @@ class HospitalDataManager:
                     elif benchmark_level == 'State':
                         filter_sql = "Benchmark_Level = 'State' AND State_Code = ?"
                         group_name = f'State {state_code}'
-                        params = [state_code, int(fiscal_year)]
+                        params = [int(state_code), int(fiscal_year)]  # Convert state_code to int
                     elif benchmark_level == 'Hospital_Type':
                         filter_sql = "Benchmark_Level = 'Hospital_Type' AND Hospital_Type = ?"
                         group_name = hospital_type
@@ -1149,7 +1149,7 @@ class HospitalDataManager:
                     else:  # State_Hospital_Type
                         filter_sql = "Benchmark_Level = 'State_Hospital_Type' AND State_Code = ? AND Hospital_Type = ?"
                         group_name = f'{state_code} - {hospital_type}'
-                        params = [state_code, hospital_type, int(fiscal_year)]
+                        params = [int(state_code), hospital_type, int(fiscal_year)]  # Convert state_code to int
 
                     # Get benchmarks from pre-computed table
                     benchmarks_df = con.execute(f"""
@@ -1379,6 +1379,8 @@ DB_COLUMN_TO_KPI_KEY = {
     'AR_Days': 'AR_Days',  # Already matches
     'Operating_Expense_Ratio': 'Operating_Expense_per_Adjusted_Discharge',  # Maps to L1 KPI
     'Current_Ratio': 'Current_Ratio',  # Already matches
+    'Medicare_CCR': 'Medicare_CCR',  # NEW: Medicare Cost-to-Charge Ratio
+    'Bad_Debt_Charity_Pct': 'Bad_Debt_Charity_Pct',  # NEW: Bad Debt + Charity %
 
     # Level 2/3 KPIs
     'Operating_Margin_Pct': 'Operating_Expense_Ratio',  # L2 KPI
@@ -1758,6 +1760,180 @@ def create_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
     return card
 
 
+def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
+                                     all_benchmarks, rank, l2_kpis=None, l3_kpis=None, ccn=None, fiscal_year=None, db_column=None):
+    """
+    Create enhanced Level 1 KPI card with:
+    - 5-year trend visualization
+    - All 4 benchmark levels (ordered from most to least specific):
+      1. Hospital Type and State (most specific)
+      2. Hospitals in State
+      3. Hospital Type
+      4. Hospital Nationwide (broadest)
+    - KPI description and explanation
+    - Expandable Level 2/3 drivers
+    - Clean, aesthetic layout
+
+    Args:
+        kpi_key: KPI identifier
+        kpi_value: Current value
+        kpi_trend_values: 5-year historical values
+        fiscal_years: Years for trend
+        all_benchmarks: Dict with benchmarks (state_hospital_type, state, hospital_type, national)
+        rank: KPI priority rank
+        l2_kpis: Level 2 KPI values
+        l3_kpis: Level 3 KPI values
+        ccn: Provider number
+        fiscal_year: Current fiscal year
+    """
+    meta = KPI_METADATA.get(kpi_key, {})
+    kpi_name = meta.get('name', kpi_key)
+    category = meta.get('category', 'General')
+    description = meta.get('description', 'No description available')
+    unit = meta.get('unit', '')
+    fmt = meta.get('format', '.1f')
+    higher_is_better = meta.get('higher_is_better', True)
+
+    # Calculate 5-year trend
+    trend_direction, trend_pct = calculate_trend(kpi_trend_values)
+
+    # Create 5-year trend sparkline
+    sparkline_fig = create_sparkline(kpi_trend_values, fiscal_years)
+
+    # Trend indicator
+    if higher_is_better:
+        trend_color = 'success' if trend_direction == 'up' else ('danger' if trend_direction == 'down' else 'secondary')
+        trend_icon = 'fa-arrow-up' if trend_direction == 'up' else ('fa-arrow-down' if trend_direction == 'down' else 'fa-minus')
+    else:
+        trend_color = 'danger' if trend_direction == 'up' else ('success' if trend_direction == 'down' else 'secondary')
+        trend_icon = 'fa-arrow-down' if trend_direction == 'up' else ('fa-arrow-up' if trend_direction == 'down' else 'fa-minus')
+
+    # Build benchmark comparison table for ALL levels
+    # Order: State & Type (most specific), State, Hospital Type, National (broadest)
+    benchmark_rows = []
+    benchmark_levels = [
+        ('state_hospital_type', 'Hospital Type and State', all_benchmarks.get('state_hospital_type')),
+        ('state', 'Hospitals in State', all_benchmarks.get('state')),
+        ('hospital_type', 'Hospital Type', all_benchmarks.get('hospital_type')),
+        ('national', 'Hospital Nationwide', all_benchmarks.get('national'))
+    ]
+
+    for level_key, level_name, benchmark_data in benchmark_levels:
+        if benchmark_data:
+            # Use db_column if provided (benchmarks use database column names, not KPI metadata keys)
+            bench_lookup_key = db_column if db_column else kpi_key
+            kpi_bench = benchmark_data.get('kpis', {}).get(bench_lookup_key, {})
+            p25 = kpi_bench.get('P25')
+            median = kpi_bench.get('Median')
+            p75 = kpi_bench.get('P75')
+            peer_count = benchmark_data.get('provider_count', 0)
+
+            # Determine performance vs this benchmark
+            if median and kpi_value is not None and not pd.isna(kpi_value):
+                perf_label, perf_color = calculate_percentile_rank(kpi_value, p25, median, p75)
+                perf_badge = dbc.Badge(perf_label, color=perf_color, className="ms-2", style={'fontSize': '0.7rem'})
+            else:
+                perf_badge = dbc.Badge("N/A", color="secondary", className="ms-2", style={'fontSize': '0.7rem'})
+
+            benchmark_rows.append(
+                html.Tr([
+                    html.Td([
+                        html.Strong(level_name, style={'fontSize': '0.85rem'}),
+                        html.Br(),
+                        html.Small(f"{peer_count} peers", className="text-muted", style={'fontSize': '0.7rem'})
+                    ]),
+                    html.Td(f"{format(p25, fmt)}{unit}" if p25 else "—", style={'fontSize': '0.85rem', 'textAlign': 'center'}),
+                    html.Td([
+                        html.Strong(f"{format(median, fmt)}{unit}" if median else "—"),
+                        perf_badge
+                    ], style={'fontSize': '0.85rem', 'textAlign': 'center'}),
+                    html.Td(f"{format(p75, fmt)}{unit}" if p75 else "—", style={'fontSize': '0.85rem', 'textAlign': 'center'}),
+                ], style={'borderBottom': '1px solid #dee2e6'})
+            )
+        else:
+            benchmark_rows.append(
+                html.Tr([
+                    html.Td(html.Strong(level_name, style={'fontSize': '0.85rem'})),
+                    html.Td("—", colSpan=3, className="text-muted text-center", style={'fontSize': '0.85rem'})
+                ], style={'borderBottom': '1px solid #dee2e6'})
+            )
+
+    benchmark_table = dbc.Table([
+        html.Thead([
+            html.Tr([
+                html.Th("Benchmark", style={'fontSize': '0.75rem', 'color': '#6c757d'}),
+                html.Th("P25", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
+                html.Th("Median", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
+                html.Th("P75", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
+            ])
+        ]),
+        html.Tbody(benchmark_rows)
+    ], size="sm", borderless=True, className="mb-0")
+
+    # Create card
+    card = dbc.Card([
+        # Header with rank, category, and drill-down button
+        dbc.CardHeader([
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        html.Span(f"#{rank}", className="badge bg-primary me-2", style={'fontSize': '0.8rem'}),
+                        html.Span(category, className="text-muted", style={'fontSize': '0.8rem'})
+                    ])
+                ], width=8),
+                dbc.Col([
+                    dcc.Link(
+                        html.Button([
+                            html.I(className="fas fa-chart-line me-1"),
+                            "Drill Down"
+                        ], className="btn btn-sm btn-outline-primary", style={'fontSize': '0.75rem'}),
+                        href=f"/level2/{kpi_key}",
+                        style={'textDecoration': 'none'}
+                    )
+                ], width=4, className="text-end")
+            ])
+        ], className="py-2", style={'background': '#f8f9fa', 'borderBottom': '2px solid #dee2e6'}),
+
+        dbc.CardBody([
+            # KPI Name
+            html.H5(kpi_name, className="mb-2", style={'fontWeight': '600', 'color': '#212529'}),
+
+            # Current Value with Trend
+            html.Div([
+                html.H2([
+                    f"{format(kpi_value, fmt)}{unit}" if not pd.isna(kpi_value) else "N/A",
+                    html.Span([
+                        html.I(className=f"fas {trend_icon} ms-3"),
+                        f" {abs(trend_pct):.1f}%"
+                    ], className=f"text-{trend_color}", style={'fontSize': '1rem', 'fontWeight': 'normal'})
+                ], className="mb-3", style={'fontWeight': '700', 'color': '#212529'}),
+            ]),
+
+            # Description
+            html.P(description, className="text-muted mb-3", style={'fontSize': '0.9rem', 'lineHeight': '1.4'}),
+
+            # 5-Year Trend Title
+            html.H6("5-Year Trend", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
+
+            # Sparkline
+            dcc.Graph(
+                figure=sparkline_fig,
+                config={'displayModeBar': False},
+                style={'height': '60px', 'marginBottom': '1rem'}
+            ),
+
+            # Benchmark Comparison Title
+            html.H6("Benchmark Comparison", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
+
+            # Benchmark Table
+            benchmark_table,
+
+        ], className="p-3")
+    ], className="shadow-sm h-100", style={'border': '1px solid #dee2e6', 'borderRadius': '0.5rem'})
+
+    return card
+
+
 def create_hierarchical_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
                                   benchmark_data, rank, importance_score, l2_kpis=None, l3_kpis=None, ccn=None, fiscal_year=None):
     """
@@ -2097,20 +2273,27 @@ def format_currency(value):
     value_in_millions = value / 1e6
     return f"{value_in_millions:.2f}"
 
-app.layout = dbc.Container([
-    # Header
-    dbc.Row([
-        dbc.Col([
-            html.H1([
-                html.I(className="fas fa-hospital me-3"),
-                "Hospital Financial Analytics Dashboard"
-            ], className="mt-4 mb-2"),
-            html.P(
-                "Interactive performance dashboard with KPIs, benchmarks, and detailed financial statements",
-                className="lead text-muted mb-4"
-            )
-        ])
-    ]),
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content')
+])
+
+# Main dashboard layout (Level 1)
+def get_main_dashboard_layout():
+    return dbc.Container([
+        # Header
+        dbc.Row([
+            dbc.Col([
+                html.H1([
+                    html.I(className="fas fa-hospital me-3"),
+                    "Hospital Financial Analytics Dashboard"
+                ], className="mt-4 mb-2"),
+                html.P(
+                    "Interactive performance dashboard with KPIs, benchmarks, and detailed financial statements",
+                    className="lead text-muted mb-4"
+                )
+            ])
+        ]),
 
     # Hospital Selection (shared across tabs)
     dbc.Row([
@@ -2144,25 +2327,7 @@ app.layout = dbc.Container([
         # KPI Dashboard Tab
         dbc.Tab(label="KPI Dashboard", tab_id="tab-kpi", children=[
             html.Div([
-                # Benchmark Level Control
-                dbc.Row([
-                    dbc.Col([
-                        html.Label("Benchmark Level", className="mt-3"),
-                        dcc.Dropdown(
-                            id='benchmark-dropdown',
-                            options=[
-                                {'label': 'National - All Hospitals', 'value': 'National'},
-                                {'label': 'State - Same State', 'value': 'State'},
-                                {'label': 'Hospital Type - Same Type', 'value': 'Hospital_Type'},
-                                {'label': 'State + Type - Most Specific', 'value': 'State_Hospital_Type'}
-                            ],
-                            value='State',
-                            clearable=False
-                        )
-                    ], width=6)
-                ], className="mb-4"),
-
-                # Summary Stats
+                # Summary Stats (Benchmark dropdown removed - all levels now shown on each card)
                 dbc.Row([
                     dbc.Col([
                         dbc.Card([
@@ -2543,13 +2708,163 @@ app.layout = dbc.Container([
         ),
     ], id="data-modal", size="xl", is_open=False, scrollable=True),
 
-    # Footer
-    html.Hr(className="my-5"),
-    html.Footer([
-        html.P(id='footer-datasource', className="text-center text-muted")
-    ])
+        # Footer
+        html.Hr(className="my-5"),
+        html.Footer([
+            html.P(id='footer-datasource', className="text-center text-muted")
+        ])
 
-], fluid=True, className="py-4")
+    ], fluid=True, className="py-4")
+
+
+# Level 2 drill-down layout
+def get_level2_page_layout(kpi_key, ccn='310001'):
+    """
+    Level 2 drill-down page showing:
+    - L1 KPI card at top left
+    - Explanatory text at top right
+    - 4 Level 2 driver cards below
+    """
+
+    # Get the Level 1 KPI metadata from hierarchy
+    # KPI_HIERARCHY is imported at module level from kpi_hierarchy_config
+    l1_hierarchy = KPI_HIERARCHY.get(kpi_key, {})
+    kpi_name = l1_hierarchy.get('name', kpi_key)
+
+    # Get L2 drivers from hierarchy (nested under 'level_2_kpis')
+    l2_drivers_dict = l1_hierarchy.get('level_2_kpis', {})
+    l2_driver_keys = list(l2_drivers_dict.keys())
+
+    # Get KPI data for this provider
+    kpi_data = data_manager.calculate_kpis(ccn)
+    latest_year = kpi_data['Fiscal_Year'].max()
+    latest_data = kpi_data[kpi_data['Fiscal_Year'] == latest_year].iloc[0]
+
+    # Get all benchmarks for this provider
+    all_benchmarks = {
+        'state_hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'State_Hospital_Type'),
+        'state': data_manager.get_benchmarks(ccn, latest_year, 'State'),
+        'hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'Hospital_Type'),
+        'national': data_manager.get_benchmarks(ccn, latest_year, 'National')
+    }
+
+    # Get database column name for the L1 KPI
+    l1_db_column = None
+    for db_col, meta_key in DB_COLUMN_TO_KPI_KEY.items():
+        if meta_key == kpi_key:
+            l1_db_column = db_col
+            break
+
+    # Get the value for the L1 KPI
+    l1_value = latest_data.get(l1_db_column) if l1_db_column else None
+
+    # Get trend data (last 5 years)
+    trend_data = kpi_data[kpi_data['Fiscal_Year'] >= latest_year - 4]
+    l1_trend_values = trend_data[l1_db_column].values if l1_db_column else []
+    fiscal_years = trend_data['Fiscal_Year'].values
+
+    # Create Level 1 card
+    l1_card = create_enhanced_level1_kpi_card(
+        kpi_key=kpi_key,
+        kpi_value=l1_value,
+        kpi_trend_values=l1_trend_values,
+        fiscal_years=fiscal_years,
+        all_benchmarks=all_benchmarks,
+        rank=1,
+        ccn=ccn,
+        fiscal_year=latest_year,
+        db_column=l1_db_column
+    )
+
+    # Create Level 2 driver cards
+    l2_cards = []
+    for i, driver_key in enumerate(l2_driver_keys, 1):
+        # Get database column name for this L2 driver
+        l2_db_column = None
+        for db_col, meta_key in DB_COLUMN_TO_KPI_KEY.items():
+            if meta_key == driver_key:
+                l2_db_column = db_col
+                break
+
+        # Get the value for this L2 driver
+        l2_value = latest_data.get(l2_db_column) if l2_db_column else None
+        l2_trend_values = trend_data[l2_db_column].values if l2_db_column else []
+
+        # Create L2 card
+        l2_card = create_enhanced_level1_kpi_card(
+            kpi_key=driver_key,
+            kpi_value=l2_value,
+            kpi_trend_values=l2_trend_values,
+            fiscal_years=fiscal_years,
+            all_benchmarks=all_benchmarks,
+            rank=i,
+            ccn=ccn,
+            fiscal_year=latest_year,
+            db_column=l2_db_column
+        )
+        l2_cards.append(dbc.Col(l2_card, width=12, lg=6, className="mb-4"))
+
+    return dbc.Container([
+        # Back button
+        dbc.Row([
+            dbc.Col([
+                dcc.Link(
+                    html.Button([
+                        html.I(className="fas fa-arrow-left me-2"),
+                        "Back to Dashboard"
+                    ], className="btn btn-outline-secondary mt-3"),
+                    href="/",
+                    style={'textDecoration': 'none'}
+                )
+            ])
+        ], className="mb-4"),
+
+        # Header with L1 card on left, explanatory text on right
+        dbc.Row([
+            dbc.Col([
+                l1_card
+            ], width=12, lg=6, className="mb-4"),
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardBody([
+                        html.H5("Understanding the Drivers", className="card-title"),
+                        html.P([
+                            f"The {kpi_name} KPI is influenced by {len(l2_driver_keys)} key drivers shown below. ",
+                            "Each driver card displays its own performance metrics and benchmarks, ",
+                            "helping you understand which specific factors are affecting the overall metric."
+                        ], className="text-muted"),
+                        html.Hr(),
+                        html.H6("How to Use This View:"),
+                        html.Ul([
+                            html.Li("Compare each driver's performance against benchmarks"),
+                            html.Li("Identify which drivers are performing well or need improvement"),
+                            html.Li("Use the trend data to see if drivers are improving over time"),
+                            html.Li("Click on individual drivers to explore their sub-components (Level 3)")
+                        ], className="text-muted small")
+                    ])
+                ], className="h-100 border-info")
+            ], width=12, lg=6, className="mb-4")
+        ]),
+
+        # Level 2 driver cards
+        html.H4(f"{kpi_name} Drivers", className="mb-3"),
+        dbc.Row(l2_cards)
+
+    ], fluid=True, className="py-4")
+
+
+# URL routing callback
+@app.callback(
+    Output('page-content', 'children'),
+    Input('url', 'pathname')
+)
+def display_page(pathname):
+    """Route between main dashboard and Level 2 drill-down pages"""
+    if pathname and pathname.startswith('/level2/'):
+        kpi_key = pathname.split('/')[-1]
+        # TODO: Get the current CCN from somewhere (for now use default)
+        return get_level2_page_layout(kpi_key)
+    return get_main_dashboard_layout()
 
 
 # ============================================================================
@@ -2563,13 +2878,12 @@ app.layout = dbc.Container([
      Output('peer-count', 'children'),
      Output('kpi-cards-container', 'children')],
     [Input('hospital-dropdown', 'value'),
-     Input('benchmark-dropdown', 'value'),
      Input('sort-importance', 'n_clicks'),
      Input('sort-performance', 'n_clicks'),
      Input('sort-trend', 'n_clicks')]
 )
-def update_dashboard(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
-    """Main callback to update entire dashboard"""
+def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
+    """Main callback to update entire dashboard - shows all benchmark levels on each card"""
 
     # Get hospital metadata
     hospital_type = data_manager.classify_hospital_type(ccn)
@@ -2599,14 +2913,32 @@ def update_dashboard(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
     else:
         print("Level 3 KPIs not available (worksheet database not connected)")
 
-    # Get benchmarks (NOTE: This calculates on the fly from parquet files - may be slow)
-    print(f"Calculating benchmarks for {ccn} at {benchmark_level} level...")
-    benchmark_data = data_manager.get_benchmarks(ccn, latest_year, benchmark_level)
-    print(f"Benchmarks calculated: {benchmark_data['provider_count']} peers")
+    # Calculate ALL 4 benchmark levels (for new enhanced card design)
+    # Order: State & Type (most specific), State, Hospital Type, National (broadest)
+    print(f"Calculating benchmarks for {ccn} at all levels...")
+    all_benchmarks = {
+        'state_hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'State_Hospital_Type'),
+        'state': data_manager.get_benchmarks(ccn, latest_year, 'State'),
+        'hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'Hospital_Type'),
+        'national': data_manager.get_benchmarks(ccn, latest_year, 'National')
+    }
+    # Use state & type (most specific) as primary benchmark for display purposes (shown in header)
+    benchmark_data = all_benchmarks['state_hospital_type']
+    print(f"Benchmarks calculated: State & Type={all_benchmarks['state_hospital_type']['provider_count']}, State={all_benchmarks['state']['provider_count']}, Type={all_benchmarks['hospital_type']['provider_count']}, National={all_benchmarks['national']['provider_count']} peers")
 
     # Create KPI cards
     kpi_cards = []
     kpi_rankings = []
+
+    # Define the 6 Level 1 KPIs from to_do.txt - ONLY show these
+    LEVEL_1_KPIS = {
+        'Net_Income_Margin',                      # L1 KPI 1: Net Income Margin
+        'AR_Days',                                # L1 KPI 2: Days in Net Patient AR
+        'Operating_Expense_per_Adjusted_Discharge',  # L1 KPI 3: Operating Expense per Adjusted Discharge
+        'Medicare_CCR',                           # L1 KPI 4: Medicare Cost-to-Charge Ratio
+        'Bad_Debt_Charity_Pct',                   # L1 KPI 5: Bad Debt + Charity %
+        'Current_Ratio'                           # L1 KPI 6: Current Ratio
+    }
 
     # Loop through database columns and map to KPI_METADATA keys
     for db_col in kpi_data.columns:
@@ -2619,6 +2951,10 @@ def update_dashboard(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
 
         # Skip if not in metadata
         if kpi_key not in KPI_METADATA:
+            continue
+
+        # FILTER: Only show Level 1 KPIs from to_do.txt
+        if kpi_key not in LEVEL_1_KPIS:
             continue
 
         # Get KPI metadata
@@ -2673,22 +3009,23 @@ def update_dashboard(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
     else:
         kpi_rankings.sort(key=lambda x: x['dynamic_priority'], reverse=True)
 
-    # Create cards in sorted order (use hierarchical cards with L2 and L3 KPIs)
+    # Create cards in sorted order (use ENHANCED cards with all benchmark levels)
     for idx, ranking in enumerate(kpi_rankings):
-        card = create_hierarchical_kpi_card(
+        card = create_enhanced_level1_kpi_card(
             kpi_key=ranking['kpi_key'],
             kpi_value=ranking['kpi_value'],
             kpi_trend_values=ranking['kpi_values'],
             fiscal_years=kpi_data['Fiscal_Year'].values,
-            benchmark_data=benchmark_data,
+            all_benchmarks=all_benchmarks,  # Pass all 4 benchmark levels
             rank=idx + 1,
-            importance_score=ranking['dynamic_priority'],
             l2_kpis=l2_kpis,
             l3_kpis=l3_kpis,
             ccn=ccn,
-            fiscal_year=latest_year
+            fiscal_year=latest_year,
+            db_column=ranking['db_column']  # Pass database column name for benchmark lookup
         )
-        kpi_cards.append(dbc.Col(card, width=12, lg=6, xl=4))
+        # 3 cards per row: width=12 (full on mobile), lg=4 (3 per row on desktop)
+        kpi_cards.append(dbc.Col(card, width=12, lg=4))
 
     # Layout cards in grid
     cards_grid = dbc.Row(kpi_cards)
