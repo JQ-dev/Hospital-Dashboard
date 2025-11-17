@@ -87,7 +87,7 @@ def get_authenticated_layout(user_info):
                         "Multi-year performance tracking with sparklines"
                     ])
                 ], flush=True, className="mb-3"),
-                html.P("The top 4 priority KPIs are displayed below. Click on any card to view detailed analytics.",
+                html.P("All KPIs are displayed below, ranked by priority. Use the sorting controls to view by performance gap or trend changes.",
                        className="text-muted mb-0")
             ]),
             dbc.ModalFooter(
@@ -649,7 +649,15 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
         ], color="info")
 
     try:
-        from dashboard import data_manager, create_kpi_card, calculate_dynamic_priority, calculate_trend
+        # Import all necessary components from dashboard
+        from dashboard import (
+            data_manager,
+            create_kpi_card,
+            calculate_dynamic_priority,
+            calculate_trend,
+            calculate_percentile_rank,
+            create_sparkline
+        )
         from kpi_hierarchy_config import KPI_METADATA
         import pandas as pd
 
@@ -666,9 +674,9 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
         latest_year = kpi_data['Fiscal_Year'].max()
 
         # Get benchmarks
-        print(f"Calculating benchmarks for {ccn} at {benchmark_level} level...")
+        print(f"[AUTH-DASHBOARD] Calculating benchmarks for {ccn} at {benchmark_level} level...")
         benchmark_data = data_manager.get_benchmarks(ccn, latest_year, benchmark_level)
-        print(f"Benchmarks calculated: {benchmark_data['provider_count']} peers")
+        print(f"[AUTH-DASHBOARD] Benchmarks calculated: {benchmark_data.get('provider_count', 0)} peers")
 
         # Rank KPIs by priority
         kpi_rankings = []
