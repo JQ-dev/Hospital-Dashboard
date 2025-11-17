@@ -48,6 +48,49 @@ app = dash.Dash(
 )
 
 # ============================================================================
+# DATA MANAGER INITIALIZATION (from dashboard.py)
+# ============================================================================
+
+# Import dashboard components
+from dashboard import HospitalDataManager
+
+# Initialize data manager at module level (same as dashboard.py)
+data_manager = HospitalDataManager()
+
+# Get available hospitals dynamically (same as dashboard.py)
+def get_hospital_options():
+    """Get list of hospitals from parquet files for dropdown"""
+    try:
+        hospitals_df = data_manager.get_available_hospitals()
+        print(f"[AUTH-APP] Found {len(hospitals_df)} hospitals in parquet files")
+
+        if hospitals_df.empty:
+            print("[AUTH-APP] No hospitals found, using default")
+            return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
+
+        options = []
+        for _, row in hospitals_df.iterrows():
+            provider_num = row['Provider_Number']
+            ccn = str(int(provider_num)).zfill(6)
+            state = str(int(row['State_Code'])).zfill(2)
+            hosp_type = data_manager.classify_hospital_type(ccn)
+            year_count = row.get('Year_Count', 'N/A')
+            label = f"{ccn} - {hosp_type}, State {state} ({year_count} years)"
+            options.append({'label': label, 'value': ccn})
+
+        print(f"[AUTH-APP] Loaded {len(options)} hospitals total")
+        return options
+    except Exception as e:
+        print(f"[AUTH-APP] Error loading hospitals: {e}")
+        import traceback
+        traceback.print_exc()
+        return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
+
+print("[AUTH-APP] Loading hospitals from parquet files...")
+hospital_options = get_hospital_options()
+print(f"[AUTH-APP] Hospital options ready: {len(hospital_options)} hospitals")
+
+# ============================================================================
 # LAYOUT
 # ============================================================================
 
@@ -147,6 +190,8 @@ def get_authenticated_layout(user_info):
                     html.H4("Select Hospital", className="mb-3"),
                     dcc.Dropdown(
                         id='auth-hospital-dropdown',
+                        options=hospital_options,
+                        value=hospital_options[0]['value'] if hospital_options else None,
                         placeholder="Select a hospital...",
                         className="mb-4"
                     )
@@ -606,45 +651,6 @@ def close_welcome(n_clicks):
 
 
 @app.callback(
-    Output('auth-hospital-dropdown', 'options'),
-    Input('session-store', 'data')
-)
-def load_hospital_list(session_data):
-    """Load hospital dropdown options"""
-    # Only load if user is authenticated
-    if not session_data or not session_data.get('session_id'):
-        return []
-
-    try:
-        from dashboard import data_manager
-
-        hospitals_df = data_manager.get_available_hospitals()
-        print(f"[AUTH-DASHBOARD] Found {len(hospitals_df)} hospitals")
-
-        if hospitals_df.empty:
-            print("[AUTH-DASHBOARD] No hospitals found, using default")
-            return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
-
-        options = []
-        for _, row in hospitals_df.iterrows():
-            provider_num = row['Provider_Number']
-            ccn = str(int(provider_num)).zfill(6)
-            state = str(int(row['State_Code'])).zfill(2)
-            hosp_type = data_manager.classify_hospital_type(ccn)
-            year_count = row.get('Year_Count', 'N/A')
-            label = f"{ccn} - {hosp_type}, State {state} ({year_count} years)"
-            options.append({'label': label, 'value': ccn})
-
-        print(f"[AUTH-DASHBOARD] Loaded {len(options)} hospital options")
-        return options
-    except Exception as e:
-        print(f"[AUTH-DASHBOARD] Error loading hospitals: {e}")
-        import traceback
-        traceback.print_exc()
-        return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
-
-
-@app.callback(
     [Output('auth-hospital-name', 'children'),
      Output('auth-hospital-type', 'children'),
      Output('auth-benchmark-group', 'children'),
@@ -666,14 +672,11 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
         ], color="info")
 
     try:
-        # Import all necessary components from dashboard
+        # Import KPI functions from dashboard (data_manager already initialized at module level)
         from dashboard import (
-            data_manager,
             create_kpi_card,
             calculate_dynamic_priority,
-            calculate_trend,
-            calculate_percentile_rank,
-            create_sparkline
+            calculate_trend
         )
         from kpi_hierarchy_config import KPI_METADATA
         import pandas as pd
