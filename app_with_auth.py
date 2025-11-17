@@ -607,24 +607,41 @@ def close_welcome(n_clicks):
 
 @app.callback(
     Output('auth-hospital-dropdown', 'options'),
-    Input('url', 'pathname')
+    Input('session-store', 'data')
 )
-def load_hospital_list(pathname):
+def load_hospital_list(session_data):
     """Load hospital dropdown options"""
-    if pathname == '/' or pathname == '/dashboard':
-        try:
-            from dashboard import data_manager
-            hospitals = data_manager.get_available_hospitals()
+    # Only load if user is authenticated
+    if not session_data or not session_data.get('session_id'):
+        return []
 
-            options = [
-                {'label': f"CCN {row['Provider_Number']} - {row['State_Code']}", 'value': row['Provider_Number']}
-                for _, row in hospitals.iterrows()
-            ]
-            return options
-        except Exception as e:
-            print(f"Error loading hospitals: {e}")
-            return []
-    return []
+    try:
+        from dashboard import data_manager
+
+        hospitals_df = data_manager.get_available_hospitals()
+        print(f"[AUTH-DASHBOARD] Found {len(hospitals_df)} hospitals")
+
+        if hospitals_df.empty:
+            print("[AUTH-DASHBOARD] No hospitals found, using default")
+            return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
+
+        options = []
+        for _, row in hospitals_df.iterrows():
+            provider_num = row['Provider_Number']
+            ccn = str(int(provider_num)).zfill(6)
+            state = str(int(row['State_Code'])).zfill(2)
+            hosp_type = data_manager.classify_hospital_type(ccn)
+            year_count = row.get('Year_Count', 'N/A')
+            label = f"{ccn} - {hosp_type}, State {state} ({year_count} years)"
+            options.append({'label': label, 'value': ccn})
+
+        print(f"[AUTH-DASHBOARD] Loaded {len(options)} hospital options")
+        return options
+    except Exception as e:
+        print(f"[AUTH-DASHBOARD] Error loading hospitals: {e}")
+        import traceback
+        traceback.print_exc()
+        return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
 
 
 @app.callback(
