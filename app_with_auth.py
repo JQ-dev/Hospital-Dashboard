@@ -141,7 +141,7 @@ def get_authenticated_layout(user_info):
                 ])
             ], color="success", className="mb-4"),
 
-            # Hospital Selector and KPI Cards
+            # Hospital Selector and Benchmark Controls
             dbc.Row([
                 dbc.Col([
                     html.H4("Select Hospital", className="mb-3"),
@@ -152,22 +152,70 @@ def get_authenticated_layout(user_info):
                     )
                 ], width=6),
                 dbc.Col([
-                    html.H4("Benchmark Group", className="mb-3"),
+                    html.H4("Benchmark Level", className="mb-3"),
                     dcc.Dropdown(
                         id='auth-benchmark-dropdown',
                         options=[
-                            {'label': 'National', 'value': 'national'},
-                            {'label': 'State', 'value': 'state'},
-                            {'label': 'Hospital Type', 'value': 'type'}
+                            {'label': 'National - All Hospitals', 'value': 'National'},
+                            {'label': 'State - Same State', 'value': 'State'},
+                            {'label': 'Hospital Type - Same Type', 'value': 'Hospital_Type'},
+                            {'label': 'State + Type - Most Specific', 'value': 'State_Hospital_Type'}
                         ],
-                        value='national',
+                        value='State',
                         className="mb-4"
                     )
                 ], width=6)
             ]),
 
-            # Top 4 Priority KPIs
-            html.H4("Top 4 Priority KPIs", className="mb-3"),
+            # Summary Stats
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H6("Hospital", className="text-muted mb-1"),
+                            html.H4(id='auth-hospital-name', children="Select a hospital", className="mb-0")
+                        ])
+                    ], className="shadow-sm")
+                ], width=3),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H6("Type", className="text-muted mb-1"),
+                            html.H4(id='auth-hospital-type', children="N/A", className="mb-0")
+                        ])
+                    ], className="shadow-sm")
+                ], width=3),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H6("Benchmark Group", className="text-muted mb-1"),
+                            html.H4(id='auth-benchmark-group', children="N/A", className="mb-0")
+                        ])
+                    ], className="shadow-sm")
+                ], width=3),
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H6("Peer Hospitals", className="text-muted mb-1"),
+                            html.H4(id='auth-peer-count', children="N/A", className="mb-0")
+                        ])
+                    ], className="shadow-sm")
+                ], width=3)
+            ], className="mb-4"),
+
+            # Sorting Controls
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Sort KPIs by:", className="me-2"),
+                    dbc.ButtonGroup([
+                        dbc.Button("Priority (Dynamic)", id='auth-sort-importance', color="primary", outline=False),
+                        dbc.Button("Performance Gap", id='auth-sort-performance', color="primary", outline=True),
+                        dbc.Button("Trend Change", id='auth-sort-trend', color="primary", outline=True),
+                    ])
+                ], className="d-flex align-items-center")
+            ], className="mb-3"),
+
+            # All KPI Cards
             html.Div(id='auth-kpi-cards-container', children=[
                 dbc.Alert([
                     html.I(className="fas fa-info-circle me-2"),
@@ -565,12 +613,11 @@ def load_hospital_list(pathname):
     """Load hospital dropdown options"""
     if pathname == '/' or pathname == '/dashboard':
         try:
-            from data_manager import DataManager
-            data_manager = DataManager()
-            hospitals = data_manager.get_hospital_list()
+            from dashboard import data_manager
+            hospitals = data_manager.get_available_hospitals()
 
             options = [
-                {'label': f"{row['Provider_Name']} (CCN: {row['CCN']})", 'value': row['CCN']}
+                {'label': f"CCN {row['Provider_Number']} - {row['State_Code']}", 'value': row['Provider_Number']}
                 for _, row in hospitals.iterrows()
             ]
             return options
@@ -581,36 +628,47 @@ def load_hospital_list(pathname):
 
 
 @app.callback(
-    Output('auth-kpi-cards-container', 'children'),
+    [Output('auth-hospital-name', 'children'),
+     Output('auth-hospital-type', 'children'),
+     Output('auth-benchmark-group', 'children'),
+     Output('auth-peer-count', 'children'),
+     Output('auth-kpi-cards-container', 'children')],
     [Input('auth-hospital-dropdown', 'value'),
-     Input('auth-benchmark-dropdown', 'value')],
+     Input('auth-benchmark-dropdown', 'value'),
+     Input('auth-sort-importance', 'n_clicks'),
+     Input('auth-sort-performance', 'n_clicks'),
+     Input('auth-sort-trend', 'n_clicks')],
     prevent_initial_call=True
 )
-def load_top_kpis(ccn, benchmark_level):
-    """Load top 4 priority KPIs for selected hospital"""
+def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
+    """Load all KPIs for selected hospital with sorting"""
     if not ccn:
-        return dbc.Alert([
+        return "Select a hospital", "N/A", "N/A", "N/A", dbc.Alert([
             html.I(className="fas fa-info-circle me-2"),
             "Select a hospital above to view KPI analysis"
         ], color="info")
 
     try:
-        from data_manager import DataManager
-        from dashboard import create_kpi_card, calculate_dynamic_priority, calculate_importance_score, calculate_trend
+        from dashboard import data_manager, create_kpi_card, calculate_dynamic_priority, calculate_trend
         from kpi_hierarchy_config import KPI_METADATA
         import pandas as pd
 
-        data_manager = DataManager()
+        # Get hospital metadata
+        hospital_type = data_manager.classify_hospital_type(ccn)
+        state_code = str(ccn)[:2]
 
         # Get KPI data
         kpi_data = data_manager.calculate_kpis(ccn)
+
         if kpi_data.empty:
-            return dbc.Alert("No data available for this hospital", color="warning")
+            return f"CCN {ccn}", "N/A", "N/A", "N/A", dbc.Alert("No data available for this hospital", color="warning")
 
         latest_year = kpi_data['Fiscal_Year'].max()
 
         # Get benchmarks
+        print(f"Calculating benchmarks for {ccn} at {benchmark_level} level...")
         benchmark_data = data_manager.get_benchmarks(ccn, latest_year, benchmark_level)
+        print(f"Benchmarks calculated: {benchmark_data['provider_count']} peers")
 
         # Rank KPIs by priority
         kpi_rankings = []
@@ -630,20 +688,43 @@ def load_top_kpis(ccn, benchmark_level):
 
             dynamic_priority = calculate_dynamic_priority(kpi_key, kpi_value, median, higher_is_better)
 
+            # Calculate performance gap
+            if kpi_value and median:
+                if higher_is_better:
+                    perf_gap = median - kpi_value
+                else:
+                    perf_gap = kpi_value - median
+            else:
+                perf_gap = 0
+
+            # Calculate trend
+            trend_direction, trend_pct = calculate_trend(kpi_values)
+
             kpi_rankings.append({
                 'kpi_key': kpi_key,
                 'dynamic_priority': dynamic_priority,
+                'perf_gap': abs(perf_gap),
+                'trend_pct': abs(trend_pct),
                 'kpi_value': kpi_value,
                 'kpi_values': kpi_values
             })
 
-        # Sort by priority and get top 4
-        kpi_rankings.sort(key=lambda x: x['dynamic_priority'], reverse=True)
-        top_4 = kpi_rankings[:4]
+        # Determine sort order
+        ctx = dash.callback_context
+        if ctx.triggered:
+            button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+            if button_id == 'auth-sort-performance':
+                kpi_rankings.sort(key=lambda x: x['perf_gap'], reverse=True)
+            elif button_id == 'auth-sort-trend':
+                kpi_rankings.sort(key=lambda x: x['trend_pct'], reverse=True)
+            else:
+                kpi_rankings.sort(key=lambda x: x['dynamic_priority'], reverse=True)
+        else:
+            kpi_rankings.sort(key=lambda x: x['dynamic_priority'], reverse=True)
 
-        # Create cards
+        # Create all cards
         kpi_cards = []
-        for idx, ranking in enumerate(top_4):
+        for idx, ranking in enumerate(kpi_rankings):
             card = create_kpi_card(
                 kpi_key=ranking['kpi_key'],
                 kpi_value=ranking['kpi_value'],
@@ -653,15 +734,23 @@ def load_top_kpis(ccn, benchmark_level):
                 rank=idx + 1,
                 importance_score=ranking['dynamic_priority']
             )
-            kpi_cards.append(dbc.Col(card, width=12, lg=6, className="mb-4"))
+            kpi_cards.append(dbc.Col(card, width=12, lg=6, xl=4))
 
-        return dbc.Row(kpi_cards)
+        cards_grid = dbc.Row(kpi_cards)
+
+        return (
+            f"CCN {ccn}",
+            hospital_type,
+            benchmark_data.get('group_name', 'N/A'),
+            f"{benchmark_data.get('provider_count', 0):,}",
+            cards_grid
+        )
 
     except Exception as e:
         print(f"Error loading KPIs: {e}")
         import traceback
         traceback.print_exc()
-        return dbc.Alert(f"Error loading KPI data: {str(e)}", color="danger")
+        return f"CCN {ccn}", "Error", "Error", "0", dbc.Alert(f"Error loading KPI data: {str(e)}", color="danger")
 
 
 # ============================================================================
