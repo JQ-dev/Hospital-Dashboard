@@ -78,7 +78,7 @@ def create_login_layout():
                             # Register link
                             html.Div([
                                 html.Span("Don't have an account? ", style={'marginRight': '5px'}),
-                                html.A("Sign up here", href="/app/register",
+                                html.A("Sign up here", href="/register",
                                       style={'fontWeight': '700', 'padding': '4px 8px',
                                              'textDecoration': 'underline', 'fontSize': '16px',
                                              'color': '#0d6efd'})
@@ -298,7 +298,7 @@ def create_company_register_form():
 
             html.Div([
                 html.Span("Already have an account? ", style={'marginRight': '5px'}),
-                html.A("Sign in here", href="/app/",
+                html.A("Sign in here", href="/",
                       style={'fontWeight': '600', 'textDecoration': 'underline', 'color': '#0d6efd'})
             ], className="text-center mb-0")
         ])
@@ -402,7 +402,7 @@ def create_employee_register_form():
 
             html.Div([
                 html.Span("Already have an account? ", style={'marginRight': '5px'}),
-                html.A("Sign in here", href="/app/",
+                html.A("Sign in here", href="/",
                       style={'fontWeight': '600', 'textDecoration': 'underline', 'color': '#0d6efd'})
             ], className="text-center mb-0")
         ])
@@ -487,7 +487,7 @@ def create_individual_register_form():
 
             html.Div([
                 html.Span("Already have an account? ", style={'marginRight': '5px'}),
-                html.A("Sign in here", href="/app/",
+                html.A("Sign in here", href="/",
                       style={'fontWeight': '600', 'textDecoration': 'underline', 'color': '#0d6efd'})
             ], className="text-center mb-0")
         ])

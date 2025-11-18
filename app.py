@@ -44,8 +44,6 @@ if __name__ == '__main__':
     print("="*70)
     print(f"\nEnvironment: {'Development' if DEBUG else 'Production'}")
     print(f"Server starting on {HOST}:{PORT}")
-    print(f"\nLanding Page: http://{HOST}:{PORT}")
-    print(f"Dashboard App: http://{HOST}:{PORT}/app")
     print("\nSupported account types:")
     print("  - Company (organizations with employees)")
     print("  - Employee (part of a company)")
