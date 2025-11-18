@@ -1907,7 +1907,7 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
                             html.I(className="fas fa-chart-line me-1"),
                             "Drill Down"
                         ], className="btn btn-sm btn-outline-primary", style={'fontSize': '0.75rem'}),
-                        href=f"/level2/{kpi_key}",
+                        href=f"/app/level2/{kpi_key}",
                         style={'textDecoration': 'none'}
                     )
                 ], width=4, className="text-end")
@@ -2833,7 +2833,7 @@ def get_level2_page_layout(kpi_key, ccn='310001'):
                         html.I(className="fas fa-arrow-left me-2"),
                         "Back to Dashboard"
                     ], className="btn btn-outline-secondary mt-3"),
-                    href="/",
+                    href="/app/",
                     style={'textDecoration': 'none'}
                 )
             ])

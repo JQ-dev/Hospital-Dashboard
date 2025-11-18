@@ -165,15 +165,15 @@ def get_authenticated_layout(user_info):
                                 dbc.Col(html.I(className="fas fa-hospital-alt", style={'fontSize': '28px'})),
                                 dbc.Col(dbc.NavbarBrand("Hospital KPI Dashboard", className="ms-2")),
                             ], align="center", className="g-0"),
-                            href="/",
+                            href="/app/",
                             style={"textDecoration": "none"}
                         )
                     ], width="auto"),
                     dbc.Col([
                         dbc.Nav([
-                            dbc.NavItem(dbc.NavLink("Dashboard", href="/", active=True)),
-                            dbc.NavItem(dbc.NavLink("Analytics", href="/analytics")),
-                            dbc.NavItem(dbc.NavLink("Reports", href="/reports")),
+                            dbc.NavItem(dbc.NavLink("Dashboard", href="/app/", active=True)),
+                            dbc.NavItem(dbc.NavLink("Analytics", href="/app/analytics")),
+                            dbc.NavItem(dbc.NavLink("Reports", href="/app/reports")),
                             dbc.NavItem(create_user_menu(user_info))
                         ], navbar=True, className="ms-auto")
                     ])
@@ -453,7 +453,7 @@ def handle_company_registration(n_clicks, company_name, company_email, phone, ad
             html.I(className="fas fa-check-circle me-2"),
             html.Strong("Success! "),
             f"{message} You can now ",
-            html.A("sign in", href="/", className="alert-link"),
+            html.A("sign in", href="/app/", className="alert-link"),
             f". Your Company ID is: {company_id}"
         ], color="success")
     else:
@@ -517,7 +517,7 @@ def handle_employee_registration(n_clicks, company_id, first_name, last_name, em
             html.I(className="fas fa-check-circle me-2"),
             html.Strong("Success! "),
             f"{message} You can now ",
-            html.A("sign in", href="/", className="alert-link"),
+            html.A("sign in", href="/app/", className="alert-link"),
             "."
         ], color="success")
     else:
@@ -579,7 +579,7 @@ def handle_individual_registration(n_clicks, first_name, last_name, email,
             html.I(className="fas fa-check-circle me-2"),
             html.Strong("Success! "),
             f"{message} You can now ",
-            html.A("sign in", href="/", className="alert-link"),
+            html.A("sign in", href="/app/", className="alert-link"),
             "."
         ], color="success")
     else:
