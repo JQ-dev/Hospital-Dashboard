@@ -5,7 +5,8 @@
       "Bash(python dashboard.py:*)",
       "Bash(python:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(timeout 15 python:*)"
     ],
     "deny": [],
     "ask": []
