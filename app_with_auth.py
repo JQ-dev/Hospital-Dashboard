@@ -35,10 +35,25 @@ from auth_components import (
 server = flask.Flask(__name__)
 server.secret_key = secrets.token_hex(32)  # Secret key for Flask sessions
 
+# ============================================================================
+# FLASK ROUTES FOR LANDING PAGE
+# ============================================================================
+
+@server.route('/')
+def landing_page():
+    """Serve the static landing page at root"""
+    return flask.send_file('index.html')
+
+@server.route('/styles.css')
+def styles():
+    """Serve the CSS file for landing page"""
+    return flask.send_file('styles.css')
+
 # Initialize Dash app with Bootstrap theme
 app = dash.Dash(
     __name__,
     server=server,
+    url_base_pathname='/app/',  # Dash app runs at /app/
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
         'https://use.fontawesome.com/releases/v6.1.1/css/all.css'
@@ -46,6 +61,49 @@ app = dash.Dash(
     suppress_callback_exceptions=True,
     title="Hospital KPI Dashboard"
 )
+
+# ============================================================================
+# DATA MANAGER INITIALIZATION (from dashboard.py)
+# ============================================================================
+
+# Import dashboard components
+from dashboard import HospitalDataManager
+
+# Initialize data manager at module level (same as dashboard.py)
+data_manager = HospitalDataManager()
+
+# Get available hospitals dynamically (same as dashboard.py)
+def get_hospital_options():
+    """Get list of hospitals from parquet files for dropdown"""
+    try:
+        hospitals_df = data_manager.get_available_hospitals()
+        print(f"[AUTH-APP] Found {len(hospitals_df)} hospitals in parquet files")
+
+        if hospitals_df.empty:
+            print("[AUTH-APP] No hospitals found, using default")
+            return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
+
+        options = []
+        for _, row in hospitals_df.iterrows():
+            provider_num = row['Provider_Number']
+            ccn = str(int(provider_num)).zfill(6)
+            state = str(int(row['State_Code'])).zfill(2)
+            hosp_type = data_manager.classify_hospital_type(ccn)
+            year_count = row.get('Year_Count', 'N/A')
+            label = f"{ccn} - {hosp_type}, State {state} ({year_count} years)"
+            options.append({'label': label, 'value': ccn})
+
+        print(f"[AUTH-APP] Loaded {len(options)} hospitals total")
+        return options
+    except Exception as e:
+        print(f"[AUTH-APP] Error loading hospitals: {e}")
+        import traceback
+        traceback.print_exc()
+        return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
+
+print("[AUTH-APP] Loading hospitals from parquet files...")
+hospital_options = get_hospital_options()
+print(f"[AUTH-APP] Hospital options ready: {len(hospital_options)} hospitals")
 
 # ============================================================================
 # LAYOUT
@@ -107,15 +165,15 @@ def get_authenticated_layout(user_info):
                                 dbc.Col(html.I(className="fas fa-hospital-alt", style={'fontSize': '28px'})),
                                 dbc.Col(dbc.NavbarBrand("Hospital KPI Dashboard", className="ms-2")),
                             ], align="center", className="g-0"),
-                            href="/",
+                            href="/app/",
                             style={"textDecoration": "none"}
                         )
                     ], width="auto"),
                     dbc.Col([
                         dbc.Nav([
-                            dbc.NavItem(dbc.NavLink("Dashboard", href="/", active=True)),
-                            dbc.NavItem(dbc.NavLink("Analytics", href="/analytics")),
-                            dbc.NavItem(dbc.NavLink("Reports", href="/reports")),
+                            dbc.NavItem(dbc.NavLink("Dashboard", href="/app/", active=True)),
+                            dbc.NavItem(dbc.NavLink("Analytics", href="/app/analytics")),
+                            dbc.NavItem(dbc.NavLink("Reports", href="/app/reports")),
                             dbc.NavItem(create_user_menu(user_info))
                         ], navbar=True, className="ms-auto")
                     ])
@@ -147,6 +205,8 @@ def get_authenticated_layout(user_info):
                     html.H4("Select Hospital", className="mb-3"),
                     dcc.Dropdown(
                         id='auth-hospital-dropdown',
+                        options=hospital_options,
+                        value=hospital_options[0]['value'] if hospital_options else None,
                         placeholder="Select a hospital...",
                         className="mb-4"
                     )
@@ -393,7 +453,7 @@ def handle_company_registration(n_clicks, company_name, company_email, phone, ad
             html.I(className="fas fa-check-circle me-2"),
             html.Strong("Success! "),
             f"{message} You can now ",
-            html.A("sign in", href="/", className="alert-link"),
+            html.A("sign in", href="/app/", className="alert-link"),
             f". Your Company ID is: {company_id}"
         ], color="success")
     else:
@@ -457,7 +517,7 @@ def handle_employee_registration(n_clicks, company_id, first_name, last_name, em
             html.I(className="fas fa-check-circle me-2"),
             html.Strong("Success! "),
             f"{message} You can now ",
-            html.A("sign in", href="/", className="alert-link"),
+            html.A("sign in", href="/app/", className="alert-link"),
             "."
         ], color="success")
     else:
@@ -519,7 +579,7 @@ def handle_individual_registration(n_clicks, first_name, last_name, email,
             html.I(className="fas fa-check-circle me-2"),
             html.Strong("Success! "),
             f"{message} You can now ",
-            html.A("sign in", href="/", className="alert-link"),
+            html.A("sign in", href="/app/", className="alert-link"),
             "."
         ], color="success")
     else:
@@ -606,28 +666,6 @@ def close_welcome(n_clicks):
 
 
 @app.callback(
-    Output('auth-hospital-dropdown', 'options'),
-    Input('url', 'pathname')
-)
-def load_hospital_list(pathname):
-    """Load hospital dropdown options"""
-    if pathname == '/' or pathname == '/dashboard':
-        try:
-            from dashboard import data_manager
-            hospitals = data_manager.get_available_hospitals()
-
-            options = [
-                {'label': f"CCN {row['Provider_Number']} - {row['State_Code']}", 'value': row['Provider_Number']}
-                for _, row in hospitals.iterrows()
-            ]
-            return options
-        except Exception as e:
-            print(f"Error loading hospitals: {e}")
-            return []
-    return []
-
-
-@app.callback(
     [Output('auth-hospital-name', 'children'),
      Output('auth-hospital-type', 'children'),
      Output('auth-benchmark-group', 'children'),
@@ -649,14 +687,11 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
         ], color="info")
 
     try:
-        # Import all necessary components from dashboard
+        # Import KPI functions from dashboard (data_manager already initialized at module level)
         from dashboard import (
-            data_manager,
             create_kpi_card,
             calculate_dynamic_priority,
-            calculate_trend,
-            calculate_percentile_rank,
-            create_sparkline
+            calculate_trend
         )
         from kpi_hierarchy_config import KPI_METADATA
         import pandas as pd
@@ -775,7 +810,8 @@ if __name__ == '__main__':
     print("Hospital KPI Dashboard with Authentication")
     print("="*70)
     print("\nServer starting...")
-    print("Access the dashboard at: http://127.0.0.1:8050")
+    print("Landing Page: http://127.0.0.1:8050")
+    print("Dashboard App: http://127.0.0.1:8050/app")
     print("\nSupported account types:")
     print("  - Company (organizations with employees)")
     print("  - Employee (part of a company)")
