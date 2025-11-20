@@ -71,7 +71,7 @@ def get_main_dashboard_layout(hospital_options):
             dcc.Dropdown(
                 id='hospital-dropdown',
                 options=hospital_options,
-                value=hospital_options[0]['value'] if hospital_options else '010001',
+                value=hospital_options[0]['value'] if hospital_options else '310001',
                 clearable=False
             )
         ], width=6),

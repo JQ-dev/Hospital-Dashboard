@@ -48,7 +48,7 @@ FISCAL_YEARS = [2020, 2021, 2022, 2023, 2024]
 # Set to None or empty list to process all states
 # State codes are the first 2 digits of Provider_Number
 # Examples: '06' = Colorado, '31' = New Jersey
-FILTER_STATES = ['06', '31']  # Colorado and New Jersey only
+FILTER_STATES = ['03', '31', '01', '14']  # Connecticut and Nebraska only
 
 # Worksheet codes for different data types
 WORKSHEETS = {
