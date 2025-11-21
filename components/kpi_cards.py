@@ -17,6 +17,7 @@ from utils.kpi_helpers import (
     calculate_trend,
     create_sparkline
 )
+from utils.formatting import format_number_compact
 
 
 def create_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
@@ -143,8 +144,112 @@ def create_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
     return card
 
 
+def create_historical_quartile_table(values, years, all_benchmarks, kpi_key, unit, fmt, higher_is_better=True):
+    """
+    Create a table showing historical values with background colors based on benchmark quartiles.
+
+    Args:
+        values: Array of historical KPI values
+        years: Array of fiscal years
+        all_benchmarks: Dict with all 4 benchmark levels
+        kpi_key: KPI identifier for benchmark lookup
+        unit: Unit symbol (%, $, etc.)
+        fmt: Format string for values
+        higher_is_better: Whether higher values are better (affects coloring)
+
+    Returns:
+        HTML table component
+    """
+    # Use the most specific benchmark available (state_hospital_type)
+    benchmark_data = all_benchmarks.get('state_hospital_type') or all_benchmarks.get('state') or all_benchmarks.get('hospital_type') or all_benchmarks.get('national')
+
+    if not benchmark_data:
+        # No benchmark data, just show plain table
+        cells = []
+        for year, value in zip(years, values):
+            if not pd.isna(value):
+                cells.append(
+                    html.Td(
+                        html.Div([
+                            html.Div(str(int(year)), style={'fontSize': '0.65rem', 'color': '#6c757d', 'marginBottom': '2px'}),
+                            html.Div(f"{value:{fmt}}{unit}", style={'fontSize': '0.8rem', 'fontWeight': '600'})
+                        ], style={'textAlign': 'center', 'padding': '8px 4px'}),
+                        style={'border': '1px solid #dee2e6'}
+                    )
+                )
+        return html.Table([html.Tr(cells)], style={'width': '100%', 'tableLayout': 'fixed'})
+
+    # Get benchmark quartiles
+    kpi_bench = benchmark_data.get('kpis', {}).get(kpi_key, {})
+    p25 = kpi_bench.get('P25')
+    median = kpi_bench.get('Median')
+    p75 = kpi_bench.get('P75')
+
+    # Create cells with quartile coloring
+    # Reverse the arrays so latest year is on the right
+    years_reversed = list(reversed(years))
+    values_reversed = list(reversed(values))
+
+    cells = []
+    for year, value in zip(years_reversed, values_reversed):
+        if pd.isna(value):
+            bg_color = '#f8f9fa'
+            text_color = '#6c757d'
+            value_display = "N/A"
+        else:
+            # Remove 'ratio' from unit if present
+            display_unit = unit.replace('ratio', '').strip()
+            value_display = f"{value:{fmt}}{display_unit}"
+
+            # Determine quartile and color
+            if p25 and median and p75:
+                if higher_is_better:
+                    # Higher is better: green for high values, red for low
+                    if value <= p25:
+                        bg_color = '#dc3545'  # Red - worst
+                        text_color = 'white'
+                    elif value <= median:
+                        bg_color = '#ffc107'  # Yellow - below average
+                        text_color = '#212529'
+                    elif value <= p75:
+                        bg_color = '#17a2b8'  # Light blue - above average
+                        text_color = 'white'
+                    else:
+                        bg_color = '#28a745'  # Green - best
+                        text_color = 'white'
+                else:
+                    # Lower is better: green for low values, red for high
+                    if value <= p25:
+                        bg_color = '#28a745'  # Green - best
+                        text_color = 'white'
+                    elif value <= median:
+                        bg_color = '#17a2b8'  # Light blue - above average
+                        text_color = 'white'
+                    elif value <= p75:
+                        bg_color = '#ffc107'  # Yellow - below average
+                        text_color = '#212529'
+                    else:
+                        bg_color = '#dc3545'  # Red - worst
+                        text_color = 'white'
+            else:
+                bg_color = '#f8f9fa'
+                text_color = '#212529'
+
+        cells.append(
+            html.Td(
+                html.Div([
+                    html.Div(str(int(year)), style={'fontSize': '0.75rem', 'marginBottom': '6px', 'opacity': '0.9'}),
+                    html.Div(value_display, style={'fontSize': '1.4rem', 'fontWeight': '700'})  # Increased from 1.1rem to 1.4rem
+                ], style={'textAlign': 'center', 'padding': '12px 8px', 'color': text_color}),
+                style={'backgroundColor': bg_color, 'border': '1px solid #dee2e6'}
+            )
+        )
+
+    return html.Table([html.Tr(cells)], style={'width': '100%', 'tableLayout': 'fixed', 'borderCollapse': 'collapse'})
+
+
 def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
-                                     all_benchmarks, rank, l2_kpis=None, l3_kpis=None, ccn=None, fiscal_year=None, db_column=None):
+                                     all_benchmarks, rank, l2_kpis=None, l3_kpis=None, ccn=None, fiscal_year=None, db_column=None, data_manager=None, kpi_data_df=None):
     """
     Create enhanced Level 1 KPI card with:
     - 5-year trend visualization
@@ -156,6 +261,7 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
     - KPI description and explanation
     - Expandable Level 2/3 drivers
     - Clean, aesthetic layout
+    - Calculation formula with base numbers (for specific KPIs)
 
     Args:
         kpi_key: KPI identifier
@@ -168,17 +274,45 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
         l3_kpis: Level 3 KPI values
         ccn: Provider number
         fiscal_year: Current fiscal year
+        db_column: Database column name for this KPI
+        data_manager: HospitalDataManager instance for fetching base calculation data
     """
     meta = KPI_METADATA.get(kpi_key, {})
     kpi_name = meta.get('name', kpi_key)
     category = meta.get('category', 'General')
     description = meta.get('description', 'No description available')
+    formula_description = meta.get('formula_description', '')
     unit = meta.get('unit', '')
     fmt = meta.get('format', '.1f')
     higher_is_better = meta.get('higher_is_better', True)
 
-    # Calculate 5-year trend
+    # Fetch base calculation components for specific KPIs
+    calculation_display = None
+    if kpi_key == 'Current_Ratio' and kpi_data_df is not None:
+        try:
+            # Get Current_Assets and Current_Liabilities from the latest year
+            if 'Current_Assets' in kpi_data_df.columns and 'Current_Liabilities' in kpi_data_df.columns:
+                # Get most recent year (first row since data is sorted desc by fiscal year)
+                current_assets = kpi_data_df['Current_Assets'].iloc[0]
+                current_liabilities = kpi_data_df['Current_Liabilities'].iloc[0]
+
+                if not pd.isna(current_assets) and not pd.isna(current_liabilities):
+                    # Format with compact notation
+                    assets_fmt = format_number_compact(current_assets)
+                    liabilities_fmt = format_number_compact(current_liabilities)
+                    calculation_display = f"Current assets (${assets_fmt}) ÷ Current liabilities (${liabilities_fmt})"
+        except Exception as e:
+            # If something fails, just skip the calculation display
+            pass
+
+    # Calculate year-over-year change (vs last year)
     trend_direction, trend_pct = calculate_trend(kpi_trend_values)
+
+    # Calculate how many years of data we have
+    num_years = len([v for v in kpi_trend_values if not pd.isna(v)])
+
+    # Get the most recent year for the title
+    latest_year = fiscal_years[0] if len(fiscal_years) > 0 else fiscal_year
 
     # Create 5-year trend sparkline
     sparkline_fig = create_sparkline(kpi_trend_values, fiscal_years)
@@ -191,7 +325,7 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
         trend_color = 'danger' if trend_direction == 'up' else ('success' if trend_direction == 'down' else 'secondary')
         trend_icon = 'fa-arrow-down' if trend_direction == 'up' else ('fa-arrow-up' if trend_direction == 'down' else 'fa-minus')
 
-    # Build benchmark comparison table for ALL levels
+    # Build benchmark comparison table with quartile positions for last 2 years
     # Order: State & Type (most specific), State, Hospital Type, National (broadest)
     benchmark_rows = []
     benchmark_levels = [
@@ -200,6 +334,16 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
         ('hospital_type', 'Hospital Type', all_benchmarks.get('hospital_type')),
         ('national', 'Hospital Nationwide', all_benchmarks.get('national'))
     ]
+
+    # Get last 2 years of data for quartile position
+    last_two_values = []
+    last_two_years = []
+    for i, (year, value) in enumerate(zip(fiscal_years, kpi_trend_values)):
+        if not pd.isna(value):
+            last_two_years.append(year)
+            last_two_values.append(value)
+        if len(last_two_years) >= 2:
+            break
 
     for level_key, level_name, benchmark_data in benchmark_levels:
         if benchmark_data:
@@ -211,33 +355,65 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
             p75 = kpi_bench.get('P75')
             peer_count = benchmark_data.get('provider_count', 0)
 
-            # Determine performance vs this benchmark
-            if median and kpi_value is not None and not pd.isna(kpi_value):
-                perf_label, perf_color = calculate_percentile_rank(kpi_value, p25, median, p75)
-                perf_badge = dbc.Badge(perf_label, color=perf_color, className="ms-2", style={'fontSize': '0.7rem'})
-            else:
-                perf_badge = dbc.Badge("N/A", color="secondary", className="ms-2", style={'fontSize': '0.7rem'})
+            # Create quartile position cells for last 2 years
+            quartile_cells = []
+            for i, (year, value) in enumerate(zip(last_two_years, last_two_values)):
+                if p25 and median and p75:
+                    perf_label, perf_color = calculate_percentile_rank(value, p25, median, p75)
+
+                    # Use color-coded background
+                    if perf_color == 'success':
+                        bg_color = '#28a745'
+                        text_color = 'white'
+                    elif perf_color == 'info':
+                        bg_color = '#17a2b8'
+                        text_color = 'white'
+                    elif perf_color == 'warning':
+                        bg_color = '#ffc107'
+                        text_color = '#212529'
+                    else:  # danger
+                        bg_color = '#dc3545'
+                        text_color = 'white'
+
+                    quartile_cells.append(
+                        html.Div(perf_label, style={
+                            'backgroundColor': bg_color,
+                            'color': text_color,
+                            'padding': '8px 12px',
+                            'borderRadius': '4px',
+                            'textAlign': 'center',
+                            'display': 'inline-block',
+                            'minWidth': '90px',
+                            'fontSize': '0.8rem',
+                            'fontWeight': '600',
+                            'marginRight': '8px' if i == 0 else '0'
+                        })
+                    )
+                else:
+                    quartile_cells.append(
+                        html.Div("N/A", style={
+                            'fontSize': '0.8rem',
+                            'color': '#6c757d',
+                            'padding': '8px 12px',
+                            'textAlign': 'center',
+                            'display': 'inline-block',
+                            'minWidth': '90px',
+                            'marginRight': '8px' if i == 0 else '0'
+                        })
+                    )
 
             benchmark_rows.append(
                 html.Tr([
-                    html.Td([
-                        html.Strong(level_name, style={'fontSize': '0.85rem'}),
-                        html.Br(),
-                        html.Small(f"{peer_count} peers", className="text-muted", style={'fontSize': '0.7rem'})
-                    ]),
-                    html.Td(f"{format(p25, fmt)}{unit}" if p25 else "—", style={'fontSize': '0.85rem', 'textAlign': 'center'}),
-                    html.Td([
-                        html.Strong(f"{format(median, fmt)}{unit}" if median else "—"),
-                        perf_badge
-                    ], style={'fontSize': '0.85rem', 'textAlign': 'center'}),
-                    html.Td(f"{format(p75, fmt)}{unit}" if p75 else "—", style={'fontSize': '0.85rem', 'textAlign': 'center'}),
+                    html.Td(html.Strong(level_name, style={'fontSize': '0.85rem'})),
+                    html.Td(f"{peer_count:,} peers", style={'fontSize': '0.8rem', 'textAlign': 'center', 'color': '#6c757d'}),
+                    html.Td(html.Div(quartile_cells, style={'display': 'flex', 'justifyContent': 'center'}))
                 ], style={'borderBottom': '1px solid #dee2e6'})
             )
         else:
             benchmark_rows.append(
                 html.Tr([
                     html.Td(html.Strong(level_name, style={'fontSize': '0.85rem'})),
-                    html.Td("—", colSpan=3, className="text-muted text-center", style={'fontSize': '0.85rem'})
+                    html.Td("—", colSpan=2, className="text-muted text-center", style={'fontSize': '0.85rem'})
                 ], style={'borderBottom': '1px solid #dee2e6'})
             )
 
@@ -245,9 +421,8 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
         html.Thead([
             html.Tr([
                 html.Th("Benchmark", style={'fontSize': '0.75rem', 'color': '#6c757d'}),
-                html.Th("P25", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
-                html.Th("Median", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
-                html.Th("P75", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
+                html.Th("Number of Peers", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
+                html.Th("Quartile Position (Last 2 Years)", style={'fontSize': '0.75rem', 'color': '#6c757d', 'textAlign': 'center'}),
             ])
         ]),
         html.Tbody(benchmark_rows)
@@ -278,8 +453,22 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
         ], className="py-2", style={'background': '#f8f9fa', 'borderBottom': '2px solid #dee2e6'}),
 
         dbc.CardBody([
-            # KPI Name
-            html.H5(kpi_name, className="mb-2", style={'fontWeight': '600', 'color': '#212529'}),
+            # KPI Name with tooltip
+            html.Div([
+                html.H5([
+                    kpi_name,
+                    html.Span([
+                        html.I(className="fas fa-question-circle ms-2",
+                               id=f"tooltip-target-{kpi_key}",
+                               style={'fontSize': '0.8rem', 'color': '#6c757d', 'cursor': 'pointer'})
+                    ]),
+                ], className="mb-2", style={'fontWeight': '600', 'color': '#212529', 'display': 'inline-block'}),
+                dbc.Tooltip(
+                    description,
+                    target=f"tooltip-target-{kpi_key}",
+                    placement="top"
+                )
+            ]),
 
             # Current Value with Trend
             html.Div([
@@ -287,23 +476,33 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
                     f"{format(kpi_value, fmt)}{unit}" if not pd.isna(kpi_value) else "N/A",
                     html.Span([
                         html.I(className=f"fas {trend_icon} ms-3"),
-                        f" {abs(trend_pct):.1f}%"
-                    ], className=f"text-{trend_color}", style={'fontSize': '1rem', 'fontWeight': 'normal'})
-                ], className="mb-3", style={'fontWeight': '700', 'color': '#212529'}),
+                        f" {abs(trend_pct):.1f}% vs Last Year"
+                    ], className=f"text-{trend_color}", style={'fontSize': '0.85rem', 'fontWeight': 'normal'})
+                ], className="mb-2", style={'fontWeight': '700', 'color': '#212529'}),
             ]),
 
-            # Description
-            html.P(description, className="text-muted mb-3", style={'fontSize': '0.9rem', 'lineHeight': '1.4'}),
+            # Calculation Display (if available)
+            html.Div([
+                html.P(calculation_display, className="text-muted mb-3", style={'fontSize': '0.85rem', 'fontStyle': 'italic'})
+            ]) if calculation_display else html.Div(),
 
-            # 5-Year Trend Title
-            html.H6("5-Year Trend", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
 
-            # Sparkline
-            dcc.Graph(
-                figure=sparkline_fig,
-                config={'displayModeBar': False},
-                style={'height': '60px', 'marginBottom': '1rem'}
-            ),
+            # Historical Values Title (dynamic based on data and KPI name)
+            html.H6(f"{kpi_name} and color benchmark against same facility type in the state", className="mb-2 mt-3", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
+
+
+            # Historical Values Table with Quartile Coloring
+            html.Div([
+                create_historical_quartile_table(
+                    kpi_trend_values,
+                    fiscal_years,
+                    all_benchmarks,
+                    db_column if db_column else kpi_key,
+                    unit,
+                    fmt,
+                    higher_is_better
+                )
+            ], className="mb-3"),
 
             # Benchmark Comparison Title
             html.H6("Benchmark Comparison", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
