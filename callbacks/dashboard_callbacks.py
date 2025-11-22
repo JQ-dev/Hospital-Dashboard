@@ -25,14 +25,16 @@ def register_callbacks(app, data_manager, hospital_options):
     # URL routing callback
     @app.callback(
         Output('page-content', 'children'),
-        Input('url', 'pathname')
+        Input('url', 'pathname'),
+        State('selected-hospital-store', 'data')  # Use State, not Input - only read when pathname changes
     )
-    def display_page(pathname):
+    def display_page(pathname, selected_ccn):
         """Route between main dashboard and Level 2 drill-down pages"""
         if pathname and pathname.startswith('/level2/'):
             kpi_key = pathname.split('/')[-1]
-            # TODO: Get the current CCN from somewhere (for now use default)
-            return get_level2_page_layout(kpi_key, ccn='310001', data_manager=data_manager)
+            # Use the selected hospital from the store, fallback to default if not available
+            ccn = selected_ccn if selected_ccn else '310001'
+            return get_level2_page_layout(kpi_key, ccn=ccn, data_manager=data_manager)
         return get_main_dashboard_layout(hospital_options)
 
     @app.callback(
@@ -40,7 +42,8 @@ def register_callbacks(app, data_manager, hospital_options):
          Output('hospital-type', 'children'),
          Output('benchmark-group', 'children'),
          Output('peer-count', 'children'),
-         Output('kpi-cards-container', 'children')],
+         Output('kpi-cards-container', 'children'),
+         Output('selected-hospital-store', 'data')],  # Update the store with selected hospital
         [Input('hospital-dropdown', 'value'),
          Input('sort-importance', 'n_clicks'),
          Input('sort-performance', 'n_clicks'),
@@ -56,11 +59,26 @@ def register_callbacks(app, data_manager, hospital_options):
         hospital_type = data_manager.classify_hospital_type(ccn_str)
         state_code = ccn_str[:2]
 
+        # DEBUG: Log data source status
+        print(f"\n[DEBUG] Data Manager Status:")
+        print(f"  - Using database: {data_manager.use_database}")
+        print(f"  - Using precomputed KPIs: {data_manager.use_precomputed}")
+        print(f"  - Using worksheets: {data_manager.use_worksheets}")
+        print(f"  - Worksheet tables available: {len(data_manager.worksheet_tables) if data_manager.worksheet_tables else 0}")
+
         # Get KPI data
         kpi_data = data_manager.calculate_kpis(ccn)
 
+        print(f"\n[DEBUG] KPI Data for CCN {ccn}:")
+        print(f"  - DataFrame shape: {kpi_data.shape}")
+        print(f"  - Columns: {list(kpi_data.columns)}")
+        if not kpi_data.empty:
+            print(f"  - Fiscal years: {sorted(kpi_data['Fiscal_Year'].unique())}")
+            print(f"  - Sample data (first row): {kpi_data.iloc[0].to_dict() if len(kpi_data) > 0 else 'No rows'}")
+
         if kpi_data.empty:
-            return "N/A", "N/A", "N/A", "N/A", html.Div("No data available")
+            print("[DEBUG] No KPI data available - returning early")
+            return "N/A", "N/A", "N/A", "N/A", html.Div("No data available"), ccn
 
         latest_year = kpi_data['Fiscal_Year'].max()
 
@@ -114,10 +132,16 @@ def register_callbacks(app, data_manager, hospital_options):
                 kpi_key = DB_COLUMN_TO_KPI_KEY.get(db_col, db_col)
                 kpi_key_to_db_col[kpi_key] = db_col
 
+        # DEBUG: Log KPI key to column mapping
+        print(f"\n[DEBUG] KPI Key to DB Column Mapping:")
+        for k, v in kpi_key_to_db_col.items():
+            print(f"  {k} -> {v}")
+
         # Loop through ALL Level 1 KPIs to ensure all 6 show up
         for kpi_key in LEVEL_1_KPIS:
             # Skip if not in metadata
             if kpi_key not in KPI_METADATA:
+                print(f"[DEBUG] Skipping {kpi_key} - not in KPI_METADATA")
                 continue
 
             # Get KPI metadata
@@ -131,11 +155,13 @@ def register_callbacks(app, data_manager, hospital_options):
                 # We have data - use actual values
                 kpi_values = kpi_data[db_col].values
                 kpi_value = kpi_values[0] if len(kpi_values) > 0 else None
+                print(f"[DEBUG] {kpi_key}: Found column '{db_col}', value = {kpi_value}")
             else:
                 # No data available - show as "Data Not Available"
                 kpi_values = [None] * len(kpi_data)
                 kpi_value = None
                 db_col = None  # Mark as no column available
+                print(f"[DEBUG] {kpi_key}: No column found (looked for '{kpi_key}' -> '{db_col}'), value = None")
 
             # Get benchmark (use metadata key)
             benchmark_kpis = benchmark_data.get('kpis', {})
@@ -209,8 +235,23 @@ def register_callbacks(app, data_manager, hospital_options):
             hospital_type,
             benchmark_data.get('group_name', 'N/A'),
             f"{benchmark_data.get('provider_count', 0):,}",
-            cards_grid
+            cards_grid,
+            ccn  # Store the selected hospital CCN for drill-down navigation
         )
+
+    # Sync hospital dropdown with store when navigating back from drill-down
+    @app.callback(
+        Output('hospital-dropdown', 'value'),
+        Input('url', 'pathname'),
+        State('selected-hospital-store', 'data')
+    )
+    def sync_dropdown_with_store(pathname, stored_ccn):
+        """When returning to main dashboard, restore the selected hospital from store"""
+        # Only update dropdown when on main dashboard (not drill-down pages)
+        if not pathname or pathname == '/' or not pathname.startswith('/level2/'):
+            return stored_ccn if stored_ccn else '310001'
+        # For drill-down pages, don't update (prevents error when dropdown doesn't exist)
+        return dash.no_update
 
     # Expand/Collapse Level 2 KPIs callback
     @app.callback(

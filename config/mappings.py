@@ -10,7 +10,7 @@ DB_COLUMN_TO_KPI_KEY = {
     # Level 1 KPIs - Map database columns to KPI_METADATA keys
     'Net_Margin_Pct': 'Net_Income_Margin',
     'AR_Days': 'AR_Days',  # Already matches
-    'Operating_Expense_Ratio': 'Operating_Expense_per_Adjusted_Discharge',  # Maps to L1 KPI
+    'Operating_Expense_per_Adjusted_Discharge': 'Operating_Expense_per_Adjusted_Discharge',  # L1 KPI - FIXED: was mapped to wrong column
     'Current_Ratio': 'Current_Ratio',  # Already matches
     'Medicare_CCR': 'Medicare_CCR',  # NEW: Medicare Cost-to-Charge Ratio
     'Bad_Debt_Charity_Pct': 'Bad_Debt_Charity_Pct',  # NEW: Bad Debt + Charity %

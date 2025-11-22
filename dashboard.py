@@ -80,6 +80,7 @@ print(f"Hospital options ready: {len(hospital_options)} hospitals")
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
+    dcc.Store(id='selected-hospital-store', data='310001'),  # Store for selected hospital (persists across navigation)
     html.Div(id='page-content')
 ])
 
