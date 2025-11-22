@@ -305,6 +305,23 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
             # If something fails, just skip the calculation display
             pass
 
+    elif kpi_key == 'Net_Income_Margin' and kpi_data_df is not None:
+        try:
+            # Get Net_Income and Total_Revenue from the latest year
+            if 'Net_Income' in kpi_data_df.columns and 'Total_Revenue' in kpi_data_df.columns:
+                # Get most recent year (first row since data is sorted desc by fiscal year)
+                net_income = kpi_data_df['Net_Income'].iloc[0]
+                total_revenue = kpi_data_df['Total_Revenue'].iloc[0]
+
+                if not pd.isna(net_income) and not pd.isna(total_revenue):
+                    # Format with compact notation
+                    income_fmt = format_number_compact(net_income)
+                    revenue_fmt = format_number_compact(total_revenue)
+                    calculation_display = f"Net income (${income_fmt}) ÷ Total revenue (${revenue_fmt})"
+        except Exception as e:
+            # If something fails, just skip the calculation display
+            pass
+
     # Calculate year-over-year change (vs last year)
     trend_direction, trend_pct = calculate_trend(kpi_trend_values)
 
@@ -345,14 +362,20 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
         if len(last_two_years) >= 2:
             break
 
+    # Reverse the lists so most recent year is on the right
+    last_two_years.reverse()
+    last_two_values.reverse()
+
     for level_key, level_name, benchmark_data in benchmark_levels:
         if benchmark_data:
-            # Use db_column if provided (benchmarks use database column names, not KPI metadata keys)
-            bench_lookup_key = db_column if db_column else kpi_key
+            # Use kpi_key for benchmark lookup (benchmarks are keyed by KPI metadata keys)
+            bench_lookup_key = kpi_key
             kpi_bench = benchmark_data.get('kpis', {}).get(bench_lookup_key, {})
             p25 = kpi_bench.get('P25')
             median = kpi_bench.get('Median')
             p75 = kpi_bench.get('P75')
+
+            # Get provider count - this now uses MAX across all KPIs (fixed in data_manager.py)
             peer_count = benchmark_data.get('provider_count', 0)
 
             # Create quartile position cells for last 2 years
@@ -383,10 +406,10 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
                             'borderRadius': '4px',
                             'textAlign': 'center',
                             'display': 'inline-block',
-                            'minWidth': '90px',
+                            'width': '120px',
                             'fontSize': '0.8rem',
                             'fontWeight': '600',
-                            'marginRight': '8px' if i == 0 else '0'
+                            'marginRight': '8px' if i < len(last_two_years) - 1 else '0'
                         })
                     )
                 else:
@@ -397,8 +420,8 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
                             'padding': '8px 12px',
                             'textAlign': 'center',
                             'display': 'inline-block',
-                            'minWidth': '90px',
-                            'marginRight': '8px' if i == 0 else '0'
+                            'width': '120px',
+                            'marginRight': '8px' if i < len(last_two_years) - 1 else '0'
                         })
                     )
 
@@ -497,15 +520,12 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
                     kpi_trend_values,
                     fiscal_years,
                     all_benchmarks,
-                    db_column if db_column else kpi_key,
+                    kpi_key,
                     unit,
                     fmt,
                     higher_is_better
                 )
             ], className="mb-3"),
-
-            # Benchmark Comparison Title
-            html.H6("Benchmark Comparison", className="mb-2", style={'fontSize': '0.9rem', 'fontWeight': '600', 'color': '#495057'}),
 
             # Benchmark Table
             benchmark_table,

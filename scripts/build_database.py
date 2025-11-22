@@ -81,9 +81,16 @@ def build_raw_tables(con):
     logger.info("Creating balance_sheet table...")
     con.execute(f"""
         CREATE OR REPLACE TABLE balance_sheet AS
-        SELECT *
+        SELECT
+            *,
+            -- Fix State_Code: extract from zero-padded CCN
+            CAST(SUBSTRING(LPAD(CAST(Provider_Number AS VARCHAR), 6, '0'), 1, 2) AS INTEGER) as State_Code_Fixed
         FROM read_parquet('{BALANCE_SHEET_PATH}', hive_partitioning=1, union_by_name=true)
     """)
+
+    # Replace incorrect State_Code with fixed version
+    con.execute("ALTER TABLE balance_sheet DROP COLUMN State_Code")
+    con.execute("ALTER TABLE balance_sheet RENAME COLUMN State_Code_Fixed TO State_Code")
 
     logger.info("Creating indexes on balance_sheet...")
     con.execute("CREATE INDEX idx_bs_provider ON balance_sheet(Provider_Number)")
@@ -241,11 +248,22 @@ def build_kpi_table(con):
             GROUP BY Provider_Number, Fiscal_Year
         ),
 
+        -- Net Income from fund_balance_changes (actual reported net income)
+        net_income_metrics AS (
+            SELECT
+                Provider_Number,
+                Fiscal_Year,
+                NULLIF(SUM(CASE WHEN Acc_name = 'Net income (loss)'
+                     THEN Value ELSE 0 END), 0) as Net_Income
+            FROM fund_balance_changes
+            GROUP BY Provider_Number, Fiscal_Year
+        ),
+
         -- Join all metrics
         combined AS (
             SELECT
-                COALESCE(b.Provider_Number, r.Provider_Number, e.Provider_Number) as Provider_Number,
-                COALESCE(b.Fiscal_Year, r.Fiscal_Year, e.Fiscal_Year) as Fiscal_Year,
+                COALESCE(b.Provider_Number, r.Provider_Number, e.Provider_Number, n.Provider_Number) as Provider_Number,
+                COALESCE(b.Fiscal_Year, r.Fiscal_Year, e.Fiscal_Year, n.Fiscal_Year) as Fiscal_Year,
                 b.Current_Assets,
                 b.Fixed_Assets,
                 b.Total_Assets,
@@ -257,11 +275,14 @@ def build_kpi_table(con):
                 r.Inpatient_Revenue,
                 r.Outpatient_Revenue,
                 r.Total_Revenue,
-                e.Total_Operating_Expenses
+                e.Total_Operating_Expenses,
+                COALESCE(n.Net_Income, (r.Total_Revenue - e.Total_Operating_Expenses)) as Net_Income
             FROM balance_metrics b
             FULL OUTER JOIN revenue_metrics r ON b.Provider_Number = r.Provider_Number AND b.Fiscal_Year = r.Fiscal_Year
             FULL OUTER JOIN expense_metrics e ON COALESCE(b.Provider_Number, r.Provider_Number) = e.Provider_Number
                 AND COALESCE(b.Fiscal_Year, r.Fiscal_Year) = e.Fiscal_Year
+            FULL OUTER JOIN net_income_metrics n ON COALESCE(b.Provider_Number, r.Provider_Number, e.Provider_Number) = n.Provider_Number
+                AND COALESCE(b.Fiscal_Year, r.Fiscal_Year, e.Fiscal_Year) = n.Fiscal_Year
         )
 
         -- Calculate all KPIs
@@ -283,13 +304,13 @@ def build_kpi_table(con):
             Total_Revenue,
             Total_Operating_Expenses,
 
-            -- Calculated KPIs
-            (Total_Revenue - Total_Operating_Expenses) as Net_Income,
+            -- Calculated KPIs (Net_Income now comes from combined CTE)
+            Net_Income,
 
             -- Profitability KPIs
             CASE WHEN Total_Revenue > 0 THEN ((Total_Revenue - Total_Operating_Expenses) / Total_Revenue) * 100 ELSE NULL END as Operating_Margin_Pct,
-            CASE WHEN Total_Revenue > 0 THEN ((Total_Revenue - Total_Operating_Expenses) / Total_Revenue) * 100 ELSE NULL END as Net_Margin_Pct,
-            CASE WHEN Total_Revenue > 0 THEN ((Total_Revenue - Total_Operating_Expenses) / Total_Revenue) * 100 ELSE NULL END as Total_Margin_Pct,
+            CASE WHEN Total_Revenue > 0 THEN (Net_Income / Total_Revenue) * 100 ELSE NULL END as Net_Margin_Pct,
+            CASE WHEN Total_Revenue > 0 THEN (Net_Income / Total_Revenue) * 100 ELSE NULL END as Total_Margin_Pct,
 
             -- Liquidity KPIs
             CASE WHEN Current_Liabilities > 0 THEN Current_Assets / Current_Liabilities ELSE NULL END as Current_Ratio,
@@ -310,8 +331,8 @@ def build_kpi_table(con):
             CASE WHEN Total_Assets > 0 THEN (Total_Liabilities / Total_Assets) * 100 ELSE NULL END as Debt_Ratio_Pct,
 
             -- Return KPIs
-            CASE WHEN Total_Assets > 0 THEN ((Total_Revenue - Total_Operating_Expenses) / Total_Assets) * 100 ELSE NULL END as Return_on_Assets_Pct,
-            CASE WHEN Fund_Balance > 0 THEN ((Total_Revenue - Total_Operating_Expenses) / Fund_Balance) * 100 ELSE NULL END as Return_on_Equity_Pct
+            CASE WHEN Total_Assets > 0 THEN (Net_Income / Total_Assets) * 100 ELSE NULL END as Return_on_Assets_Pct,
+            CASE WHEN Fund_Balance > 0 THEN (Net_Income / Fund_Balance) * 100 ELSE NULL END as Return_on_Equity_Pct
 
         FROM combined
         WHERE Provider_Number IS NOT NULL AND Fiscal_Year IS NOT NULL

@@ -502,6 +502,9 @@ def get_level2_page_layout(kpi_key, ccn, data_manager):
         dbc.Container with the Level 2 page layout
     """
 
+    # Ensure CCN is properly formatted as 6-digit string with leading zeros
+    ccn_str = str(int(ccn)).zfill(6)
+
     # Get the Level 1 KPI metadata from hierarchy
     # KPI_HIERARCHY is imported at module level from kpi_hierarchy_config
     l1_hierarchy = KPI_HIERARCHY.get(kpi_key, {})
@@ -512,16 +515,16 @@ def get_level2_page_layout(kpi_key, ccn, data_manager):
     l2_driver_keys = list(l2_drivers_dict.keys())
 
     # Get KPI data for this provider
-    kpi_data = data_manager.calculate_kpis(ccn)
+    kpi_data = data_manager.calculate_kpis(ccn_str)
     latest_year = kpi_data['Fiscal_Year'].max()
     latest_data = kpi_data[kpi_data['Fiscal_Year'] == latest_year].iloc[0]
 
     # Get all benchmarks for this provider
     all_benchmarks = {
-        'state_hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'State_Hospital_Type'),
-        'state': data_manager.get_benchmarks(ccn, latest_year, 'State'),
-        'hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'Hospital_Type'),
-        'national': data_manager.get_benchmarks(ccn, latest_year, 'National')
+        'state_hospital_type': data_manager.get_benchmarks(ccn_str, latest_year, 'State_Hospital_Type'),
+        'state': data_manager.get_benchmarks(ccn_str, latest_year, 'State'),
+        'hospital_type': data_manager.get_benchmarks(ccn_str, latest_year, 'Hospital_Type'),
+        'national': data_manager.get_benchmarks(ccn_str, latest_year, 'National')
     }
 
     # Get database column name for the L1 KPI

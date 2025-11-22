@@ -49,9 +49,12 @@ def register_callbacks(app, data_manager, hospital_options):
     def update_dashboard(ccn, sort_imp, sort_perf, sort_trend):
         """Main callback to update entire dashboard - shows all benchmark levels on each card"""
 
+        # Ensure CCN is properly formatted as 6-digit string with leading zeros
+        ccn_str = str(int(ccn)).zfill(6)
+
         # Get hospital metadata
-        hospital_type = data_manager.classify_hospital_type(ccn)
-        state_code = str(ccn)[:2]
+        hospital_type = data_manager.classify_hospital_type(ccn_str)
+        state_code = ccn_str[:2]
 
         # Get KPI data
         kpi_data = data_manager.calculate_kpis(ccn)
