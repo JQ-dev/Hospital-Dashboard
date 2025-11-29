@@ -1,9 +1,9 @@
 # Comprehensive Hospital Dashboard Documentation
 ## Code Structure, Functionalities, and KPI Reference
 
-**Version**: 1.0
-**Last Updated**: 2025-11-22
-**Purpose**: Complete technical documentation of the Hospital Dashboard application including all code structures, KPIs with formulas, and data source locations.
+**Version**: 1.1
+**Last Updated**: 2025-11-24
+**Purpose**: Complete technical documentation of the Hospital Dashboard application including all code structures, KPIs with formulas, actual implementation code, and data source locations.
 
 ---
 
@@ -13,12 +13,13 @@
 2. [Application Architecture](#application-architecture)
 3. [Code Structure and Components](#code-structure-and-components)
 4. [Complete KPI Reference with Formulas](#complete-kpi-reference-with-formulas)
-5. [Data Sources and Origins](#data-sources-and-origins)
-6. [Data Flow Architecture](#data-flow-architecture)
-7. [Database Schema](#database-schema)
-8. [Component Details](#component-details)
-9. [ETL Pipeline](#etl-pipeline)
-10. [Authentication System](#authentication-system)
+5. [KPI Calculation Implementation](#kpi-calculation-implementation) ⭐ **NEW: Actual SQL/Python formulas**
+6. [Data Sources and Origins](#data-sources-and-origins)
+7. [Data Flow Architecture](#data-flow-architecture)
+8. [Database Schema](#database-schema)
+9. [Component Details](#component-details)
+10. [ETL Pipeline](#etl-pipeline)
+11. [Authentication System](#authentication-system)
 
 ---
 
@@ -27,6 +28,7 @@
 The Hospital Dashboard is a Python-based web application built with Dash/Plotly that provides interactive financial analytics for hospitals using CMS HCRIS (Hospital Cost Report Information System) data. The application features:
 
 - **78 KPIs** organized in a 3-level hierarchy (6 Level 1, 24 Level 2, 48 Level 3)
+- **Complete calculation formulas** with actual SQL queries and Python code from implementation
 - **4 benchmark levels** (National, State, Hospital Type, State+Hospital Type)
 - **Multi-year analysis** (2020-2024)
 - **6,000+ hospitals** tracked
@@ -286,24 +288,59 @@ WHERE Provider_Number = ? AND Fiscal_Year = ?
 
 **Formula**:
 ```
-AR Days = (Net Patient AR) ÷ (Net Patient Revenue ÷ 365)
+AR Days = (Net Accounts Receivable) ÷ (Total Revenue ÷ 365)
+
+Where Net Accounts Receivable =
+    Gross Accounts Receivable - Allowances for Uncollectible Accounts
 ```
 
 **HCRIS Data Source**:
 ```
-Numerator:   Worksheet G (Balance Sheet), Current Assets - Net Patient AR
+Numerator Components:
+  - Worksheet G (Balance Sheet), Line 4, Column 1: Accounts Receivable (Gross)
+  - Worksheet G (Balance Sheet): Allowances for Uncollectible Notes and Accounts Receivable
+  Net AR = Gross AR - Allowances
+
 Denominator: Worksheet G-3, Line 3 (Total Operating Revenue) ÷ 365
 ```
 
 **Database Calculation**:
 ```sql
+-- Extract Net AR from balance sheet (with deduplication)
+WITH deduplicated AS (
+    SELECT DISTINCT
+        Provider_Number,
+        Fiscal_Year,
+        Acc_name,
+        Value
+    FROM balance_sheet
+    WHERE Acc_name IN ('Accounts Receivable',
+                       'Allowances For Uncollectible Notes And Accounts Receivable')
+)
 SELECT
     Provider_Number,
     Fiscal_Year,
-    Net_Patient_AR / NULLIF((Total_Revenue / 365.0), 0) as AR_Days
+    -- Net AR = Gross AR + Allowances (allowances are negative)
+    SUM(CASE
+        WHEN Acc_name = 'Accounts Receivable' THEN Value
+        WHEN Acc_name LIKE '%Allowances%Receivable%' THEN Value
+        ELSE 0
+    END) as Net_Accounts_Receivable
+FROM deduplicated
+GROUP BY Provider_Number, Fiscal_Year;
+
+-- Calculate AR Days
+SELECT
+    Provider_Number,
+    Fiscal_Year,
+    Accounts_Receivable / NULLIF((Total_Revenue / 365.0), 0) as AR_Days
 FROM hospital_kpis
 WHERE Provider_Number = ? AND Fiscal_Year = ?
 ```
+
+**Data Quality Note**:
+- ⚠️ The balance_sheet table contains duplicate rows (3x each entry). Use DISTINCT to deduplicate.
+- ⚠️ Earlier database builds may have AR = 0 due to incorrect column name (`Line_Name` instead of `Acc_name`)
 
 **Improvement Levers**:
 - Improve billing processes
@@ -498,6 +535,479 @@ WHERE Provider_Number = ? AND Fiscal_Year = ?
 
 ---
 
+## KPI CALCULATION IMPLEMENTATION
+
+This section provides the actual SQL queries and Python code used to calculate each KPI from the HCRIS worksheets.
+
+### Level 1 KPI Implementations
+
+#### L1-1: Net Income Margin
+**Calculation** (from [data_manager.py](data_manager.py:972-973)):
+```python
+Net_Income_Margin = np.where(
+    Total_Revenue > 0,
+    (Net_Income / Total_Revenue) * 100,
+    None
+)
+```
+
+#### L1-2: AR Days (Days in Net Patient Accounts Receivable)
+**Calculation** (from [data_manager.py](data_manager.py:898-902)):
+```python
+AR_Days = np.where(
+    Total_Revenue > 0,
+    Accounts_Receivable / (Total_Revenue / 365),
+    None
+)
+```
+
+#### L1-3: Operating Expense per Adjusted Discharge
+**SQL Query** (from database build script):
+```sql
+Operating_Expense_per_Adjusted_Discharge =
+    Total_Operating_Expenses / NULLIF(
+        (Inpatient_Discharges * Case_Mix_Index) +
+        (Outpatient_Visits * 0.35),
+        0
+    )
+```
+
+#### L1-4: Medicare Cost-to-Charge Ratio (CCR)
+**SQL Query** (from database build script):
+```sql
+Medicare_CCR = Total_Costs / NULLIF(Total_Charges, 0)
+```
+
+#### L1-5: Bad Debt + Charity as % of Net Revenue
+**SQL Query** (from database build script):
+```sql
+Bad_Debt_Charity_Pct =
+    ((Bad_Debt + Charity_Care) / NULLIF(Net_Revenue - Provisions, 0)) * 100
+```
+
+#### L1-6: Current Ratio (Unrestricted)
+**Calculation** (from [data_manager.py](data_manager.py:868-872)):
+```python
+Current_Ratio = np.where(
+    Current_Liabilities > 0,
+    Current_Assets / Current_Liabilities,
+    None
+)
+```
+
+---
+
+### Level 2 KPI Implementations
+
+#### L2-1-2: Non-Operating Income %
+**SQL Query** (from [data_manager.py](data_manager.py:201-223)):
+```sql
+SELECT
+    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) LIKE '%Non-Operating%'
+        OR CAST(line_level1 AS VARCHAR) LIKE '%non-operating%'
+        THEN Value ELSE 0 END) as non_operating_income,
+    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) LIKE '%Total Revenue%'
+        OR CAST(line_level1 AS VARCHAR) LIKE '%total revenue%'
+        THEN Value ELSE 0 END) as total_revenue,
+    SUM(CASE WHEN Line IN ('00300', '02800') THEN Value ELSE 0 END) as total_rev_alt
+FROM worksheet_g300000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Non_Operating_Income_Pct = (non_operating_income / total_revenue) * 100
+```
+
+#### L2-1-3: Payer Mix - Medicare %
+**SQL Query** (from [data_manager.py](data_manager.py:227-240)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00600' THEN Value ELSE 0 END) as medicare_days,
+    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_days
+FROM worksheet_s300001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '01400'
+
+-- Calculate percentage:
+Payer_Mix_Medicare_Pct = (medicare_days / total_days) * 100
+```
+
+#### L2-1-4: Capital Cost % of Expenses
+**SQL Query** (from [data_manager.py](data_manager.py:243-263)):
+```sql
+-- Get capital costs from A-7
+SELECT
+    SUM(CASE WHEN Line BETWEEN '00100' AND '00300' THEN Value ELSE 0 END) as capital_costs
+FROM worksheet_a700001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND "Column" = '00007'
+
+-- Get total expenses from G-3
+SELECT
+    SUM(CASE WHEN Line = '02500' THEN Value ELSE 0 END) as total_expenses
+FROM worksheet_g300000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Capital_Cost_Pct_of_Expenses = (capital_costs / total_expenses) * 100
+```
+
+#### L2-2-2: Payer Mix - Commercial %
+**SQL Query** (from [data_manager.py](data_manager.py:270-289)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00600' THEN Value ELSE 0 END) as medicare_days,
+    SUM(CASE WHEN "Column" = '00700' THEN Value ELSE 0 END) as medicaid_days,
+    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_days
+FROM worksheet_s300001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '01400'
+
+-- Calculate commercial percentage:
+commercial_days = total_days - medicare_days - medicaid_days
+Payer_Mix_Commercial_Pct = (commercial_days / total_days) * 100
+```
+
+#### L2-3-4: Case Mix Index
+**SQL Query** (from [data_manager.py](data_manager.py:296-309)):
+```sql
+SELECT Value as Case_Mix_Index
+FROM worksheet_s300001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '00100'
+  AND "Column" = '01500'
+LIMIT 1
+```
+
+#### L2-5-1: Charity Care Charge Ratio
+**SQL Query** (from [data_manager.py](data_manager.py:316-335)):
+```sql
+-- Get charity charges from S-10
+SELECT
+    SUM(CASE WHEN Line = '02000' THEN Value ELSE 0 END) as charity_charges
+FROM worksheet_s100001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND "Column" = '00003'
+
+-- Get total charges from G-2
+SELECT SUM(Value) as total_charges
+FROM worksheet_g200000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Charity_Care_Charge_Ratio = (charity_charges / total_charges) * 100
+```
+
+#### L2-5-2: Bad Debt Recovery Rate
+**SQL Query** (from [data_manager.py](data_manager.py:338-350)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '02600' THEN Value ELSE 0 END) as bad_debt_recovered,
+    SUM(CASE WHEN Line = '02500' THEN Value ELSE 0 END) as bad_debt_expense
+FROM worksheet_s100001
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Bad_Debt_Recovery_Rate = (bad_debt_recovered / bad_debt_expense) * 100
+```
+
+#### L2-5-3: Uninsured Patient %
+**SQL Query** (from [data_manager.py](data_manager.py:353-374)):
+```sql
+-- Get uninsured patient counts from S-10
+SELECT
+    SUM(CASE WHEN Line = '02000' THEN Value ELSE 0 END) as charity_uninsured,
+    SUM(CASE WHEN Line = '03100' THEN Value ELSE 0 END) as other_uninsured
+FROM worksheet_s100001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND "Column" = '00001'
+
+-- Get total patient days from S-3
+SELECT SUM(CASE WHEN Line = '01400' AND "Column" = '00008' THEN Value ELSE 0 END) as total_days
+FROM worksheet_s300001
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+total_uninsured = charity_uninsured + other_uninsured
+Uninsured_Patient_Pct = (total_uninsured / total_days) * 100
+```
+
+#### L2-5-4: Medicaid Shortfall %
+**SQL Query** (from [data_manager.py](data_manager.py:377-390)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '01800' THEN Value ELSE 0 END) as medicaid_revenue,
+    SUM(CASE WHEN Line = '01900' THEN Value ELSE 0 END) as medicaid_cost
+FROM worksheet_s100001
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate shortfall:
+shortfall = medicaid_cost - medicaid_revenue
+Medicaid_Shortfall_Pct = (shortfall / total_expenses) * 100
+```
+
+#### L2-6-2: Current Liabilities Ratio
+**SQL Query** (from [data_manager.py](data_manager.py:397-410)):
+```sql
+SELECT
+    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) = 'CURRENT LIABILITIES'
+        THEN Value ELSE 0 END) as current_liabilities,
+    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) IN ('CURRENT LIABILITIES', 'LONG TERM LIABILITIES')
+        THEN Value ELSE 0 END) as total_liabilities
+FROM worksheet_g000000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Current_Liabilities_Ratio = (current_liabilities / total_liabilities) * 100
+```
+
+#### L2-6-4: Fund Balance % Change
+**SQL Query** (from [data_manager.py](data_manager.py:413-425)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '00200' AND "Column" = '00200' THEN Value ELSE 0 END) as fund_balance_change,
+    SUM(CASE WHEN Line = '00100' AND "Column" = '00200' THEN Value ELSE 0 END) as beginning_balance
+FROM worksheet_g100000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Fund_Balance_Pct_Change = (fund_balance_change / beginning_balance) * 100
+```
+
+---
+
+### Level 3 KPI Implementations
+
+#### L3-1-2-1: Investment Income Share
+**SQL Query** (from [data_manager.py](data_manager.py:462-485)):
+```sql
+-- Get non-operating income from G-3
+SELECT SUM(Value) as non_op_income
+FROM worksheet_g300000
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND CAST(line_level1 AS VARCHAR) LIKE '%Non-Operating%'
+
+-- Get investment income from G-1
+SELECT
+    SUM(CASE WHEN Line = '00500' AND "Column" = '00300' THEN Value ELSE 0 END) as investment_income
+FROM worksheet_g100000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate share:
+Investment_Income_Share = (investment_income / non_op_income) * 100
+```
+
+#### L3-1-2-2: Donation/Grant %
+**SQL Query** (from [data_manager.py](data_manager.py:462-485)):
+```sql
+-- Get donations from G-1
+SELECT
+    SUM(CASE WHEN Line = '00600' AND "Column" = '00300' THEN Value ELSE 0 END) as donations
+FROM worksheet_g100000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate share:
+Donation_Grant_Pct = (donations / non_op_income) * 100
+```
+
+#### L3-1-3-1: Medicare Inpatient Days %
+**SQL Query** (from [data_manager.py](data_manager.py:494-505)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00600' THEN Value ELSE 0 END) as medicare_ip_days,
+    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_ip_days
+FROM worksheet_s300001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '00800'
+
+-- Calculate percentage:
+Medicare_Inpatient_Days_Pct = (medicare_ip_days / total_ip_days) * 100
+```
+
+#### L3-1-4-1: Depreciation % of Capital
+**SQL Query** (from [data_manager.py](data_manager.py:514-526)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00900' THEN Value ELSE 0 END) as depreciation,
+    SUM(CASE WHEN "Column" = '00100' THEN Value ELSE 0 END) as capital_total
+FROM worksheet_a700001
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Depreciation_Pct_of_Capital = (depreciation / capital_total) * 100
+```
+
+#### L3-1-4-2: Interest Expense Ratio
+**SQL Query** (from [data_manager.py](data_manager.py:529-548)):
+```sql
+-- Get interest expense from A-0
+SELECT SUM(Value) as interest_expense
+FROM worksheet_a000000
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '11600'
+  AND "Column" = '00200'
+
+-- Get total capital costs from A-7
+SELECT SUM(Value) as capital_costs
+FROM worksheet_a700001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND "Column" = '00700'
+
+-- Calculate ratio:
+Interest_Expense_Ratio = (interest_expense / capital_costs) * 100
+```
+
+#### L3-2-2-1: Commercial Inpatient %
+**SQL Query** (from [data_manager.py](data_manager.py:557-570)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00700' THEN Value ELSE 0 END) as commercial_and_other,
+    SUM(CASE WHEN "Column" IN ('00100','00200','00300','00400','00500','00600')
+        THEN Value ELSE 0 END) as medicare_medicaid_sum,
+    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_ip_days
+FROM worksheet_s300001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '00800'
+
+-- Calculate percentage:
+commercial_ip = commercial_and_other - medicare_medicaid_sum
+Commercial_Inpatient_Pct = (commercial_ip / total_ip_days) * 100
+```
+
+#### L3-2-2-2: Self-Pay %
+**SQL Query** (from [data_manager.py](data_manager.py:573-591)):
+```sql
+-- Get self-pay from S-10
+SELECT SUM(Value) as charity_uninsured
+FROM worksheet_s100001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '02000'
+  AND "Column" = '00001'
+
+-- Get total revenue from G-3
+SELECT SUM(Value) as total_revenue
+FROM worksheet_g300000
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND CAST(line_level1 AS VARCHAR) = 'NET PATIENT REVENUE'
+
+-- Calculate percentage:
+Self_Pay_Pct = (charity_uninsured / total_revenue) * 100
+```
+
+#### L3-5-1-1: Insured Charity %
+**SQL Query** (from [data_manager.py](data_manager.py:600-615)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00001' THEN Value ELSE 0 END) as non_covered_charity,
+    SUM(CASE WHEN "Column" = '00002' THEN Value ELSE 0 END) as insured_charity,
+    SUM(CASE WHEN "Column" = '00003' THEN Value ELSE 0 END) as total_charity
+FROM worksheet_s100001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '02000'
+
+-- Calculate percentage:
+Insured_Charity_Pct = (insured_charity / total_charity) * 100
+```
+
+#### L3-5-1-2: Non-Covered Charity %
+**SQL Query** (same as L3-5-1-1):
+```sql
+Non_Covered_Charity_Pct = (non_covered_charity / total_charity) * 100
+```
+
+#### L3-5-4-1: Medicaid Days %
+**SQL Query** (from [data_manager.py](data_manager.py:624-635)):
+```sql
+SELECT
+    SUM(CASE WHEN "Column" = '00700' THEN Value ELSE 0 END) as medicaid_days,
+    SUM(CASE WHEN "Column" = '00800' THEN Value ELSE 0 END) as total_days
+FROM worksheet_s300001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line = '01400'
+
+-- Calculate percentage:
+Medicaid_Days_Pct = (medicaid_days / total_days) * 100
+```
+
+#### L3-5-4-2: Medicaid Payment-to-Cost Ratio
+**SQL Query** (from [data_manager.py](data_manager.py:638-649)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '01800' THEN Value ELSE 0 END) as medicaid_revenue,
+    SUM(CASE WHEN Line = '01900' THEN Value ELSE 0 END) as medicaid_cost
+FROM worksheet_s100001
+WHERE Provider_Number = ?
+  AND fiscal_year = ?
+  AND Line IN ('01800', '01900')
+
+-- Calculate ratio:
+Medicaid_Payment_to_Cost = (medicaid_revenue / medicaid_cost) * 100
+```
+
+#### L3-6-2-1: Accounts Payable %
+**SQL Query** (from [data_manager.py](data_manager.py:658-672)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '04700' AND "Column" = '00300' THEN Value ELSE 0 END) as accounts_payable,
+    SUM(CASE WHEN Line = '04600' AND "Column" = '00300' THEN Value ELSE 0 END) as short_term_debt,
+    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) = 'CURRENT LIABILITIES'
+        THEN Value ELSE 0 END) as current_liabilities_total
+FROM worksheet_g000000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Accounts_Payable_Pct = (accounts_payable / current_liabilities_total) * 100
+```
+
+#### L3-6-2-2: Short-Term Debt %
+**SQL Query** (same as L3-6-2-1):
+```sql
+Short_Term_Debt_Pct = (short_term_debt / current_liabilities_total) * 100
+```
+
+#### L3-6-4-1: Retained Earnings %
+**SQL Query** (from [data_manager.py](data_manager.py:681-692)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '07300' AND "Column" = '00300' THEN Value ELSE 0 END) as retained_earnings,
+    SUM(CASE WHEN CAST(line_level1 AS VARCHAR) = 'TOTAL EQUITIES'
+        THEN Value ELSE 0 END) as total_equity
+FROM worksheet_g000000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate percentage:
+Retained_Earnings_Pct = (retained_earnings / total_equity) * 100
+```
+
+#### L3-6-4-2: Depreciation Impact
+**SQL Query** (from [data_manager.py](data_manager.py:695-706)):
+```sql
+SELECT
+    SUM(CASE WHEN Line = '00300' AND "Column" = '00300' THEN Value ELSE 0 END) as depreciation,
+    SUM(CASE WHEN Line = '02100' AND "Column" = '00300' THEN Value ELSE 0 END) as fund_balance_change
+FROM worksheet_g100000
+WHERE Provider_Number = ? AND fiscal_year = ?
+
+-- Calculate impact:
+Depreciation_Impact = (depreciation / fund_balance_change) * 100
+```
+
+---
+
 ## LEVEL 2 KPIs (Driver Metrics)
 
 ### Net Income Margin Drivers
@@ -521,6 +1031,15 @@ Operating Expense Ratio = (Total Operating Expenses) ÷ (Total Revenue) × 100
 ```
 Numerator:   Worksheet G-3, Line 25 (Total Operating Expenses)
 Denominator: Worksheet G-3, Line 3 (Total Operating Revenue)
+```
+
+**Implementation** (from [data_manager.py](data_manager.py:933-937)):
+```python
+Operating_Expense_Ratio = np.where(
+    Total_Revenue > 0,
+    (Total_Operating_Expenses / Total_Revenue) * 100,
+    None
+)
 ```
 
 **Why It Affects Parent**: Higher expenses directly erode net income
@@ -2257,22 +2776,32 @@ DATABASE_PATH=hospital_analytics.duckdb
 This Hospital Dashboard application provides comprehensive financial analytics for 6,000+ hospitals using:
 
 - **78 KPIs** organized in 3-level hierarchy
+- **Complete implementation formulas** with actual SQL queries and Python code
 - **CMS HCRIS data** from 25+ worksheets spanning 5 years
 - **4-level benchmarking** (National/State/Type/State+Type)
 - **Sub-100ms queries** using pre-computed DuckDB database
 - **Interactive visualizations** with Dash and Plotly
 - **Secure authentication** for multi-user deployment
 
-All KPIs are traceable to specific HCRIS worksheet lines, with formulas clearly documented and data sources precisely identified. The pre-computation strategy delivers 50-300x performance improvement over on-demand calculation, enabling real-time interactive analysis.
+All KPIs are traceable to specific HCRIS worksheet lines, with formulas clearly documented, actual implementation code provided, and data sources precisely identified. The pre-computation strategy delivers 50-300x performance improvement over on-demand calculation, enabling real-time interactive analysis.
+
+### Key Documentation Sections
+
+1. **Section 4**: Complete KPI Reference - High-level formulas and HCRIS data sources
+2. **Section 5**: KPI Calculation Implementation ⭐ - Actual SQL queries and Python code from [data_manager.py](data_manager.py)
+3. **Section 6**: Data Sources and Origins - Detailed HCRIS worksheet mappings
+4. **Section 8**: Database Schema - Pre-computed table structures
 
 ---
 
 **For Questions or Support**:
 - Review this documentation
-- Check `kpi_hierarchy_config.py` for KPI definitions
-- Review `dashboard.py` for implementation details
+- Check [kpi_hierarchy_config.py](kpi_hierarchy_config.py) for KPI definitions
+- Review [data/data_manager.py](data/data_manager.py) for calculation implementation
+- Review [dashboard.py](dashboard.py) for UI implementation
 - Consult CMS HCRIS documentation for worksheet references
 
-**Version**: 1.0
-**Last Updated**: 2025-11-22
+**Version**: 1.1
+**Last Updated**: 2025-11-24
 **Total KPIs Documented**: 78 (6 Level 1 + 24 Level 2 + 48 Level 3)
+**Formulas with Implementation**: 30+ (Level 1, 2, and 3 KPIs)

@@ -10,7 +10,8 @@
       "Bash(taskkill:*)",
       "Bash(timeout 20 python:*)",
       "Bash(NUL)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []
