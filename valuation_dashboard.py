@@ -184,7 +184,8 @@ def populate_years(provider_number):
 
         years = df['Fiscal_Year'].tolist()
         return [{'label': str(year), 'value': year} for year in years], years[0]
-    except:
+    except Exception as e:
+        print(f"Error loading years for provider {provider_number}: {e}")
         conn.close()
         return [], None
 

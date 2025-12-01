@@ -68,7 +68,8 @@ def classify_hospital_type(ccn):
             return 'Psychiatric'
         else:
             return 'Other'
-    except:
+    except (ValueError, TypeError, IndexError) as e:
+        logger.error(f"Error classifying hospital type for CCN {ccn}: {e}")
         return 'Unknown'
 
 

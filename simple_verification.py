@@ -37,7 +37,8 @@ def get_available_tables(con):
     try:
         result = con.execute("SHOW TABLES").df()
         return result['name'].tolist()
-    except:
+    except Exception as e:
+        print(f"Error getting tables: {e}")
         return []
 
 def check_data_for_ccn_year(con, ccn, year):

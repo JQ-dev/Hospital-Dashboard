@@ -20,6 +20,8 @@ import flask
 from flask import session as flask_session
 import secrets
 
+from utils.logging_config import get_logger
+
 # Import authentication modules
 from auth_manager import auth_manager
 from auth_components import (
@@ -567,27 +569,27 @@ def navigate(register_clicks, login_clicks, login_employee_clicks, login_individ
     """Handle navigation between login and register pages"""
     ctx = callback_context
 
-    print(f"[NAVIGATION] Callback triggered! ctx.triggered: {ctx.triggered}")
-    print(f"[NAVIGATION] Clicks - register: {register_clicks}, login: {login_clicks}, employee: {login_employee_clicks}, individual: {login_individual_clicks}")
+    logger.info(f"[NAVIGATION] Callback triggered! ctx.triggered: {ctx.triggered}")
+    logger.info(f"[NAVIGATION] Clicks - register: {register_clicks}, login: {login_clicks}, employee: {login_employee_clicks}, individual: {login_individual_clicks}")
 
     # More robust check for triggered component
     if not ctx.triggered or not ctx.triggered[0]:
-        print("[NAVIGATION] No trigger detected, returning no_update")
+        logger.info("[NAVIGATION] No trigger detected, returning no_update")
         return dash.no_update
 
     # Get the ID of the component that triggered the callback
     triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
-    print(f"[NAVIGATION] Triggered ID: {triggered_id}")
+    logger.info(f"[NAVIGATION] Triggered ID: {triggered_id}")
 
     # Route based on which link was clicked
     if triggered_id == 'show-register-link':
-        print("[NAVIGATION] Navigating to /register")
+        logger.info("[NAVIGATION] Navigating to /register")
         return '/register'
     elif triggered_id in ['show-login-link', 'show-login-link-employee', 'show-login-link-individual']:
-        print("[NAVIGATION] Navigating to /")
+        logger.info("[NAVIGATION] Navigating to /")
         return '/'
 
-    print("[NAVIGATION] No match, returning no_update")
+    logger.info("[NAVIGATION] No match, returning no_update")
     return dash.no_update
 
 
@@ -622,7 +624,7 @@ def load_hospital_list(pathname):
             ]
             return options
         except Exception as e:
-            print(f"Error loading hospitals: {e}")
+            logger.error(f"Error loading hospitals: {e}")
             return []
     return []
 
@@ -674,9 +676,9 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
         latest_year = kpi_data['Fiscal_Year'].max()
 
         # Get benchmarks
-        print(f"[AUTH-DASHBOARD] Calculating benchmarks for {ccn} at {benchmark_level} level...")
+        logger.info(f"[AUTH-DASHBOARD] Calculating benchmarks for {ccn} at {benchmark_level} level...")
         benchmark_data = data_manager.get_benchmarks(ccn, latest_year, benchmark_level)
-        print(f"[AUTH-DASHBOARD] Benchmarks calculated: {benchmark_data.get('provider_count', 0)} peers")
+        logger.info(f"[AUTH-DASHBOARD] Benchmarks calculated: {benchmark_data.get('provider_count', 0)} peers")
 
         # Rank KPIs by priority
         kpi_rankings = []
@@ -755,8 +757,10 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
         )
 
     except Exception as e:
-        print(f"Error loading KPIs: {e}")
+        logger.error(f"Error loading KPIs: {e}")
         import traceback
+
+logger = get_logger(__name__)
         traceback.print_exc()
         return f"CCN {ccn}", "Error", "Error", "0", dbc.Alert(f"Error loading KPI data: {str(e)}", color="danger")
 
@@ -769,17 +773,17 @@ if __name__ == '__main__':
     # Cleanup expired sessions on startup
     cleaned = auth_manager.cleanup_expired_sessions()
     if cleaned > 0:
-        print(f"Cleaned up {cleaned} expired sessions")
+        logger.info(f"Cleaned up {cleaned} expired sessions")
 
-    print("\n" + "="*70)
-    print("Hospital KPI Dashboard with Authentication")
-    print("="*70)
-    print("\nServer starting...")
-    print("Access the dashboard at: http://127.0.0.1:8050")
-    print("\nSupported account types:")
-    print("  - Company (organizations with employees)")
-    print("  - Employee (part of a company)")
-    print("  - Individual (independent users)")
-    print("\n" + "="*70 + "\n")
+    logger.info("\n" + "="*70)
+    logger.info("Hospital KPI Dashboard with Authentication")
+    logger.info("="*70)
+    logger.info("\nServer starting...")
+    logger.info("Access the dashboard at: http://127.0.0.1:8050")
+    logger.info("\nSupported account types:")
+    logger.info("  - Company (organizations with employees)")
+    logger.info("  - Employee (part of a company)")
+    logger.info("  - Individual (independent users)")
+    logger.info("\n" + "="*70 + "\n")
 
     app.run_server(debug=True, port=8050)

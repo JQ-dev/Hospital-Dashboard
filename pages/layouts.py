@@ -7,19 +7,23 @@ This module contains the layout functions for different pages in the dashboard.
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
+from utils.logging_config import get_logger
+
 from config.mappings import DB_COLUMN_TO_KPI_KEY
 from components.kpi_cards import create_enhanced_level1_kpi_card
 from kpi_hierarchy_config import KPI_HIERARCHY
+
+logger = get_logger(__name__)
 
 
 def get_hospital_options(data_manager):
     """Get list of hospitals from parquet files for dropdown"""
     try:
         hospitals_df = data_manager.get_available_hospitals()
-        print(f"Found {len(hospitals_df)} hospitals in parquet files")
+        logger.info(f"Found {len(hospitals_df)} hospitals in parquet files")
 
         if hospitals_df.empty:
-            print("No hospitals found, using default")
+            logger.info("No hospitals found, using default")
             return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
 
         options = []
@@ -32,10 +36,10 @@ def get_hospital_options(data_manager):
             label = f"{ccn} - {hosp_type}, State {state} ({year_count} years)"
             options.append({'label': label, 'value': ccn})
 
-        print(f"Generated {len(options)} dropdown options")
+        logger.info(f"Generated {len(options)} dropdown options")
         return options
     except Exception as e:
-        print(f"Error loading hospitals: {e}")
+        logger.error(f"Error loading hospitals: {e}")
         return [{'label': '010001 - Default Hospital, State 01', 'value': '010001'}]
 
 

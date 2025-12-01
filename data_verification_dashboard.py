@@ -44,7 +44,8 @@ def get_available_tables(con):
     try:
         tables_df = con.execute("SHOW TABLES").df()
         return sorted(tables_df['name'].tolist())
-    except:
+    except Exception as e:
+        print(f"Error getting tables: {e}")
         return []
 
 def get_hospitals_list(con):
