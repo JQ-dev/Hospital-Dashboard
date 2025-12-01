@@ -6,8 +6,12 @@ Deployable to free cloud services (Render, Railway, Fly.io)
 import os
 from pathlib import Path
 
+from utils.logging_config import get_logger
+
 # Import the authenticated app
 from app_with_auth import app, server, auth_manager
+
+logger = get_logger(__name__)
 
 # ============================================================================
 # PRODUCTION CONFIGURATION
@@ -35,26 +39,26 @@ if __name__ == '__main__':
     try:
         cleaned = auth_manager.cleanup_expired_sessions()
         if cleaned > 0:
-            print(f"Cleaned up {cleaned} expired sessions")
+            logger.info(f"Cleaned up {cleaned} expired sessions")
     except Exception as e:
-        print(f"Warning: Could not clean sessions: {e}")
+        logger.warning(f"Warning: Could not clean sessions: {e}")
 
-    print("\n" + "="*70)
-    print("Hospital KPI Dashboard with Authentication")
-    print("="*70)
-    print(f"\nEnvironment: {'Development' if DEBUG else 'Production'}")
-    print(f"Server starting on {HOST}:{PORT}")
-    print("\nSupported account types:")
-    print("  - Company (organizations with employees)")
-    print("  - Employee (part of a company)")
-    print("  - Individual (independent users)")
+    logger.info("\n" + "="*70)
+    logger.info("Hospital KPI Dashboard with Authentication")
+    logger.info("="*70)
+    logger.debug(f"\nEnvironment: {'Development' if DEBUG else 'Production'}")
+    logger.info(f"Server starting on {HOST}:{PORT}")
+    logger.info("\nSupported account types:")
+    logger.info("  - Company (organizations with employees)")
+    logger.info("  - Employee (part of a company)")
+    logger.info("  - Individual (independent users)")
 
     if not DEBUG:
-        print("\n⚠️  Running in PRODUCTION mode")
-        print("   - Debug mode is OFF")
-        print("   - Using gunicorn in production")
+        logger.info("\n⚠️  Running in PRODUCTION mode")
+        logger.debug("   - Debug mode is OFF")
+        logger.info("   - Using gunicorn in production")
 
-    print("\n" + "="*70 + "\n")
+    logger.info("\n" + "="*70 + "\n")
 
     # Run server
     app.run_server(

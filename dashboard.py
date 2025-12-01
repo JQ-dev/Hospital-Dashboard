@@ -27,6 +27,8 @@ import dash_bootstrap_components as dbc
 from pathlib import Path
 import sys
 
+from utils.logging_config import get_logger
+
 # Add project root to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -47,6 +49,8 @@ from pages.layouts import get_hospital_options
 
 # Import all callback modules
 from callbacks import (
+
+logger = get_logger(__name__)
     dashboard_callbacks,
     financial_statements_callbacks,
     cost_worksheets_callbacks,
@@ -70,9 +74,9 @@ app.config.suppress_callback_exceptions = True
 # Initialize data manager
 data_manager = HospitalDataManager()
 
-print("Loading hospitals from parquet files...")
+logger.info("Loading hospitals from parquet files...")
 hospital_options = get_hospital_options(data_manager)
-print(f"Hospital options ready: {len(hospital_options)} hospitals")
+logger.info(f"Hospital options ready: {len(hospital_options)} hospitals")
 
 # ============================================================================
 # APP LAYOUT
@@ -111,21 +115,21 @@ valuation_callbacks.register_callbacks(app, data_manager)
 # ============================================================================
 
 if __name__ == '__main__':
-    print("\n" + "="*70)
-    print("Hospital KPI Dashboard")
-    print("="*70)
+    logger.info("\n" + "="*70)
+    logger.info("Hospital KPI Dashboard")
+    logger.info("="*70)
 
     # Show data source information
     if data_manager.use_database:
-        print(f"[OK] Data Source: DuckDB Database ({data_manager.db_path})")
-        print("[OK] Performance: Fast queries with indexes")
+        logger.info(f"[OK] Data Source: DuckDB Database ({data_manager.db_path})")
+        logger.info("[OK] Performance: Fast queries with indexes")
     else:
-        print("[WARN] Data Source: Parquet files (no database)")
-        print("[WARN] Performance: Slower queries, consider creating database")
+        logger.warning("[WARN] Data Source: Parquet files (no database)")
+        logger.warning("[WARN] Performance: Slower queries, consider creating database")
 
-    print(f"[OK] Hospitals loaded: {len(hospital_options)}")
-    print("="*70)
-    print("\nStarting server at http://127.0.0.1:8050")
-    print("   Press Ctrl+C to stop\n")
+    logger.info(f"[OK] Hospitals loaded: {len(hospital_options)}")
+    logger.info("="*70)
+    logger.info("\nStarting server at http://127.0.0.1:8050")
+    logger.info("   Press Ctrl+C to stop\n")
 
     app.run(debug=True, host='127.0.0.1', port=8050)

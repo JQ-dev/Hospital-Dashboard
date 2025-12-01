@@ -24,6 +24,10 @@ import duckdb
 from pathlib import Path
 from datetime import datetime
 
+from utils.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 # Register this page
 dash.register_page(__name__, path='/hospital-master', name='Hospital Directory')
 
@@ -118,7 +122,7 @@ def get_hospital_master_data(filters=None):
         return df
 
     except Exception as e:
-        print(f"Error loading hospital master data: {e}")
+        logger.error(f"Error loading hospital master data: {e}")
         return pd.DataFrame()
     finally:
         con.close()
@@ -183,7 +187,7 @@ def get_filter_options():
         return state_options, type_options, status_options
 
     except Exception as e:
-        print(f"Error getting filter options: {e}")
+        logger.error(f"Error getting filter options: {e}")
         return [], [], []
     finally:
         con.close()
@@ -229,7 +233,7 @@ def get_summary_stats():
         }
 
     except Exception as e:
-        print(f"Error getting summary stats: {e}")
+        logger.error(f"Error getting summary stats: {e}")
         return {}
     finally:
         con.close()

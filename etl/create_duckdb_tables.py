@@ -671,7 +671,8 @@ def create_hospital_analytics_database(ccn_list=None, db_name='hospital_analytic
         try:
             count = con.execute(count_query).fetchone()[0]
             logger.info(f"  • {table}: {count:,} records")
-        except:
+        except Exception as e:
+            logger.debug(f"Could not count records for {table}: {e}")
             logger.info(f"  • {table}: (view/table)")
 
     # Show sample data

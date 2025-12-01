@@ -8,6 +8,8 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import json
 
+from utils.logging_config import get_logger
+
 from config.mappings import DB_COLUMN_TO_KPI_KEY
 from kpi_hierarchy_config import KPI_METADATA
 from utils.kpi_helpers import (
@@ -17,6 +19,8 @@ from utils.kpi_helpers import (
 )
 from components.kpi_cards import create_enhanced_level1_kpi_card
 from pages.layouts import get_main_dashboard_layout, get_level2_page_layout
+
+logger = get_logger(__name__)
 
 
 def register_callbacks(app, data_manager, hospital_options):
@@ -60,47 +64,47 @@ def register_callbacks(app, data_manager, hospital_options):
         state_code = ccn_str[:2]
 
         # DEBUG: Log data source status
-        print(f"\n[DEBUG] Data Manager Status:")
-        print(f"  - Using database: {data_manager.use_database}")
-        print(f"  - Using precomputed KPIs: {data_manager.use_precomputed}")
-        print(f"  - Using worksheets: {data_manager.use_worksheets}")
-        print(f"  - Worksheet tables available: {len(data_manager.worksheet_tables) if data_manager.worksheet_tables else 0}")
+        logger.debug(f"\n[DEBUG] Data Manager Status:")
+        logger.info(f"  - Using database: {data_manager.use_database}")
+        logger.info(f"  - Using precomputed KPIs: {data_manager.use_precomputed}")
+        logger.info(f"  - Using worksheets: {data_manager.use_worksheets}")
+        logger.info(f"  - Worksheet tables available: {len(data_manager.worksheet_tables) if data_manager.worksheet_tables else 0}")
 
         # Get KPI data
         kpi_data = data_manager.calculate_kpis(ccn)
 
-        print(f"\n[DEBUG] KPI Data for CCN {ccn}:")
-        print(f"  - DataFrame shape: {kpi_data.shape}")
-        print(f"  - Columns: {list(kpi_data.columns)}")
+        logger.debug(f"\n[DEBUG] KPI Data for CCN {ccn}:")
+        logger.info(f"  - DataFrame shape: {kpi_data.shape}")
+        logger.info(f"  - Columns: {list(kpi_data.columns)}")
         if not kpi_data.empty:
-            print(f"  - Fiscal years: {sorted(kpi_data['Fiscal_Year'].unique())}")
-            print(f"  - Sample data (first row): {kpi_data.iloc[0].to_dict() if len(kpi_data) > 0 else 'No rows'}")
+            logger.info(f"  - Fiscal years: {sorted(kpi_data['Fiscal_Year'].unique())}")
+            logger.info(f"  - Sample data (first row): {kpi_data.iloc[0].to_dict() if len(kpi_data) > 0 else 'No rows'}")
 
         if kpi_data.empty:
-            print("[DEBUG] No KPI data available - returning early")
+            logger.debug("[DEBUG] No KPI data available - returning early")
             return "N/A", "N/A", "N/A", "N/A", html.Div("No data available"), ccn
 
         latest_year = kpi_data['Fiscal_Year'].max()
 
         # Calculate Level 2 KPIs
-        print(f"Calculating Level 2 KPIs for {ccn}, year {latest_year}...")
+        logger.info(f"Calculating Level 2 KPIs for {ccn}, year {latest_year}...")
         l2_kpis = data_manager.calculate_level2_kpis(ccn, latest_year)
         if l2_kpis:
-            print(f"Level 2 KPIs calculated: {sum(1 for v in l2_kpis.values() if v is not None)}/{len(l2_kpis)} KPIs")
+            logger.info(f"Level 2 KPIs calculated: {sum(1 for v in l2_kpis.values() if v is not None)}/{len(l2_kpis)} KPIs")
         else:
-            print("Level 2 KPIs not available (worksheet database not connected)")
+            logger.info("Level 2 KPIs not available (worksheet database not connected)")
 
         # Calculate Level 3 KPIs
-        print(f"Calculating Level 3 KPIs for {ccn}, year {latest_year}...")
+        logger.info(f"Calculating Level 3 KPIs for {ccn}, year {latest_year}...")
         l3_kpis = data_manager.calculate_level3_kpis(ccn, latest_year)
         if l3_kpis:
-            print(f"Level 3 KPIs calculated: {sum(1 for v in l3_kpis.values() if v is not None)}/{len(l3_kpis)} KPIs")
+            logger.info(f"Level 3 KPIs calculated: {sum(1 for v in l3_kpis.values() if v is not None)}/{len(l3_kpis)} KPIs")
         else:
-            print("Level 3 KPIs not available (worksheet database not connected)")
+            logger.info("Level 3 KPIs not available (worksheet database not connected)")
 
         # Calculate ALL 4 benchmark levels (for new enhanced card design)
         # Order: State & Type (most specific), State, Hospital Type, National (broadest)
-        print(f"Calculating benchmarks for {ccn} at all levels...")
+        logger.info(f"Calculating benchmarks for {ccn} at all levels...")
         all_benchmarks = {
             'state_hospital_type': data_manager.get_benchmarks(ccn, latest_year, 'State_Hospital_Type'),
             'state': data_manager.get_benchmarks(ccn, latest_year, 'State'),
@@ -109,7 +113,7 @@ def register_callbacks(app, data_manager, hospital_options):
         }
         # Use state & type (most specific) as primary benchmark for display purposes (shown in header)
         benchmark_data = all_benchmarks['state_hospital_type']
-        print(f"Benchmarks calculated: State & Type={all_benchmarks['state_hospital_type']['provider_count']}, State={all_benchmarks['state']['provider_count']}, Type={all_benchmarks['hospital_type']['provider_count']}, National={all_benchmarks['national']['provider_count']} peers")
+        logger.info(f"Benchmarks calculated: State & Type={all_benchmarks['state_hospital_type']['provider_count']}, State={all_benchmarks['state']['provider_count']}, Type={all_benchmarks['hospital_type']['provider_count']}, National={all_benchmarks['national']['provider_count']} peers")
 
         # Create KPI cards
         kpi_cards = []
@@ -133,15 +137,15 @@ def register_callbacks(app, data_manager, hospital_options):
                 kpi_key_to_db_col[kpi_key] = db_col
 
         # DEBUG: Log KPI key to column mapping
-        print(f"\n[DEBUG] KPI Key to DB Column Mapping:")
+        logger.debug(f"\n[DEBUG] KPI Key to DB Column Mapping:")
         for k, v in kpi_key_to_db_col.items():
-            print(f"  {k} -> {v}")
+            logger.info(f"  {k} -> {v}")
 
         # Loop through ALL Level 1 KPIs to ensure all 6 show up
         for kpi_key in LEVEL_1_KPIS:
             # Skip if not in metadata
             if kpi_key not in KPI_METADATA:
-                print(f"[DEBUG] Skipping {kpi_key} - not in KPI_METADATA")
+                logger.debug(f"[DEBUG] Skipping {kpi_key} - not in KPI_METADATA")
                 continue
 
             # Get KPI metadata
@@ -155,13 +159,13 @@ def register_callbacks(app, data_manager, hospital_options):
                 # We have data - use actual values
                 kpi_values = kpi_data[db_col].values
                 kpi_value = kpi_values[0] if len(kpi_values) > 0 else None
-                print(f"[DEBUG] {kpi_key}: Found column '{db_col}', value = {kpi_value}")
+                logger.debug(f"[DEBUG] {kpi_key}: Found column '{db_col}', value = {kpi_value}")
             else:
                 # No data available - show as "Data Not Available"
                 kpi_values = [None] * len(kpi_data)
                 kpi_value = None
                 db_col = None  # Mark as no column available
-                print(f"[DEBUG] {kpi_key}: No column found (looked for '{kpi_key}' -> '{db_col}'), value = None")
+                logger.debug(f"[DEBUG] {kpi_key}: No column found (looked for '{kpi_key}' -> '{db_col}'), value = None")
 
             # Get benchmark (use metadata key)
             benchmark_kpis = benchmark_data.get('kpis', {})

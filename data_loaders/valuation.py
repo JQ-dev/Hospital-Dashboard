@@ -4,6 +4,10 @@ Valuation Data Loaders - Functions to load data for valuation analysis
 
 import pandas as pd
 
+from utils.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 
 def load_valuation_income_statement(data_manager, ccn, fiscal_year):
     """Load income statement data for valuation analysis"""
@@ -24,7 +28,7 @@ def load_valuation_income_statement(data_manager, ccn, fiscal_year):
         con.close()
         return df
     except Exception as e:
-        print(f"Error loading income statement for valuation: {e}")
+        logger.error(f"Error loading income statement for valuation: {e}")
         con.close()
         return pd.DataFrame()
 
@@ -51,6 +55,6 @@ def load_valuation_expense_detail(data_manager, ccn, fiscal_year):
         con.close()
         return df
     except Exception as e:
-        print(f"Error loading expense detail for valuation: {e}")
+        logger.error(f"Error loading expense detail for valuation: {e}")
         con.close()
         return pd.DataFrame()
