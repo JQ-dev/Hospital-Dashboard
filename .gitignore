@@ -1,5 +1,8 @@
 # Data files - DO NOT COMMIT
 data/
+# But allow Python modules in data/
+!data/*.py
+!data/__init__.py
 *.duckdb
 *.duckdb.wal
 *.parquet
