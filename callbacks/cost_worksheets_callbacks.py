@@ -51,7 +51,10 @@ def register_callbacks(app, data_manager):
             options = [{'label': str(int(year)), 'value': int(year)} for year in years]
             default_value = int(years[0])  # Most recent year
             return options, default_value
-        except:
+        except Exception as e:
+            # Log error but return empty to avoid crashing the UI
+            import logging
+            logging.getLogger(__name__).debug(f"Error loading years for detailed costs: {e}")
             return [], None
 
     # Load detailed costs (Worksheet A)
@@ -199,6 +202,9 @@ def register_callbacks(app, data_manager):
             default_value = int(years[0])  # Most recent year
             return options, default_value
         except Exception as e:
+            # Log error but return empty to avoid crashing the UI
+            import logging
+            logging.getLogger(__name__).debug(f"Error loading years for worksheet B: {e}")
             return [], None
 
     # Load Worksheet B (Overhead Costs)

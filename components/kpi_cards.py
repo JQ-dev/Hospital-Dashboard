@@ -104,7 +104,7 @@ def create_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
                 html.Hr(),
                 html.Small("Benchmark Comparison", className="text-muted d-block mb-2"),
                 html.Div([
-                    html.Strong(f"Mean: {format(mean, fmt)}{unit}" if mean else "Mean: N/A",
+                    html.Strong(f"Mean: {mean:{fmt}}{unit}" if mean is not None else "Mean: N/A",
                                className="text-primary me-3"),
                     dbc.Badge(perf_label if perf_label else "N/A", color=perf_color, className="me-2")
                 ], className="mb-2"),
@@ -115,9 +115,9 @@ def create_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_years,
                     dbc.Progress(value=25, color="success", bar=True),
                 ], className="mb-2", style={'height': '8px'}),
                 dbc.Row([
-                    dbc.Col(html.Small(f"P25: {format(p25, fmt)}{unit}" if p25 else "N/A"), width=4),
-                    dbc.Col(html.Small(f"Median: {format(median, fmt)}{unit}" if median else "N/A"), width=4),
-                    dbc.Col(html.Small(f"P75: {format(p75, fmt)}{unit}" if p75 else "N/A"), width=4)
+                    dbc.Col(html.Small(f"P25: {p25:{fmt}}{unit}" if p25 is not None else "N/A"), width=4),
+                    dbc.Col(html.Small(f"Median: {median:{fmt}}{unit}" if median is not None else "N/A"), width=4),
+                    dbc.Col(html.Small(f"P75: {p75:{fmt}}{unit}" if p75 is not None else "N/A"), width=4)
                 ])
             ]),
 
@@ -496,7 +496,7 @@ def create_enhanced_level1_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal
             # Current Value with Trend
             html.Div([
                 html.H2([
-                    f"{format(kpi_value, fmt)}{unit}" if not pd.isna(kpi_value) else "N/A",
+                    f"{kpi_value:{fmt}}{unit}" if kpi_value is not None and not pd.isna(kpi_value) else "N/A",
                     html.Span([
                         html.I(className=f"fas {trend_icon} ms-3"),
                         f" {abs(trend_pct):.1f}% vs Last Year"
@@ -813,7 +813,7 @@ def create_hierarchical_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_ye
 
             # KPI Value
             html.H3([
-                f"{format(kpi_value, fmt)}{unit}" if not pd.isna(kpi_value) else "N/A",
+                f"{kpi_value:{fmt}}{unit}" if kpi_value is not None and not pd.isna(kpi_value) else "N/A",
                 html.Span([
                     html.I(className=f"fas {trend_icon} ms-2"),
                     f" {abs(trend_pct):.1f}%"
@@ -834,7 +834,7 @@ def create_hierarchical_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_ye
                 html.Hr(),
                 html.Small("Benchmark Comparison", className="text-muted d-block mb-2"),
                 html.Div([
-                    html.Strong(f"Mean: {format(mean, fmt)}{unit}" if mean else "Mean: N/A",
+                    html.Strong(f"Mean: {mean:{fmt}}{unit}" if mean is not None else "Mean: N/A",
                                className="text-primary me-3"),
                     dbc.Badge(perf_label if perf_label else "N/A", color=perf_color, className="me-2")
                 ], className="mb-2"),
@@ -845,9 +845,9 @@ def create_hierarchical_kpi_card(kpi_key, kpi_value, kpi_trend_values, fiscal_ye
                     dbc.Progress(value=25, color="success", bar=True),
                 ], className="mb-2", style={'height': '8px'}),
                 dbc.Row([
-                    dbc.Col(html.Small(f"P25: {format(p25, fmt)}{unit}" if p25 else "N/A"), width=4),
-                    dbc.Col(html.Small(f"Median: {format(median, fmt)}{unit}" if median else "N/A"), width=4),
-                    dbc.Col(html.Small(f"P75: {format(p75, fmt)}{unit}" if p75 else "N/A"), width=4)
+                    dbc.Col(html.Small(f"P25: {p25:{fmt}}{unit}" if p25 is not None else "N/A"), width=4),
+                    dbc.Col(html.Small(f"Median: {median:{fmt}}{unit}" if median is not None else "N/A"), width=4),
+                    dbc.Col(html.Small(f"P75: {p75:{fmt}}{unit}" if p75 is not None else "N/A"), width=4)
                 ])
             ]),
 

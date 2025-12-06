@@ -10,6 +10,11 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import duckdb
 from pathlib import Path
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize Dash app
 app = dash.Dash(
@@ -44,8 +49,11 @@ def get_available_tables(con):
     try:
         tables_df = con.execute("SHOW TABLES").df()
         return sorted(tables_df['name'].tolist())
+    except duckdb.Error as e:
+        logger.error(f"Database error getting tables: {e}")
+        return []
     except Exception as e:
-        print(f"Error getting tables: {e}")
+        logger.error(f"Error getting tables: {e}")
         return []
 
 def get_hospitals_list(con):
@@ -66,7 +74,8 @@ def get_hospitals_list(con):
             ORDER BY Provider_Number
         """).df()
         return hospitals
-    except:
+    except duckdb.Error as e:
+        logger.debug(f"hospital_kpis table not available: {e}")
         try:
             # Fallback to balance_sheet if available
             hospitals = con.execute("""
@@ -80,7 +89,11 @@ def get_hospitals_list(con):
                 ORDER BY Provider_Number
             """).df()
             return hospitals
-        except:
+        except duckdb.Error as e:
+            logger.debug(f"balance_sheet table not available: {e}")
+            return pd.DataFrame()
+        except Exception as e:
+            logger.error(f"Error loading hospitals from balance_sheet: {e}")
             return pd.DataFrame()
 
 def check_table_data_for_hospital(con, table_name, provider_number):
@@ -145,9 +158,7 @@ def check_table_data_for_hospital(con, table_name, provider_number):
             'year_count': year_count
         }
     except Exception as e:
-        print(f"Error checking {table_name} for {provider_number}: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.error(f"Error checking {table_name} for {provider_number}: {e}", exc_info=True)
         return {'status': 'error', 'record_count': 0, 'years': [], 'year_count': 0}
 
 def check_table_data_by_year(con, table_name):
@@ -180,7 +191,7 @@ def check_table_data_by_year(con, table_name):
 
         return result
     except Exception as e:
-        print(f"Error checking {table_name} by year: {e}")
+        logger.error(f"Error checking {table_name} by year: {e}")
         return pd.DataFrame()
 
 def check_all_tables_for_hospital(con, tables_list, provider_number):
@@ -191,7 +202,7 @@ def check_all_tables_for_hospital(con, tables_list, provider_number):
     provider_str = str(provider_number).strip()
     all_data = []
 
-    print(f"\n[DEBUG] Checking {len(tables_list)} tables for hospital {provider_number}")
+    logger.debug(f"Checking {len(tables_list)} tables for hospital {provider_number}")
     tables_checked = 0
     tables_with_data = 0
     tables_skipped = 0
@@ -205,7 +216,7 @@ def check_all_tables_for_hospital(con, tables_list, provider_number):
 
             if not has_provider_col or not has_fiscal_year:
                 tables_skipped += 1
-                print(f"  [SKIP] {table_name} - Missing required columns (Provider_Number: {has_provider_col}, Fiscal_Year: {has_fiscal_year})")
+                logger.debug(f"[SKIP] {table_name} - Missing required columns (Provider_Number: {has_provider_col}, Fiscal_Year: {has_fiscal_year})")
                 continue
 
             tables_checked += 1
@@ -228,22 +239,22 @@ def check_all_tables_for_hospital(con, tables_list, provider_number):
                 result['Table'] = table_name
                 all_data.append(result)
                 tables_with_data += 1
-                print(f"  [OK] {table_name} - Found {len(result)} years with data")
+                logger.debug(f"[OK] {table_name} - Found {len(result)} years with data")
             else:
-                print(f"  [EMPTY] {table_name} - No data for this hospital")
+                logger.debug(f"[EMPTY] {table_name} - No data for this hospital")
 
         except Exception as e:
-            print(f"  [ERROR] {table_name}: {e}")
+            logger.warning(f"[ERROR] {table_name}: {e}")
             continue
 
-    print(f"\n[SUMMARY] Checked: {tables_checked}, With Data: {tables_with_data}, Skipped: {tables_skipped}")
+    logger.debug(f"[SUMMARY] Checked: {tables_checked}, With Data: {tables_with_data}, Skipped: {tables_skipped}")
 
     if all_data:
         combined_df = pd.concat(all_data, ignore_index=True)
-        print(f"[RESULT] Combined DataFrame has {len(combined_df)} rows across {len(all_data)} tables")
+        logger.debug(f"[RESULT] Combined DataFrame has {len(combined_df)} rows across {len(all_data)} tables")
         return combined_df
     else:
-        print(f"[RESULT] No data found for hospital {provider_number}")
+        logger.debug(f"[RESULT] No data found for hospital {provider_number}")
         return pd.DataFrame()
 
 # Layout
@@ -910,12 +921,12 @@ def update_table_year_matrix(selected_hospital, db_type, hospitals_data, tables_
     ])
 
 if __name__ == '__main__':
-    print("=" * 80)
-    print("Data Verification Dashboard")
-    print("=" * 80)
-    print(f"Main Database: {DB_PATH}")
-    print(f"Worksheet Database: {WORKSHEET_DB_PATH}")
-    print(f"\nStarting server on http://localhost:8051")
-    print("=" * 80)
+    logger.info("=" * 80)
+    logger.info("Data Verification Dashboard")
+    logger.info("=" * 80)
+    logger.info(f"Main Database: {DB_PATH}")
+    logger.info(f"Worksheet Database: {WORKSHEET_DB_PATH}")
+    logger.info(f"Starting server on http://localhost:8051")
+    logger.info("=" * 80)
 
     app.run(debug=True, port=8051, host='0.0.0.0')
