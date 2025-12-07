@@ -11,7 +11,8 @@
       "Bash(timeout 20 python:*)",
       "Bash(NUL)",
       "Bash(timeout:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": []

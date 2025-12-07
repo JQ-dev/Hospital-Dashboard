@@ -54,14 +54,14 @@ if __name__ == '__main__':
     logger.info("  - Individual (independent users)")
 
     if not DEBUG:
-        logger.info("\n⚠️  Running in PRODUCTION mode")
+        logger.info("\nRunning in PRODUCTION mode")
         logger.debug("   - Debug mode is OFF")
         logger.info("   - Using gunicorn in production")
 
     logger.info("\n" + "="*70 + "\n")
 
     # Run server
-    app.run_server(
+    app.run(
         debug=DEBUG,
         host=HOST,
         port=PORT

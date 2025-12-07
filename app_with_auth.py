@@ -759,8 +759,6 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
     except Exception as e:
         logger.error(f"Error loading KPIs: {e}")
         import traceback
-
-logger = get_logger(__name__)
         traceback.print_exc()
         return f"CCN {ccn}", "Error", "Error", "0", dbc.Alert(f"Error loading KPI data: {str(e)}", color="danger")
 

@@ -49,8 +49,6 @@ from pages.layouts import get_hospital_options
 
 # Import all callback modules
 from callbacks import (
-
-logger = get_logger(__name__)
     dashboard_callbacks,
     financial_statements_callbacks,
     cost_worksheets_callbacks,
@@ -58,6 +56,8 @@ logger = get_logger(__name__)
     cms_worksheets_callbacks,
     valuation_callbacks
 )
+
+logger = get_logger(__name__)
 
 # ============================================================================
 # DASH APP INITIALIZATION
