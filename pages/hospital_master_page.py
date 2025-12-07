@@ -63,30 +63,36 @@ def get_hospital_master_data(filters=None):
         if 'hospital_master' not in table_names:
             return pd.DataFrame()
 
-        # Build query with filters
+        # Build query with filters using parameterized queries to prevent SQL injection
         where_clauses = []
+        params = []
 
         if filters:
             if filters.get('state_codes'):
-                state_list = "', '".join(filters['state_codes'])
-                where_clauses.append(f"state_code IN ('{state_list}')")
+                placeholders = ', '.join(['?' for _ in filters['state_codes']])
+                where_clauses.append(f"state_code IN ({placeholders})")
+                params.extend(filters['state_codes'])
 
             if filters.get('hospital_types'):
-                type_list = "', '".join(filters['hospital_types'])
-                where_clauses.append(f"hospital_type IN ('{type_list}')")
+                placeholders = ', '.join(['?' for _ in filters['hospital_types']])
+                where_clauses.append(f"hospital_type IN ({placeholders})")
+                params.extend(filters['hospital_types'])
 
             if filters.get('statuses'):
-                status_list = "', '".join(filters['statuses'])
-                where_clauses.append(f"status IN ('{status_list}')")
+                placeholders = ', '.join(['?' for _ in filters['statuses']])
+                where_clauses.append(f"status IN ({placeholders})")
+                params.extend(filters['statuses'])
 
             if filters.get('search_text'):
-                search = filters['search_text']
-                where_clauses.append(f"""
-                    (LOWER(hospital_name) LIKE '%{search.lower()}%'
-                     OR LOWER(city) LIKE '%{search.lower()}%'
-                     OR ccn LIKE '%{search}%'
-                     OR npi LIKE '%{search}%')
+                search = filters['search_text'].lower()
+                where_clauses.append("""
+                    (LOWER(hospital_name) LIKE ?
+                     OR LOWER(city) LIKE ?
+                     OR ccn LIKE ?
+                     OR npi LIKE ?)
                 """)
+                search_pattern = f'%{search}%'
+                params.extend([search_pattern, search_pattern, search_pattern, search_pattern])
 
         where_sql = "WHERE " + " AND ".join(where_clauses) if where_clauses else ""
 
@@ -118,7 +124,7 @@ def get_hospital_master_data(filters=None):
             ORDER BY state_code, city, hospital_name
         """
 
-        df = con.execute(query).df()
+        df = con.execute(query, params).df()
         return df
 
     except Exception as e:

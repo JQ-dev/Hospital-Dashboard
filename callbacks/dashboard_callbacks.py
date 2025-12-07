@@ -11,7 +11,7 @@ import json
 from utils.logging_config import get_logger
 
 from config.mappings import DB_COLUMN_TO_KPI_KEY
-from kpi_hierarchy_config import KPI_METADATA
+from config.card_registry import CARD_REGISTRY as KPI_METADATA
 from utils.kpi_helpers import (
     calculate_importance_score,
     calculate_dynamic_priority,
@@ -336,15 +336,34 @@ def register_callbacks(app, data_manager, hospital_options):
                 # Get KPI metadata
                 kpi_meta = KPI_METADATA.get(kpi_key, {})
 
+                # Find the database column name for this KPI key
+                # The kpi_key is the metadata key (e.g., 'Net_Income_Margin')
+                # We need to find the corresponding database column
+                db_column = None
+                for col, meta_key in DB_COLUMN_TO_KPI_KEY.items():
+                    if meta_key == kpi_key:
+                        db_column = col
+                        break
+
+                # Use the db_column if found, otherwise try kpi_key directly
+                column_to_use = db_column if db_column and db_column in kpi_data.columns else kpi_key
+
+                # Check if column exists in data
+                if column_to_use not in kpi_data.columns:
+                    return True, f"{kpi_meta.get('name', kpi_key)} - Historical Data", html.Div(
+                        f"Data for this KPI is not available in the dataset.",
+                        className="alert alert-warning"
+                    )
+
                 # Create table with all years
-                table_data = kpi_data[['Fiscal_Year', kpi_key]].copy()
+                table_data = kpi_data[['Fiscal_Year', column_to_use]].copy()
                 table_data = table_data.sort_values('Fiscal_Year', ascending=True)
 
                 # Format values
                 fmt = kpi_meta.get('format', '.2f')
                 unit = kpi_meta.get('unit', '')
 
-                table_data['Formatted_Value'] = table_data[kpi_key].apply(
+                table_data['Formatted_Value'] = table_data[column_to_use].apply(
                     lambda x: f"{x:{fmt}}{unit}" if pd.notna(x) else "N/A"
                 )
 
