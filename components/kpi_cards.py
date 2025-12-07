@@ -11,7 +11,7 @@ from dash import dcc, html
 import dash_bootstrap_components as dbc
 import pandas as pd
 
-from kpi_hierarchy_config import KPI_METADATA
+from config.card_registry import CARD_REGISTRY as KPI_METADATA
 from utils.kpi_helpers import (
     calculate_percentile_rank,
     calculate_trend,

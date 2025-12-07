@@ -11,7 +11,7 @@ import json
 from utils.logging_config import get_logger
 
 from config.mappings import DB_COLUMN_TO_KPI_KEY
-from kpi_hierarchy_config import KPI_METADATA
+from config.card_registry import CARD_REGISTRY as KPI_METADATA
 from utils.kpi_helpers import (
     calculate_importance_score,
     calculate_dynamic_priority,
