@@ -50,7 +50,10 @@ hospital_dashboard/
 │
 ├── config/                            # Configuration Module
 │   ├── __init__.py
-│   └── paths.py                       # Centralized path configuration
+│   ├── paths.py                       # Centralized path configuration
+│   ├── mappings.py                    # DB column to KPI key mappings
+│   ├── card_registry.py               # KPI card definitions (78 KPIs)
+│   └── hierarchy_config.py            # KPI hierarchy tree structures
 │
 ├── utils/                             # Utility Functions
 │   ├── __init__.py
@@ -265,37 +268,36 @@ dashboard.py (interactive visualization)
 - Ensure mapping CSV files are present in `data/Col_Names/`
 - Verify source data exists in `data/source_data/HOSP10FY20XX/`
 
-## KPIs Tracked
+## KPI Hierarchy (78 KPIs across 3 Levels)
 
-### Profitability (3 KPIs)
-- Operating Margin %
-- Net Margin %
-- Total Margin %
+The dashboard uses a modular 3-level KPI hierarchy for drill-down analysis:
 
-### Liquidity (3 KPIs)
-- Current Ratio
-- Days Cash on Hand
-- Working Capital
+### Level 1: Strategic KPIs (6 total)
+Top-level financial health indicators:
+- **Net Income Margin** - Overall profitability
+- **Days in AR** - Cash cycle efficiency
+- **Operating Expense per Adjusted Discharge** - Cost control
+- **Medicare Cost-to-Charge Ratio** - Pricing efficiency
+- **Bad Debt + Charity %** - Uncompensated care burden
+- **Current Ratio** - Short-term liquidity
 
-### Efficiency (6 KPIs)
-- Outpatient Revenue %
-- Inpatient Revenue %
-- Asset Turnover Ratio
-- Fixed Asset Turnover
-- AR Days
-- Operating Expense Ratio
+### Level 2: Driver KPIs (24 total)
+Each Level 1 KPI has 4 driver KPIs explaining performance:
+- Operating Expense Ratio, Non-Operating Income %, Payer Mix, Capital Costs
+- Denial Rate, Commercial Payer %, Billing Efficiency, Collection Rate
+- Labor Cost, Supply Cost, Overhead Allocation, Case Mix Index
+- And more...
 
-### Leverage (3 KPIs)
-- Debt-to-Equity Ratio
-- Equity Ratio %
-- Debt Ratio %
+### Level 3: Sub-Driver KPIs (48 total)
+Detailed metrics for root cause analysis:
+- FTE per Bed, Salary % of Expenses, Investment Income Share
+- Medicare Denial %, Contract Labor %, Drug Cost %
+- And more...
 
-### Returns (2 KPIs)
-- Return on Assets %
-- Return on Equity %
-
-### Growth (1 KPI)
-- Revenue Growth %
+### Configuration Files
+KPI definitions are modular and extensible:
+- `config/card_registry.py` - All 78 KPI cards with metadata, tags, and scoring
+- `config/hierarchy_config.py` - Tree structures (default, cost-focused, revenue-focused)
 
 ## Benchmark Levels
 
@@ -348,4 +350,9 @@ See **[TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md)** for:
 
 ## Version History
 
+- **v1.1** - Modular KPI configuration with 78 KPIs across 3 levels
+  - New `config/card_registry.py` with all KPI definitions
+  - New `config/hierarchy_config.py` with flexible tree structures
+  - Support for alternative hierarchies (cost-focused, revenue-focused)
+  - Tags and impact scores for KPI prioritization
 - **v1.0** - Initial release with pre-computed database optimization
