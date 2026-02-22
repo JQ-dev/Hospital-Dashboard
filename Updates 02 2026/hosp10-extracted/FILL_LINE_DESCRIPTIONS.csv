@@ -1,0 +1,1246 @@
+worksheet_name,line_num,line_description,example_sas_column,current_description
+,1,,E1_1_HOS_C4_1,Hospital | Line 1 | Col 4
+,101,,L_1_HOS_C101_101,Hospital | Line 1.01 | Col 101
+,102,,E3_4_HOS_C1_102,Hospital | Line 1.02 | Col 1
+,103,,E3_4_HOS_C1_103,Hospital | Line 1.03 | Col 1
+,104,,E3_4_HOS_C1_104,Hospital | Line 1.04 | Col 1
+,12,,L_1_HOS_C1_12,Hospital | Line 12 | Col 1
+,16,,H3_1_HHA1_C11_16,Home Health Agency 1 | Line 16 | Col 11
+,203,,E_A_HOS_C101_203,Hospital | Line 2.03 | Col 101
+,204,,E_A_HOS_C101_204,Hospital | Line 2.04 | Col 101
+,2150,,E3_4_HOS_C1_2150,Hospital | Line 21.50 | Col 1
+,2199,,E3_4_HOS_C1_2199,Hospital | Line 21.99 | Col 1
+,2850,,E_B_HOS_C1_2850,Hospital | Line 28.50 | Col 1
+,2901,,E_A_HOS_C101_2901,Hospital | Line 29.01 | Col 101
+,47,,D1_HOS_C1_47,Hospital | Line 47 | Col 1
+,9,,H4_1_HHA1_C1_9,Home Health Agency 1 | Line 9 | Col 1
+"D, Part II: Apportionment - Hospital",5000,,D_2_HOS_C5_50,Hospital | Line 50 | Col 5
+"D, Part II: Apportionment - Hospital",5100,,D_2_HOS_C5_51,Hospital | Line 51 | Col 5
+"D, Part II: Apportionment - Hospital",5200,,D_2_HOS_C5_52,Hospital | Line 52 | Col 5
+"D, Part II: Apportionment - Hospital",5300,,D_2_HOS_C5_53,Hospital | Line 53 | Col 5
+"D, Part II: Apportionment - Hospital",5400,,D_2_HOS_C5_54,Hospital | Line 54 | Col 5
+"D, Part II: Apportionment - Hospital",5500,,D_2_HOS_C5_55,Hospital | Line 55 | Col 5
+"D, Part II: Apportionment - Hospital",5600,,D_2_HOS_C5_56,Hospital | Line 56 | Col 5
+"D, Part II: Apportionment - Hospital",5700,,D_2_HOS_C5_57,Hospital | Line 57 | Col 5
+"D, Part II: Apportionment - Hospital",5800,,D_2_HOS_C5_58,Hospital | Line 58 | Col 5
+"D, Part II: Apportionment - Hospital",5900,,D_2_HOS_C5_59,Hospital | Line 59 | Col 5
+"D, Part II: Apportionment - Hospital",6000,,D_2_HOS_C5_60,Hospital | Line 60 | Col 5
+"D, Part II: Apportionment - Hospital",6100,,D_2_HOS_C5_61,Hospital | Line 61 | Col 5
+"D, Part II: Apportionment - Hospital",6200,,D_2_HOS_C5_62,Hospital | Line 62 | Col 5
+"D, Part II: Apportionment - Hospital",6250,,D_2_HOS_C5_6250,Hospital | Line 62.50 | Col 5
+"D, Part II: Apportionment - Hospital",6300,,D_2_HOS_C5_63,Hospital | Line 63 | Col 5
+"D, Part II: Apportionment - Hospital",6400,,D_2_HOS_C5_64,Hospital | Line 64 | Col 5
+"D, Part II: Apportionment - Hospital",6500,,D_2_HOS_C5_65,Hospital | Line 65 | Col 5
+"D, Part II: Apportionment - Hospital",6600,,D_2_HOS_C5_66,Hospital | Line 66 | Col 5
+"D, Part II: Apportionment - Hospital",6700,,D_2_HOS_C5_67,Hospital | Line 67 | Col 5
+"D, Part II: Apportionment - Hospital",6800,,D_2_HOS_C5_68,Hospital | Line 68 | Col 5
+"D, Part II: Apportionment - Hospital",6900,,D_2_HOS_C5_69,Hospital | Line 69 | Col 5
+"D, Part II: Apportionment - Hospital",7000,,D_2_HOS_C5_70,Hospital | Line 70 | Col 5
+"D, Part II: Apportionment - Hospital",7100,,D_2_HOS_C5_71,Hospital | Line 71 | Col 5
+"D, Part II: Apportionment - Hospital",7200,,D_2_HOS_C5_72,Hospital | Line 72 | Col 5
+"D, Part II: Apportionment - Hospital",7300,,D_2_HOS_C5_73,Hospital | Line 73 | Col 5
+"D, Part II: Apportionment - Hospital",7400,,D_2_HOS_C5_74,Hospital | Line 74 | Col 5
+"D, Part II: Apportionment - Hospital",7500,,D_2_HOS_C5_75,Hospital | Line 75 | Col 5
+"D, Part II: Apportionment - Hospital",7600,,D_2_HOS_C5_76,Hospital | Line 76 | Col 5
+"D, Part II: Apportionment - Hospital",8800,,D_2_HOS_C5_88,Hospital | Line 88 | Col 5
+"D, Part II: Apportionment - Hospital",8900,,D_2_HOS_C5_89,Hospital | Line 89 | Col 5
+"D, Part II: Apportionment - Hospital",9000,,D_2_HOS_C5_90,Hospital | Line 90 | Col 5
+"D, Part II: Apportionment - Hospital",9100,,D_2_HOS_C5_91,Hospital | Line 91 | Col 5
+"D, Part II: Apportionment - Hospital",9200,,D_2_HOS_C5_92,Hospital | Line 92 | Col 5
+"D, Part II: Apportionment - Hospital",9201,,D_2_HOS_C5_9201,Hospital | Line 92.01 | Col 5
+"D, Part II: Apportionment - Hospital",9300,,D_2_HOS_C5_93,Hospital | Line 93 | Col 5
+"D, Part II: Apportionment - Hospital",9400,,D_2_HOS_C5_94,Hospital | Line 94 | Col 5
+"D, Part II: Apportionment - Hospital",9500,,D_2_HOS_C5_95,Hospital | Line 95 | Col 5
+"D, Part II: Apportionment - Hospital",9600,,D_2_HOS_C5_96,Hospital | Line 96 | Col 5
+"D, Part II: Apportionment - Hospital",9700,,D_2_HOS_C5_97,Hospital | Line 97 | Col 5
+"D, Part II: Apportionment - Hospital",9800,,D_2_HOS_C5_98,Hospital | Line 98 | Col 5
+"D, Part II: Apportionment - Hospital",20000,Total Salaries,D_2_HOS_C5_200,Hospital | Line 200 | Col 5
+"D, Part II: Apportionment - IPF",5000,,D_2_IPF_C5_50,Inpatient Psychiatric Facility | Line 50 | Col 5
+"D, Part II: Apportionment - IPF",5100,,D_2_IPF_C5_51,Inpatient Psychiatric Facility | Line 51 | Col 5
+"D, Part II: Apportionment - IPF",5200,,D_2_IPF_C5_52,Inpatient Psychiatric Facility | Line 52 | Col 5
+"D, Part II: Apportionment - IPF",5300,,D_2_IPF_C5_53,Inpatient Psychiatric Facility | Line 53 | Col 5
+"D, Part II: Apportionment - IPF",5400,,D_2_IPF_C5_54,Inpatient Psychiatric Facility | Line 54 | Col 5
+"D, Part II: Apportionment - IPF",5500,,D_2_IPF_C5_55,Inpatient Psychiatric Facility | Line 55 | Col 5
+"D, Part II: Apportionment - IPF",5600,,D_2_IPF_C5_56,Inpatient Psychiatric Facility | Line 56 | Col 5
+"D, Part II: Apportionment - IPF",5700,,D_2_IPF_C5_57,Inpatient Psychiatric Facility | Line 57 | Col 5
+"D, Part II: Apportionment - IPF",5800,,D_2_IPF_C5_58,Inpatient Psychiatric Facility | Line 58 | Col 5
+"D, Part II: Apportionment - IPF",5900,,D_2_IPF_C5_59,Inpatient Psychiatric Facility | Line 59 | Col 5
+"D, Part II: Apportionment - IPF",6000,,D_2_IPF_C5_60,Inpatient Psychiatric Facility | Line 60 | Col 5
+"D, Part II: Apportionment - IPF",6100,,D_2_IPF_C5_61,Inpatient Psychiatric Facility | Line 61 | Col 5
+"D, Part II: Apportionment - IPF",6200,,D_2_IPF_C5_62,Inpatient Psychiatric Facility | Line 62 | Col 5
+"D, Part II: Apportionment - IPF",6250,,D_2_IPF_C5_6250,Inpatient Psychiatric Facility | Line 62.50 | Col 5
+"D, Part II: Apportionment - IPF",6300,,D_2_IPF_C5_63,Inpatient Psychiatric Facility | Line 63 | Col 5
+"D, Part II: Apportionment - IPF",6400,,D_2_IPF_C5_64,Inpatient Psychiatric Facility | Line 64 | Col 5
+"D, Part II: Apportionment - IPF",6500,,D_2_IPF_C5_65,Inpatient Psychiatric Facility | Line 65 | Col 5
+"D, Part II: Apportionment - IPF",6600,,D_2_IPF_C5_66,Inpatient Psychiatric Facility | Line 66 | Col 5
+"D, Part II: Apportionment - IPF",6700,,D_2_IPF_C5_67,Inpatient Psychiatric Facility | Line 67 | Col 5
+"D, Part II: Apportionment - IPF",6800,,D_2_IPF_C5_68,Inpatient Psychiatric Facility | Line 68 | Col 5
+"D, Part II: Apportionment - IPF",6900,,D_2_IPF_C5_69,Inpatient Psychiatric Facility | Line 69 | Col 5
+"D, Part II: Apportionment - IPF",7000,,D_2_IPF_C5_70,Inpatient Psychiatric Facility | Line 70 | Col 5
+"D, Part II: Apportionment - IPF",7100,,D_2_IPF_C5_71,Inpatient Psychiatric Facility | Line 71 | Col 5
+"D, Part II: Apportionment - IPF",7200,,D_2_IPF_C5_72,Inpatient Psychiatric Facility | Line 72 | Col 5
+"D, Part II: Apportionment - IPF",7300,,D_2_IPF_C5_73,Inpatient Psychiatric Facility | Line 73 | Col 5
+"D, Part II: Apportionment - IPF",7400,,D_2_IPF_C5_74,Inpatient Psychiatric Facility | Line 74 | Col 5
+"D, Part II: Apportionment - IPF",7500,,D_2_IPF_C5_75,Inpatient Psychiatric Facility | Line 75 | Col 5
+"D, Part II: Apportionment - IPF",7600,,D_2_IPF_C5_76,Inpatient Psychiatric Facility | Line 76 | Col 5
+"D, Part II: Apportionment - IPF",8800,,D_2_IPF_C5_88,Inpatient Psychiatric Facility | Line 88 | Col 5
+"D, Part II: Apportionment - IPF",8900,,D_2_IPF_C5_89,Inpatient Psychiatric Facility | Line 89 | Col 5
+"D, Part II: Apportionment - IPF",9000,,D_2_IPF_C5_90,Inpatient Psychiatric Facility | Line 90 | Col 5
+"D, Part II: Apportionment - IPF",9100,,D_2_IPF_C5_91,Inpatient Psychiatric Facility | Line 91 | Col 5
+"D, Part II: Apportionment - IPF",9200,,D_2_IPF_C5_92,Inpatient Psychiatric Facility | Line 92 | Col 5
+"D, Part II: Apportionment - IPF",9201,,D_2_IPF_C5_9201,Inpatient Psychiatric Facility | Line 92.01 | Col 5
+"D, Part II: Apportionment - IPF",9300,,D_2_IPF_C5_93,Inpatient Psychiatric Facility | Line 93 | Col 5
+"D, Part II: Apportionment - IPF",9400,,D_2_IPF_C5_94,Inpatient Psychiatric Facility | Line 94 | Col 5
+"D, Part II: Apportionment - IPF",9500,,D_2_IPF_C5_95,Inpatient Psychiatric Facility | Line 95 | Col 5
+"D, Part II: Apportionment - IPF",9600,,D_2_IPF_C5_96,Inpatient Psychiatric Facility | Line 96 | Col 5
+"D, Part II: Apportionment - IPF",9700,,D_2_IPF_C5_97,Inpatient Psychiatric Facility | Line 97 | Col 5
+"D, Part II: Apportionment - IPF",9800,,D_2_IPF_C5_98,Inpatient Psychiatric Facility | Line 98 | Col 5
+"D, Part II: Apportionment - IPF",20000,Total Salaries,D_2_IPF_C5_200,Inpatient Psychiatric Facility | Line 200 | Col 5
+"D, Part II: Apportionment - IRF",5000,,D_2_IRF_C5_50,Inpatient Rehabilitation Facility | Line 50 | Col 5
+"D, Part II: Apportionment - IRF",5100,,D_2_IRF_C5_51,Inpatient Rehabilitation Facility | Line 51 | Col 5
+"D, Part II: Apportionment - IRF",5200,,D_2_IRF_C5_52,Inpatient Rehabilitation Facility | Line 52 | Col 5
+"D, Part II: Apportionment - IRF",5300,,D_2_IRF_C5_53,Inpatient Rehabilitation Facility | Line 53 | Col 5
+"D, Part II: Apportionment - IRF",5400,,D_2_IRF_C5_54,Inpatient Rehabilitation Facility | Line 54 | Col 5
+"D, Part II: Apportionment - IRF",5500,,D_2_IRF_C5_55,Inpatient Rehabilitation Facility | Line 55 | Col 5
+"D, Part II: Apportionment - IRF",5600,,D_2_IRF_C5_56,Inpatient Rehabilitation Facility | Line 56 | Col 5
+"D, Part II: Apportionment - IRF",5700,,D_2_IRF_C5_57,Inpatient Rehabilitation Facility | Line 57 | Col 5
+"D, Part II: Apportionment - IRF",5800,,D_2_IRF_C5_58,Inpatient Rehabilitation Facility | Line 58 | Col 5
+"D, Part II: Apportionment - IRF",5900,,D_2_IRF_C5_59,Inpatient Rehabilitation Facility | Line 59 | Col 5
+"D, Part II: Apportionment - IRF",6000,,D_2_IRF_C5_60,Inpatient Rehabilitation Facility | Line 60 | Col 5
+"D, Part II: Apportionment - IRF",6100,,D_2_IRF_C5_61,Inpatient Rehabilitation Facility | Line 61 | Col 5
+"D, Part II: Apportionment - IRF",6200,,D_2_IRF_C5_62,Inpatient Rehabilitation Facility | Line 62 | Col 5
+"D, Part II: Apportionment - IRF",6250,,D_2_IRF_C5_6250,Inpatient Rehabilitation Facility | Line 62.50 | Col 5
+"D, Part II: Apportionment - IRF",6300,,D_2_IRF_C5_63,Inpatient Rehabilitation Facility | Line 63 | Col 5
+"D, Part II: Apportionment - IRF",6400,,D_2_IRF_C5_64,Inpatient Rehabilitation Facility | Line 64 | Col 5
+"D, Part II: Apportionment - IRF",6500,,D_2_IRF_C5_65,Inpatient Rehabilitation Facility | Line 65 | Col 5
+"D, Part II: Apportionment - IRF",6600,,D_2_IRF_C5_66,Inpatient Rehabilitation Facility | Line 66 | Col 5
+"D, Part II: Apportionment - IRF",6700,,D_2_IRF_C5_67,Inpatient Rehabilitation Facility | Line 67 | Col 5
+"D, Part II: Apportionment - IRF",6800,,D_2_IRF_C5_68,Inpatient Rehabilitation Facility | Line 68 | Col 5
+"D, Part II: Apportionment - IRF",6900,,D_2_IRF_C5_69,Inpatient Rehabilitation Facility | Line 69 | Col 5
+"D, Part II: Apportionment - IRF",7000,,D_2_IRF_C5_70,Inpatient Rehabilitation Facility | Line 70 | Col 5
+"D, Part II: Apportionment - IRF",7100,,D_2_IRF_C5_71,Inpatient Rehabilitation Facility | Line 71 | Col 5
+"D, Part II: Apportionment - IRF",7200,,D_2_IRF_C5_72,Inpatient Rehabilitation Facility | Line 72 | Col 5
+"D, Part II: Apportionment - IRF",7300,,D_2_IRF_C5_73,Inpatient Rehabilitation Facility | Line 73 | Col 5
+"D, Part II: Apportionment - IRF",7400,,D_2_IRF_C5_74,Inpatient Rehabilitation Facility | Line 74 | Col 5
+"D, Part II: Apportionment - IRF",7500,,D_2_IRF_C5_75,Inpatient Rehabilitation Facility | Line 75 | Col 5
+"D, Part II: Apportionment - IRF",7600,,D_2_IRF_C5_76,Inpatient Rehabilitation Facility | Line 76 | Col 5
+"D, Part II: Apportionment - IRF",8800,,D_2_IRF_C5_88,Inpatient Rehabilitation Facility | Line 88 | Col 5
+"D, Part II: Apportionment - IRF",8900,,D_2_IRF_C5_89,Inpatient Rehabilitation Facility | Line 89 | Col 5
+"D, Part II: Apportionment - IRF",9000,,D_2_IRF_C5_90,Inpatient Rehabilitation Facility | Line 90 | Col 5
+"D, Part II: Apportionment - IRF",9100,,D_2_IRF_C5_91,Inpatient Rehabilitation Facility | Line 91 | Col 5
+"D, Part II: Apportionment - IRF",9200,,D_2_IRF_C5_92,Inpatient Rehabilitation Facility | Line 92 | Col 5
+"D, Part II: Apportionment - IRF",9201,,D_2_IRF_C5_9201,Inpatient Rehabilitation Facility | Line 92.01 | Col 5
+"D, Part II: Apportionment - IRF",9300,,D_2_IRF_C5_93,Inpatient Rehabilitation Facility | Line 93 | Col 5
+"D, Part II: Apportionment - IRF",9400,,D_2_IRF_C5_94,Inpatient Rehabilitation Facility | Line 94 | Col 5
+"D, Part II: Apportionment - IRF",9500,,D_2_IRF_C5_95,Inpatient Rehabilitation Facility | Line 95 | Col 5
+"D, Part II: Apportionment - IRF",9600,,D_2_IRF_C5_96,Inpatient Rehabilitation Facility | Line 96 | Col 5
+"D, Part II: Apportionment - IRF",9700,,D_2_IRF_C5_97,Inpatient Rehabilitation Facility | Line 97 | Col 5
+"D, Part II: Apportionment - IRF",9800,,D_2_IRF_C5_98,Inpatient Rehabilitation Facility | Line 98 | Col 5
+"D, Part II: Apportionment - IRF",20000,Total Salaries,D_2_IRF_C5_200,Inpatient Rehabilitation Facility | Line 200 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5000,,D_2_SUB1_C5_50,Subprovider 1 | Line 50 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5100,,D_2_SUB1_C5_51,Subprovider 1 | Line 51 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5200,,D_2_SUB1_C5_52,Subprovider 1 | Line 52 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5300,,D_2_SUB1_C5_53,Subprovider 1 | Line 53 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5400,,D_2_SUB1_C5_54,Subprovider 1 | Line 54 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5500,,D_2_SUB1_C5_55,Subprovider 1 | Line 55 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5600,,D_2_SUB1_C5_56,Subprovider 1 | Line 56 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5700,,D_2_SUB1_C5_57,Subprovider 1 | Line 57 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5800,,D_2_SUB1_C5_58,Subprovider 1 | Line 58 | Col 5
+"D, Part II: Apportionment - Subprovider 1",5900,,D_2_SUB1_C5_59,Subprovider 1 | Line 59 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6000,,D_2_SUB1_C5_60,Subprovider 1 | Line 60 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6100,,D_2_SUB1_C5_61,Subprovider 1 | Line 61 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6200,,D_2_SUB1_C5_62,Subprovider 1 | Line 62 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6250,,D_2_SUB1_C5_6250,Subprovider 1 | Line 62.50 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6300,,D_2_SUB1_C5_63,Subprovider 1 | Line 63 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6400,,D_2_SUB1_C5_64,Subprovider 1 | Line 64 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6500,,D_2_SUB1_C5_65,Subprovider 1 | Line 65 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6600,,D_2_SUB1_C5_66,Subprovider 1 | Line 66 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6700,,D_2_SUB1_C5_67,Subprovider 1 | Line 67 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6800,,D_2_SUB1_C5_68,Subprovider 1 | Line 68 | Col 5
+"D, Part II: Apportionment - Subprovider 1",6900,,D_2_SUB1_C5_69,Subprovider 1 | Line 69 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7000,,D_2_SUB1_C5_70,Subprovider 1 | Line 70 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7100,,D_2_SUB1_C5_71,Subprovider 1 | Line 71 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7200,,D_2_SUB1_C5_72,Subprovider 1 | Line 72 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7300,,D_2_SUB1_C5_73,Subprovider 1 | Line 73 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7400,,D_2_SUB1_C5_74,Subprovider 1 | Line 74 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7500,,D_2_SUB1_C5_75,Subprovider 1 | Line 75 | Col 5
+"D, Part II: Apportionment - Subprovider 1",7600,,D_2_SUB1_C5_76,Subprovider 1 | Line 76 | Col 5
+"D, Part II: Apportionment - Subprovider 1",8800,,D_2_SUB1_C5_88,Subprovider 1 | Line 88 | Col 5
+"D, Part II: Apportionment - Subprovider 1",8900,,D_2_SUB1_C5_89,Subprovider 1 | Line 89 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9000,,D_2_SUB1_C5_90,Subprovider 1 | Line 90 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9100,,D_2_SUB1_C5_91,Subprovider 1 | Line 91 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9200,,D_2_SUB1_C5_92,Subprovider 1 | Line 92 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9201,,D_2_SUB1_C5_9201,Subprovider 1 | Line 92.01 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9300,,D_2_SUB1_C5_93,Subprovider 1 | Line 93 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9400,,D_2_SUB1_C5_94,Subprovider 1 | Line 94 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9500,,D_2_SUB1_C5_95,Subprovider 1 | Line 95 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9600,,D_2_SUB1_C5_96,Subprovider 1 | Line 96 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9700,,D_2_SUB1_C5_97,Subprovider 1 | Line 97 | Col 5
+"D, Part II: Apportionment - Subprovider 1",9800,,D_2_SUB1_C5_98,Subprovider 1 | Line 98 | Col 5
+"D, Part II: Apportionment - Subprovider 1",20000,Total Salaries,D_2_SUB1_C5_200,Subprovider 1 | Line 200 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5000,,D_2_SUB2_C5_50,Subprovider 2 | Line 50 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5100,,D_2_SUB2_C5_51,Subprovider 2 | Line 51 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5200,,D_2_SUB2_C5_52,Subprovider 2 | Line 52 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5300,,D_2_SUB2_C5_53,Subprovider 2 | Line 53 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5400,,D_2_SUB2_C5_54,Subprovider 2 | Line 54 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5500,,D_2_SUB2_C5_55,Subprovider 2 | Line 55 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5600,,D_2_SUB2_C5_56,Subprovider 2 | Line 56 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5700,,D_2_SUB2_C5_57,Subprovider 2 | Line 57 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5800,,D_2_SUB2_C5_58,Subprovider 2 | Line 58 | Col 5
+"D, Part II: Apportionment - Subprovider 2",5900,,D_2_SUB2_C5_59,Subprovider 2 | Line 59 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6000,,D_2_SUB2_C5_60,Subprovider 2 | Line 60 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6100,,D_2_SUB2_C5_61,Subprovider 2 | Line 61 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6200,,D_2_SUB2_C5_62,Subprovider 2 | Line 62 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6250,,D_2_SUB2_C5_6250,Subprovider 2 | Line 62.50 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6300,,D_2_SUB2_C5_63,Subprovider 2 | Line 63 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6400,,D_2_SUB2_C5_64,Subprovider 2 | Line 64 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6500,,D_2_SUB2_C5_65,Subprovider 2 | Line 65 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6600,,D_2_SUB2_C5_66,Subprovider 2 | Line 66 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6700,,D_2_SUB2_C5_67,Subprovider 2 | Line 67 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6800,,D_2_SUB2_C5_68,Subprovider 2 | Line 68 | Col 5
+"D, Part II: Apportionment - Subprovider 2",6900,,D_2_SUB2_C5_69,Subprovider 2 | Line 69 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7000,,D_2_SUB2_C5_70,Subprovider 2 | Line 70 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7100,,D_2_SUB2_C5_71,Subprovider 2 | Line 71 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7200,,D_2_SUB2_C5_72,Subprovider 2 | Line 72 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7300,,D_2_SUB2_C5_73,Subprovider 2 | Line 73 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7400,,D_2_SUB2_C5_74,Subprovider 2 | Line 74 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7500,,D_2_SUB2_C5_75,Subprovider 2 | Line 75 | Col 5
+"D, Part II: Apportionment - Subprovider 2",7600,,D_2_SUB2_C5_76,Subprovider 2 | Line 76 | Col 5
+"D, Part II: Apportionment - Subprovider 2",8800,,D_2_SUB2_C5_88,Subprovider 2 | Line 88 | Col 5
+"D, Part II: Apportionment - Subprovider 2",8900,,D_2_SUB2_C5_89,Subprovider 2 | Line 89 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9000,,D_2_SUB2_C5_90,Subprovider 2 | Line 90 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9100,,D_2_SUB2_C5_91,Subprovider 2 | Line 91 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9200,,D_2_SUB2_C5_92,Subprovider 2 | Line 92 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9201,,D_2_SUB2_C5_9201,Subprovider 2 | Line 92.01 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9300,,D_2_SUB2_C5_93,Subprovider 2 | Line 93 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9400,,D_2_SUB2_C5_94,Subprovider 2 | Line 94 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9500,,D_2_SUB2_C5_95,Subprovider 2 | Line 95 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9600,,D_2_SUB2_C5_96,Subprovider 2 | Line 96 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9700,,D_2_SUB2_C5_97,Subprovider 2 | Line 97 | Col 5
+"D, Part II: Apportionment - Subprovider 2",9800,,D_2_SUB2_C5_98,Subprovider 2 | Line 98 | Col 5
+"D, Part II: Apportionment - Subprovider 2",20000,Total Salaries,D_2_SUB2_C5_200,Subprovider 2 | Line 200 | Col 5
+D-3: Apportionment - Hospital,7700,,D3_HOS_C1_77,Hospital | Line 77 | Col 1
+D-3: Apportionment - Hospital,20100,Negative Cost Centers,D3_HOS_C2_201,Hospital | Line 2.01 | Col 2
+D-3: Apportionment - Hospital,20200,Total,D3_HOS_C2_202,Hospital | Line 2.02 | Col 2
+D-3: Apportionment - SNF,20100,Negative Cost Centers,D3_SNF_C2_201,Skilled Nursing Facility | Line 2.01 | Col 2
+"E, Part A: Settlement - Hospital",100,,E_A_HOS_C101_1,Hospital | Line 1 | Col 101
+"E, Part A: Settlement - Hospital",101,,E_A_HOS_C101_101,Hospital | Line 1.01 | Col 101
+"E, Part A: Settlement - Hospital",102,,E_A_HOS_C101_102,Hospital | Line 1.02 | Col 101
+"E, Part A: Settlement - Hospital",200,,E_A_HOS_C101_2,Hospital | Line 2 | Col 101
+"E, Part A: Settlement - Hospital",201,,E_A_HOS_C101_201,Hospital | Line 2.01 | Col 101
+"E, Part A: Settlement - Hospital",202,,E_A_HOS_C101_202,Hospital | Line 2.02 | Col 101
+"E, Part A: Settlement - Hospital",300,,E_A_HOS_C101_3,Hospital | Line 3 | Col 101
+"E, Part A: Settlement - Hospital",400,,E_A_HOS_C1_4,Hospital | Line 4 | Col 1
+"E, Part A: Settlement - Hospital",500,,E_A_HOS_C1_5,Hospital | Line 5 | Col 1
+"E, Part A: Settlement - Hospital",600,,E_A_HOS_C1_6,Hospital | Line 6 | Col 1
+"E, Part A: Settlement - Hospital",700,,E_A_HOS_C1_7,Hospital | Line 7 | Col 1
+"E, Part A: Settlement - Hospital",701,,E_A_HOS_C1_701,Hospital | Line 7.01 | Col 1
+"E, Part A: Settlement - Hospital",800,,E_A_HOS_C1_8,Hospital | Line 8 | Col 1
+"E, Part A: Settlement - Hospital",801,,E_A_HOS_C1_801,Hospital | Line 8.01 | Col 1
+"E, Part A: Settlement - Hospital",802,,E_A_HOS_C1_802,Hospital | Line 8.02 | Col 1
+"E, Part A: Settlement - Hospital",900,,E_A_HOS_C1_9,Hospital | Line 9 | Col 1
+"E, Part A: Settlement - Hospital",1000,,E_A_HOS_C1_10,Hospital | Line 10 | Col 1
+"E, Part A: Settlement - Hospital",1100,,E_A_HOS_C1_11,Hospital | Line 11 | Col 1
+"E, Part A: Settlement - Hospital",1200,,E_A_HOS_C1_12,Hospital | Line 12 | Col 1
+"E, Part A: Settlement - Hospital",1300,,E_A_HOS_C1_13,Hospital | Line 13 | Col 1
+"E, Part A: Settlement - Hospital",1400,,E_A_HOS_C1_14,Hospital | Line 14 | Col 1
+"E, Part A: Settlement - Hospital",1500,,E_A_HOS_C1_15,Hospital | Line 15 | Col 1
+"E, Part A: Settlement - Hospital",1600,,E_A_HOS_C1_16,Hospital | Line 16 | Col 1
+"E, Part A: Settlement - Hospital",1700,,E_A_HOS_C1_17,Hospital | Line 17 | Col 1
+"E, Part A: Settlement - Hospital",1800,,E_A_HOS_C1_18,Hospital | Line 18 | Col 1
+"E, Part A: Settlement - Hospital",1900,,E_A_HOS_C1_19,Hospital | Line 19 | Col 1
+"E, Part A: Settlement - Hospital",2000,,E_A_HOS_C1_20,Hospital | Line 20 | Col 1
+"E, Part A: Settlement - Hospital",2100,,E_A_HOS_C1_21,Hospital | Line 21 | Col 1
+"E, Part A: Settlement - Hospital",2200,,E_A_HOS_C101_22,Hospital | Line 22 | Col 101
+"E, Part A: Settlement - Hospital",2300,,E_A_HOS_C1_23,Hospital | Line 23 | Col 1
+"E, Part A: Settlement - Hospital",2400,,E_A_HOS_C1_24,Hospital | Line 24 | Col 1
+"E, Part A: Settlement - Hospital",2500,,E_A_HOS_C1_25,Hospital | Line 25 | Col 1
+"E, Part A: Settlement - Hospital",2600,,E_A_HOS_C1_26,Hospital | Line 26 | Col 1
+"E, Part A: Settlement - Hospital",2700,,E_A_HOS_C1_27,Hospital | Line 27 | Col 1
+"E, Part A: Settlement - Hospital",2800,,E_A_HOS_C101_28,Hospital | Line 28 | Col 101
+"E, Part A: Settlement - Hospital",2899,,E_A_HOS_C1_2899,Hospital | Line 28.99 | Col 1
+"E, Part A: Settlement - Hospital",2900,,E_A_HOS_C101_29,Hospital | Line 29 | Col 101
+"E, Part A: Settlement - Hospital",2901,,E_A_HOS_C1_2901,Hospital | Line 29.01 | Col 1
+"E, Part A: Settlement - Hospital",3000,,E_A_HOS_C1_30,Hospital | Line 30 | Col 1
+"E, Part A: Settlement - Hospital",3100,,E_A_HOS_C1_31,Hospital | Line 31 | Col 1
+"E, Part A: Settlement - Hospital",3200,,E_A_HOS_C1_32,Hospital | Line 32 | Col 1
+"E, Part A: Settlement - Hospital",3300,,E_A_HOS_C101_33,Hospital | Line 33 | Col 101
+"E, Part A: Settlement - Hospital",3400,,E_A_HOS_C101_34,Hospital | Line 34 | Col 101
+"E, Part A: Settlement - Hospital",3500,,E_A_HOS_C2_35,Hospital | Line 35 | Col 2
+"E, Part A: Settlement - Hospital",3501,,E_A_HOS_C2_3501,Hospital | Line 35.01 | Col 2
+"E, Part A: Settlement - Hospital",3502,,E_A_HOS_C1_3502,Hospital | Line 35.02 | Col 1
+"E, Part A: Settlement - Hospital",3503,,E_A_HOS_C1_3503,Hospital | Line 35.03 | Col 1
+"E, Part A: Settlement - Hospital",3600,,E_A_HOS_C1_36,Hospital | Line 36 | Col 1
+"E, Part A: Settlement - Hospital",3700,,E_A_HOS_C1_37,Hospital | Line 37 | Col 1
+"E, Part A: Settlement - Hospital",3800,,E_A_HOS_C1_38,Hospital | Line 38 | Col 1
+"E, Part A: Settlement - Hospital",3900,,E_A_HOS_C1_39,Hospital | Line 39 | Col 1
+"E, Part A: Settlement - Hospital",4000,,E_A_HOS_C1_40,Hospital | Line 40 | Col 1
+"E, Part A: Settlement - Hospital",4100,,E_A_HOS_C101_41,Hospital | Line 41 | Col 101
+"E, Part A: Settlement - Hospital",4101,,E_A_HOS_C1_4101,Hospital | Line 41.01 | Col 1
+"E, Part A: Settlement - Hospital",4200,,E_A_HOS_C1_42,Hospital | Line 42 | Col 1
+"E, Part A: Settlement - Hospital",4300,,E_A_HOS_C1_43,Hospital | Line 43 | Col 1
+"E, Part A: Settlement - Hospital",4400,,E_A_HOS_C1_44,Hospital | Line 44 | Col 1
+"E, Part A: Settlement - Hospital",4500,,E_A_HOS_C101_45,Hospital | Line 45 | Col 101
+"E, Part A: Settlement - Hospital",4600,,E_A_HOS_C1_46,Hospital | Line 46 | Col 1
+"E, Part A: Settlement - Hospital",4700,,E_A_HOS_C101_47,Hospital | Line 47 | Col 101
+"E, Part A: Settlement - Hospital",4800,,E_A_HOS_C101_48,Hospital | Line 48 | Col 101
+"E, Part A: Settlement - Hospital",4900,,E_A_HOS_C1_49,Hospital | Line 49 | Col 1
+"E, Part A: Settlement - Hospital",5000,,E_A_HOS_C1_50,Hospital | Line 50 | Col 1
+"E, Part A: Settlement - Hospital",5100,,E_A_HOS_C1_51,Hospital | Line 51 | Col 1
+"E, Part A: Settlement - Hospital",5200,,E_A_HOS_C1_52,Hospital | Line 52 | Col 1
+"E, Part A: Settlement - Hospital",5300,,E_A_HOS_C1_53,Hospital | Line 53 | Col 1
+"E, Part A: Settlement - Hospital",5400,,E_A_HOS_C1_54,Hospital | Line 54 | Col 1
+"E, Part A: Settlement - Hospital",5500,,E_A_HOS_C1_55,Hospital | Line 55 | Col 1
+"E, Part A: Settlement - Hospital",5600,,E_A_HOS_C1_56,Hospital | Line 56 | Col 1
+"E, Part A: Settlement - Hospital",5700,,E_A_HOS_C1_57,Hospital | Line 57 | Col 1
+"E, Part A: Settlement - Hospital",5800,,E_A_HOS_C1_58,Hospital | Line 58 | Col 1
+"E, Part A: Settlement - Hospital",5900,IPPS Payment amount (unadjusted),E_A_HOS_C1_59,Hospital | Line 59 | Col 1
+"E, Part A: Settlement - Hospital",6000,,E_A_HOS_C1_60,Hospital | Line 60 | Col 1
+"E, Part A: Settlement - Hospital",6100,,E_A_HOS_C1_61,Hospital | Line 61 | Col 1
+"E, Part A: Settlement - Hospital",6200,,E_A_HOS_C1_62,Hospital | Line 62 | Col 1
+"E, Part A: Settlement - Hospital",6300,,E_A_HOS_C1_63,Hospital | Line 63 | Col 1
+"E, Part A: Settlement - Hospital",6400,,E_A_HOS_C1_64,Hospital | Line 64 | Col 1
+"E, Part A: Settlement - Hospital",6500,,E_A_HOS_C1_65,Hospital | Line 65 | Col 1
+"E, Part A: Settlement - Hospital",6600,,E_A_HOS_C1_66,Hospital | Line 66 | Col 1
+"E, Part A: Settlement - Hospital",6700,,E_A_HOS_C1_67,Hospital | Line 67 | Col 1
+"E, Part A: Settlement - Hospital",6800,,E_A_HOS_C1_68,Hospital | Line 68 | Col 1
+"E, Part A: Settlement - Hospital",6900,,E_A_HOS_C1_69,Hospital | Line 69 | Col 1
+"E, Part A: Settlement - Hospital",7000,,E_A_HOS_C1_70,Hospital | Line 70 | Col 1
+"E, Part A: Settlement - Hospital",7089,,E_A_HOS_C1_7089,Hospital | Line 70.89 | Col 1
+"E, Part A: Settlement - Hospital",7090,,E_A_HOS_C1_7090,Hospital | Line 70.90 | Col 1
+"E, Part A: Settlement - Hospital",7091,,E_A_HOS_C1_7091,Hospital | Line 70.91 | Col 1
+"E, Part A: Settlement - Hospital",7092,,E_A_HOS_C1_7092,Hospital | Line 70.92 | Col 1
+"E, Part A: Settlement - Hospital",7093,HVBP payment adjustment amount,E_A_HOS_C1_7093,Hospital | Line 70.93 | Col 1
+"E, Part A: Settlement - Hospital",7094,HRR adjustment amount,E_A_HOS_C1_7094,Hospital | Line 70.94 | Col 1
+"E, Part A: Settlement - Hospital",7095,,E_A_HOS_C1_7095,Hospital | Line 70.95 | Col 1
+"E, Part A: Settlement - Hospital",7096,,E_A_HOS_C1_7096,Hospital | Line 70.96 | Col 1
+"E, Part A: Settlement - Hospital",7097,,E_A_HOS_C1_7097,Hospital | Line 70.97 | Col 1
+"E, Part A: Settlement - Hospital",7098,,E_A_HOS_C1_7098,Hospital | Line 70.98 | Col 1
+"E, Part A: Settlement - Hospital",7099,HAC reduction adjustment amount,E_A_HOS_C1_7099,Hospital | Line 70.99 | Col 1
+"E, Part A: Settlement - Hospital",7100,,E_A_HOS_C1_71,Hospital | Line 71 | Col 1
+"E, Part A: Settlement - Hospital",7101,,E_A_HOS_C1_7101,Hospital | Line 71.01 | Col 1
+"E, Part A: Settlement - Hospital",7200,IPPS Interim payment,E_A_HOS_C1_72,Hospital | Line 72 | Col 1
+"E, Part A: Settlement - Hospital",7300,,E_A_HOS_C1_73,Hospital | Line 73 | Col 1
+"E, Part A: Settlement - Hospital",7400,,E_A_HOS_C1_74,Hospital | Line 74 | Col 1
+"E, Part A: Settlement - Hospital",7500,,E_A_HOS_C1_75,Hospital | Line 75 | Col 1
+"E, Part A: Settlement - Hospital",9000,,E_A_HOS_C1_90,Hospital | Line 90 | Col 1
+"E, Part A: Settlement - Hospital",9100,,E_A_HOS_C1_91,Hospital | Line 91 | Col 1
+"E, Part A: Settlement - Hospital",9200,,E_A_HOS_C1_92,Hospital | Line 92 | Col 1
+"E, Part A: Settlement - Hospital",9300,,E_A_HOS_C1_93,Hospital | Line 93 | Col 1
+"E, Part A: Settlement - Hospital",9400,,E_A_HOS_C1_94,Hospital | Line 94 | Col 1
+"E, Part A: Settlement - Hospital",9500,,E_A_HOS_C1_95,Hospital | Line 95 | Col 1
+"E, Part A: Settlement - Hospital",9600,,E_A_HOS_C1_96,Hospital | Line 96 | Col 1
+"E, Part B: Settlement - Hospital",100,Medical and Other Services,E_B_HOS_C1_1,Hospital | Line 1 | Col 1
+"E, Part B: Settlement - Hospital",200,Medical and Other Services reimbursed by OPPS,E_B_HOS_C101_2,Hospital | Line 2 | Col 101
+"E, Part B: Settlement - Hospital",300,OPPS payments,E_B_HOS_C101_3,Hospital | Line 3 | Col 101
+"E, Part B: Settlement - Hospital",400,Outlier payments,E_B_HOS_C101_4,Hospital | Line 4 | Col 101
+"E, Part B: Settlement - Hospital",500,Payment to cost ratio,E_B_HOS_C101_5,Hospital | Line 5 | Col 101
+"E, Part B: Settlement - Hospital",600,Line 2 times line 5,E_B_HOS_C101_6,Hospital | Line 6 | Col 101
+"E, Part B: Settlement - Hospital",700,"Sum of lines 3,4 divided by line 6",E_B_HOS_C101_7,Hospital | Line 7 | Col 101
+"E, Part B: Settlement - Hospital",800,Transitional corridor payment,E_B_HOS_C101_8,Hospital | Line 8 | Col 101
+"E, Part B: Settlement - Hospital",900,Ancillary service other pass through costs,E_B_HOS_C1_9,Hospital | Line 9 | Col 1
+"E, Part B: Settlement - Hospital",1000,Organ acquisition,E_B_HOS_C1_10,Hospital | Line 10 | Col 1
+"E, Part B: Settlement - Hospital",1100,Total cost,E_B_HOS_C1_11,Hospital | Line 11 | Col 1
+"E, Part B: Settlement - Hospital",1200,Ancillary service charges,E_B_HOS_C1_12,Hospital | Line 12 | Col 1
+"E, Part B: Settlement - Hospital",1300,Organ acquisition charges,E_B_HOS_C1_13,Hospital | Line 13 | Col 1
+"E, Part B: Settlement - Hospital",1400,Total reasonable charges,E_B_HOS_C1_14,Hospital | Line 14 | Col 1
+"E, Part B: Settlement - Hospital",1500,Aggregate amount collected from patients,E_B_HOS_C1_15,Hospital | Line 15 | Col 1
+"E, Part B: Settlement - Hospital",1600,Amounts expected under 42 CFR,E_B_HOS_C1_16,Hospital | Line 16 | Col 1
+"E, Part B: Settlement - Hospital",1700,Ratio of line 15 to line 16,E_B_HOS_C1_17,Hospital | Line 17 | Col 1
+"E, Part B: Settlement - Hospital",1800,Total customary charges,E_B_HOS_C1_18,Hospital | Line 18 | Col 1
+"E, Part B: Settlement - Hospital",1900,Excess of customary charges,E_B_HOS_C1_19,Hospital | Line 19 | Col 1
+"E, Part B: Settlement - Hospital",2000,Excess of reasonable cost over reasonable charges,E_B_HOS_C1_20,Hospital | Line 20 | Col 1
+"E, Part B: Settlement - Hospital",2100,Lesser of cost or charges,E_B_HOS_C1_21,Hospital | Line 21 | Col 1
+"E, Part B: Settlement - Hospital",2200,Interns and residents,E_B_HOS_C1_22,Hospital | Line 22 | Col 1
+"E, Part B: Settlement - Hospital",2300,Cost of physicians svcs in a teaching hospita,E_B_HOS_C1_23,Hospital | Line 23 | Col 1
+"E, Part B: Settlement - Hospital",2400,Total prospective payment,E_B_HOS_C1_24,Hospital | Line 24 | Col 1
+"E, Part B: Settlement - Hospital",2500,Deductibles and coinsurance,E_B_HOS_C1_25,Hospital | Line 25 | Col 1
+"E, Part B: Settlement - Hospital",2600,Deductibles and coinsurance related to line 24,E_B_HOS_C1_26,Hospital | Line 26 | Col 1
+"E, Part B: Settlement - Hospital",2700,Subtotal,E_B_HOS_C1_27,Hospital | Line 27 | Col 1
+"E, Part B: Settlement - Hospital",2800,interns and residents,E_B_HOS_C1_28,Hospital | Line 28 | Col 1
+"E, Part B: Settlement - Hospital",2900,ESRD DME costs,E_B_HOS_C1_29,Hospital | Line 29 | Col 1
+"E, Part B: Settlement - Hospital",3000,Subtotal,E_B_HOS_C1_30,Hospital | Line 30 | Col 1
+"E, Part B: Settlement - Hospital",3100,Primary payer payments,E_B_HOS_C1_31,Hospital | Line 31 | Col 1
+"E, Part B: Settlement - Hospital",3200,Subtotal,E_B_HOS_C1_32,Hospital | Line 32 | Col 1
+"E, Part B: Settlement - Hospital",3300,Component rate ESRD,E_B_HOS_C1_33,Hospital | Line 33 | Col 1
+"E, Part B: Settlement - Hospital",3400,Allowable bad debts,E_B_HOS_C1_34,Hospital | Line 34 | Col 1
+"E, Part B: Settlement - Hospital",3500,Adjusted reimburseable bad debts,E_B_HOS_C1_35,Hospital | Line 35 | Col 1
+"E, Part B: Settlement - Hospital",3600,Allowable bad debts for dual eligibles beneficiaries,E_B_HOS_C1_36,Hospital | Line 36 | Col 1
+"E, Part B: Settlement - Hospital",3700,Subtotal,E_B_HOS_C1_37,Hospital | Line 37 | Col 1
+"E, Part B: Settlement - Hospital",3800,MSP-LCC reconciliation amount,E_B_HOS_C1_38,Hospital | Line 38 | Col 1
+"E, Part B: Settlement - Hospital",3900,Other adjustments,E_B_HOS_C1_39,Hospital | Line 39 | Col 1
+"E, Part B: Settlement - Hospital",3998,Partial or full credits from manufacturers,E_B_HOS_C1_3998,Hospital | Line 39.98 | Col 1
+"E, Part B: Settlement - Hospital",4000,Subtotal,E_B_HOS_C1_40,Hospital | Line 40 | Col 1
+"E, Part B: Settlement - Hospital",4001,Sequestration adjustment,E_B_HOS_C1_4001,Hospital | Line 40.01 | Col 1
+"E, Part B: Settlement - Hospital",4100,Interim payments,E_B_HOS_C1_41,Hospital | Line 41 | Col 1
+"E, Part B: Settlement - Hospital",4200,Tentative settlement,E_B_HOS_C1_42,Hospital | Line 42 | Col 1
+"E, Part B: Settlement - Hospital",4300,Balance due provider/program,E_B_HOS_C1_43,Hospital | Line 43 | Col 1
+"E, Part B: Settlement - Hospital",4400,Protested amounts,E_B_HOS_C1_44,Hospital | Line 44 | Col 1
+"E, Part B: Settlement - IPF",100,,E_B_IPF_C1_1,Inpatient Psychiatric Facility | Line 1 | Col 1
+"E, Part B: Settlement - IPF",200,,E_B_IPF_C1_2,Inpatient Psychiatric Facility | Line 2 | Col 1
+"E, Part B: Settlement - IPF",300,,E_B_IPF_C1_3,Inpatient Psychiatric Facility | Line 3 | Col 1
+"E, Part B: Settlement - IPF",400,,E_B_IPF_C1_4,Inpatient Psychiatric Facility | Line 4 | Col 1
+"E, Part B: Settlement - IPF",500,,E_B_IPF_C1_5,Inpatient Psychiatric Facility | Line 5 | Col 1
+"E, Part B: Settlement - IPF",600,,E_B_IPF_C1_6,Inpatient Psychiatric Facility | Line 6 | Col 1
+"E, Part B: Settlement - IPF",700,,E_B_IPF_C1_7,Inpatient Psychiatric Facility | Line 7 | Col 1
+"E, Part B: Settlement - IPF",800,,E_B_IPF_C1_8,Inpatient Psychiatric Facility | Line 8 | Col 1
+"E, Part B: Settlement - IPF",900,,E_B_IPF_C1_9,Inpatient Psychiatric Facility | Line 9 | Col 1
+"E, Part B: Settlement - IPF",1000,,E_B_IPF_C1_10,Inpatient Psychiatric Facility | Line 10 | Col 1
+"E, Part B: Settlement - IPF",1100,,E_B_IPF_C1_11,Inpatient Psychiatric Facility | Line 11 | Col 1
+"E, Part B: Settlement - IPF",1200,,E_B_IPF_C1_12,Inpatient Psychiatric Facility | Line 12 | Col 1
+"E, Part B: Settlement - IPF",1300,,E_B_IPF_C1_13,Inpatient Psychiatric Facility | Line 13 | Col 1
+"E, Part B: Settlement - IPF",1400,,E_B_IPF_C1_14,Inpatient Psychiatric Facility | Line 14 | Col 1
+"E, Part B: Settlement - IPF",1500,,E_B_IPF_C1_15,Inpatient Psychiatric Facility | Line 15 | Col 1
+"E, Part B: Settlement - IPF",1600,,E_B_IPF_C1_16,Inpatient Psychiatric Facility | Line 16 | Col 1
+"E, Part B: Settlement - IPF",1700,,E_B_IPF_C1_17,Inpatient Psychiatric Facility | Line 17 | Col 1
+"E, Part B: Settlement - IPF",1800,,E_B_IPF_C1_18,Inpatient Psychiatric Facility | Line 18 | Col 1
+"E, Part B: Settlement - IPF",1900,,E_B_IPF_C1_19,Inpatient Psychiatric Facility | Line 19 | Col 1
+"E, Part B: Settlement - IPF",2000,,E_B_IPF_C1_20,Inpatient Psychiatric Facility | Line 20 | Col 1
+"E, Part B: Settlement - IPF",2100,,E_B_IPF_C1_21,Inpatient Psychiatric Facility | Line 21 | Col 1
+"E, Part B: Settlement - IPF",2200,,E_B_IPF_C1_22,Inpatient Psychiatric Facility | Line 22 | Col 1
+"E, Part B: Settlement - IPF",2300,,E_B_IPF_C1_23,Inpatient Psychiatric Facility | Line 23 | Col 1
+"E, Part B: Settlement - IPF",2400,,E_B_IPF_C1_24,Inpatient Psychiatric Facility | Line 24 | Col 1
+"E, Part B: Settlement - IPF",2500,,E_B_IPF_C1_25,Inpatient Psychiatric Facility | Line 25 | Col 1
+"E, Part B: Settlement - IPF",2600,,E_B_IPF_C1_26,Inpatient Psychiatric Facility | Line 26 | Col 1
+"E, Part B: Settlement - IPF",2700,,E_B_IPF_C1_27,Inpatient Psychiatric Facility | Line 27 | Col 1
+"E, Part B: Settlement - IPF",2800,,E_B_IPF_C1_28,Inpatient Psychiatric Facility | Line 28 | Col 1
+"E, Part B: Settlement - IPF",2900,,E_B_IPF_C1_29,Inpatient Psychiatric Facility | Line 29 | Col 1
+"E, Part B: Settlement - IPF",3000,,E_B_IPF_C1_30,Inpatient Psychiatric Facility | Line 30 | Col 1
+"E, Part B: Settlement - IPF",3100,,E_B_IPF_C1_31,Inpatient Psychiatric Facility | Line 31 | Col 1
+"E, Part B: Settlement - IPF",3200,,E_B_IPF_C1_32,Inpatient Psychiatric Facility | Line 32 | Col 1
+"E, Part B: Settlement - IPF",3300,,E_B_IPF_C1_33,Inpatient Psychiatric Facility | Line 33 | Col 1
+"E, Part B: Settlement - IPF",3400,,E_B_IPF_C1_34,Inpatient Psychiatric Facility | Line 34 | Col 1
+"E, Part B: Settlement - IPF",3500,,E_B_IPF_C1_35,Inpatient Psychiatric Facility | Line 35 | Col 1
+"E, Part B: Settlement - IPF",3600,,E_B_IPF_C1_36,Inpatient Psychiatric Facility | Line 36 | Col 1
+"E, Part B: Settlement - IPF",3700,,E_B_IPF_C1_37,Inpatient Psychiatric Facility | Line 37 | Col 1
+"E, Part B: Settlement - IPF",3800,,E_B_IPF_C1_38,Inpatient Psychiatric Facility | Line 38 | Col 1
+"E, Part B: Settlement - IPF",3900,,E_B_IPF_C1_39,Inpatient Psychiatric Facility | Line 39 | Col 1
+"E, Part B: Settlement - IPF",3950,,E_B_IPF_C1_3950,Inpatient Psychiatric Facility | Line 39.50 | Col 1
+"E, Part B: Settlement - IPF",4000,,E_B_IPF_C1_40,Inpatient Psychiatric Facility | Line 40 | Col 1
+"E, Part B: Settlement - IPF",4001,,E_B_IPF_C1_4001,Inpatient Psychiatric Facility | Line 40.01 | Col 1
+"E, Part B: Settlement - IPF",4100,,E_B_IPF_C1_41,Inpatient Psychiatric Facility | Line 41 | Col 1
+"E, Part B: Settlement - IPF",4200,,E_B_IPF_C1_42,Inpatient Psychiatric Facility | Line 42 | Col 1
+"E, Part B: Settlement - IPF",4300,,E_B_IPF_C1_43,Inpatient Psychiatric Facility | Line 43 | Col 1
+"E, Part B: Settlement - IPF",4400,,E_B_IPF_C1_44,Inpatient Psychiatric Facility | Line 44 | Col 1
+"E, Part B: Settlement - IRF",100,,E_B_IRF_C1_1,Inpatient Rehabilitation Facility | Line 1 | Col 1
+"E, Part B: Settlement - IRF",200,,E_B_IRF_C1_2,Inpatient Rehabilitation Facility | Line 2 | Col 1
+"E, Part B: Settlement - IRF",300,,E_B_IRF_C1_3,Inpatient Rehabilitation Facility | Line 3 | Col 1
+"E, Part B: Settlement - IRF",400,,E_B_IRF_C1_4,Inpatient Rehabilitation Facility | Line 4 | Col 1
+"E, Part B: Settlement - IRF",500,,E_B_IRF_C1_5,Inpatient Rehabilitation Facility | Line 5 | Col 1
+"E, Part B: Settlement - IRF",600,,E_B_IRF_C1_6,Inpatient Rehabilitation Facility | Line 6 | Col 1
+"E, Part B: Settlement - IRF",700,,E_B_IRF_C1_7,Inpatient Rehabilitation Facility | Line 7 | Col 1
+"E, Part B: Settlement - IRF",800,,E_B_IRF_C1_8,Inpatient Rehabilitation Facility | Line 8 | Col 1
+"E, Part B: Settlement - IRF",900,,E_B_IRF_C1_9,Inpatient Rehabilitation Facility | Line 9 | Col 1
+"E, Part B: Settlement - IRF",1000,,E_B_IRF_C1_10,Inpatient Rehabilitation Facility | Line 10 | Col 1
+"E, Part B: Settlement - IRF",1100,,E_B_IRF_C1_11,Inpatient Rehabilitation Facility | Line 11 | Col 1
+"E, Part B: Settlement - IRF",1200,,E_B_IRF_C1_12,Inpatient Rehabilitation Facility | Line 12 | Col 1
+"E, Part B: Settlement - IRF",1300,,E_B_IRF_C1_13,Inpatient Rehabilitation Facility | Line 13 | Col 1
+"E, Part B: Settlement - IRF",1400,,E_B_IRF_C1_14,Inpatient Rehabilitation Facility | Line 14 | Col 1
+"E, Part B: Settlement - IRF",1500,,E_B_IRF_C1_15,Inpatient Rehabilitation Facility | Line 15 | Col 1
+"E, Part B: Settlement - IRF",1600,,E_B_IRF_C1_16,Inpatient Rehabilitation Facility | Line 16 | Col 1
+"E, Part B: Settlement - IRF",1700,,E_B_IRF_C1_17,Inpatient Rehabilitation Facility | Line 17 | Col 1
+"E, Part B: Settlement - IRF",1800,,E_B_IRF_C1_18,Inpatient Rehabilitation Facility | Line 18 | Col 1
+"E, Part B: Settlement - IRF",1900,,E_B_IRF_C1_19,Inpatient Rehabilitation Facility | Line 19 | Col 1
+"E, Part B: Settlement - IRF",2000,,E_B_IRF_C1_20,Inpatient Rehabilitation Facility | Line 20 | Col 1
+"E, Part B: Settlement - IRF",2100,,E_B_IRF_C1_21,Inpatient Rehabilitation Facility | Line 21 | Col 1
+"E, Part B: Settlement - IRF",2200,,E_B_IRF_C1_22,Inpatient Rehabilitation Facility | Line 22 | Col 1
+"E, Part B: Settlement - IRF",2300,,E_B_IRF_C1_23,Inpatient Rehabilitation Facility | Line 23 | Col 1
+"E, Part B: Settlement - IRF",2400,,E_B_IRF_C1_24,Inpatient Rehabilitation Facility | Line 24 | Col 1
+"E, Part B: Settlement - IRF",2500,,E_B_IRF_C1_25,Inpatient Rehabilitation Facility | Line 25 | Col 1
+"E, Part B: Settlement - IRF",2600,,E_B_IRF_C1_26,Inpatient Rehabilitation Facility | Line 26 | Col 1
+"E, Part B: Settlement - IRF",2700,,E_B_IRF_C1_27,Inpatient Rehabilitation Facility | Line 27 | Col 1
+"E, Part B: Settlement - IRF",2800,,E_B_IRF_C1_28,Inpatient Rehabilitation Facility | Line 28 | Col 1
+"E, Part B: Settlement - IRF",2900,,E_B_IRF_C1_29,Inpatient Rehabilitation Facility | Line 29 | Col 1
+"E, Part B: Settlement - IRF",3000,,E_B_IRF_C1_30,Inpatient Rehabilitation Facility | Line 30 | Col 1
+"E, Part B: Settlement - IRF",3100,,E_B_IRF_C1_31,Inpatient Rehabilitation Facility | Line 31 | Col 1
+"E, Part B: Settlement - IRF",3200,,E_B_IRF_C1_32,Inpatient Rehabilitation Facility | Line 32 | Col 1
+"E, Part B: Settlement - IRF",3300,,E_B_IRF_C1_33,Inpatient Rehabilitation Facility | Line 33 | Col 1
+"E, Part B: Settlement - IRF",3400,,E_B_IRF_C1_34,Inpatient Rehabilitation Facility | Line 34 | Col 1
+"E, Part B: Settlement - IRF",3500,,E_B_IRF_C1_35,Inpatient Rehabilitation Facility | Line 35 | Col 1
+"E, Part B: Settlement - IRF",3600,,E_B_IRF_C1_36,Inpatient Rehabilitation Facility | Line 36 | Col 1
+"E, Part B: Settlement - IRF",3700,,E_B_IRF_C1_37,Inpatient Rehabilitation Facility | Line 37 | Col 1
+"E, Part B: Settlement - IRF",3800,,E_B_IRF_C1_38,Inpatient Rehabilitation Facility | Line 38 | Col 1
+"E, Part B: Settlement - IRF",3900,,E_B_IRF_C1_39,Inpatient Rehabilitation Facility | Line 39 | Col 1
+"E, Part B: Settlement - IRF",4000,,E_B_IRF_C1_40,Inpatient Rehabilitation Facility | Line 40 | Col 1
+"E, Part B: Settlement - IRF",4100,,E_B_IRF_C1_41,Inpatient Rehabilitation Facility | Line 41 | Col 1
+"E, Part B: Settlement - IRF",4200,,E_B_IRF_C1_42,Inpatient Rehabilitation Facility | Line 42 | Col 1
+"E, Part B: Settlement - IRF",4300,,E_B_IRF_C1_43,Inpatient Rehabilitation Facility | Line 43 | Col 1
+"E, Part B: Settlement - IRF",4400,,E_B_IRF_C1_44,Inpatient Rehabilitation Facility | Line 44 | Col 1
+"E, Part B: Settlement - SNF",100,,E_B_SNF_C1_1,Skilled Nursing Facility | Line 1 | Col 1
+"E, Part B: Settlement - SNF",200,,E_B_SNF_C1_2,Skilled Nursing Facility | Line 2 | Col 1
+"E, Part B: Settlement - SNF",300,,E_B_SNF_C1_3,Skilled Nursing Facility | Line 3 | Col 1
+"E, Part B: Settlement - SNF",400,,E_B_SNF_C1_4,Skilled Nursing Facility | Line 4 | Col 1
+"E, Part B: Settlement - SNF",500,,E_B_SNF_C1_5,Skilled Nursing Facility | Line 5 | Col 1
+"E, Part B: Settlement - SNF",600,,E_B_SNF_C1_6,Skilled Nursing Facility | Line 6 | Col 1
+"E, Part B: Settlement - SNF",700,,E_B_SNF_C1_7,Skilled Nursing Facility | Line 7 | Col 1
+"E, Part B: Settlement - SNF",800,,E_B_SNF_C1_8,Skilled Nursing Facility | Line 8 | Col 1
+"E, Part B: Settlement - SNF",900,,E_B_SNF_C1_9,Skilled Nursing Facility | Line 9 | Col 1
+"E, Part B: Settlement - SNF",1000,,E_B_SNF_C1_10,Skilled Nursing Facility | Line 10 | Col 1
+"E, Part B: Settlement - SNF",1100,,E_B_SNF_C1_11,Skilled Nursing Facility | Line 11 | Col 1
+"E, Part B: Settlement - SNF",1200,,E_B_SNF_C1_12,Skilled Nursing Facility | Line 12 | Col 1
+"E, Part B: Settlement - SNF",1300,,E_B_SNF_C1_13,Skilled Nursing Facility | Line 13 | Col 1
+"E, Part B: Settlement - SNF",1400,,E_B_SNF_C1_14,Skilled Nursing Facility | Line 14 | Col 1
+"E, Part B: Settlement - SNF",1500,,E_B_SNF_C1_15,Skilled Nursing Facility | Line 15 | Col 1
+"E, Part B: Settlement - SNF",1600,,E_B_SNF_C1_16,Skilled Nursing Facility | Line 16 | Col 1
+"E, Part B: Settlement - SNF",1700,,E_B_SNF_C1_17,Skilled Nursing Facility | Line 17 | Col 1
+"E, Part B: Settlement - SNF",1800,,E_B_SNF_C1_18,Skilled Nursing Facility | Line 18 | Col 1
+"E, Part B: Settlement - SNF",1900,,E_B_SNF_C1_19,Skilled Nursing Facility | Line 19 | Col 1
+"E, Part B: Settlement - SNF",2000,,E_B_SNF_C1_20,Skilled Nursing Facility | Line 20 | Col 1
+"E, Part B: Settlement - SNF",2100,,E_B_SNF_C1_21,Skilled Nursing Facility | Line 21 | Col 1
+"E, Part B: Settlement - SNF",2200,,E_B_SNF_C1_22,Skilled Nursing Facility | Line 22 | Col 1
+"E, Part B: Settlement - SNF",2300,,E_B_SNF_C1_23,Skilled Nursing Facility | Line 23 | Col 1
+"E, Part B: Settlement - SNF",2400,,E_B_SNF_C1_24,Skilled Nursing Facility | Line 24 | Col 1
+"E, Part B: Settlement - SNF",2500,,E_B_SNF_C1_25,Skilled Nursing Facility | Line 25 | Col 1
+"E, Part B: Settlement - SNF",2600,,E_B_SNF_C1_26,Skilled Nursing Facility | Line 26 | Col 1
+"E, Part B: Settlement - SNF",2700,,E_B_SNF_C1_27,Skilled Nursing Facility | Line 27 | Col 1
+"E, Part B: Settlement - SNF",2800,,E_B_SNF_C1_28,Skilled Nursing Facility | Line 28 | Col 1
+"E, Part B: Settlement - SNF",2900,,E_B_SNF_C1_29,Skilled Nursing Facility | Line 29 | Col 1
+"E, Part B: Settlement - SNF",3000,,E_B_SNF_C1_30,Skilled Nursing Facility | Line 30 | Col 1
+"E, Part B: Settlement - SNF",3100,,E_B_SNF_C1_31,Skilled Nursing Facility | Line 31 | Col 1
+"E, Part B: Settlement - SNF",3200,,E_B_SNF_C1_32,Skilled Nursing Facility | Line 32 | Col 1
+"E, Part B: Settlement - SNF",3300,,E_B_SNF_C1_33,Skilled Nursing Facility | Line 33 | Col 1
+"E, Part B: Settlement - SNF",3400,,E_B_SNF_C1_34,Skilled Nursing Facility | Line 34 | Col 1
+"E, Part B: Settlement - SNF",3500,,E_B_SNF_C1_35,Skilled Nursing Facility | Line 35 | Col 1
+"E, Part B: Settlement - SNF",3600,,E_B_SNF_C1_36,Skilled Nursing Facility | Line 36 | Col 1
+"E, Part B: Settlement - SNF",3700,,E_B_SNF_C1_37,Skilled Nursing Facility | Line 37 | Col 1
+"E, Part B: Settlement - SNF",3800,,E_B_SNF_C1_38,Skilled Nursing Facility | Line 38 | Col 1
+"E, Part B: Settlement - SNF",3900,,E_B_SNF_C1_39,Skilled Nursing Facility | Line 39 | Col 1
+"E, Part B: Settlement - SNF",4000,,E_B_SNF_C1_40,Skilled Nursing Facility | Line 40 | Col 1
+"E, Part B: Settlement - SNF",4100,,E_B_SNF_C1_41,Skilled Nursing Facility | Line 41 | Col 1
+"E, Part B: Settlement - SNF",4200,,E_B_SNF_C1_42,Skilled Nursing Facility | Line 42 | Col 1
+"E, Part B: Settlement - SNF",4300,,E_B_SNF_C1_43,Skilled Nursing Facility | Line 43 | Col 1
+"E, Part B: Settlement - SNF",4400,,E_B_SNF_C1_44,Skilled Nursing Facility | Line 44 | Col 1
+"E, Part B: Settlement - Subprovider 1",100,,E_B_SUB1_C1_1,Subprovider 1 | Line 1 | Col 1
+"E, Part B: Settlement - Subprovider 1",200,,E_B_SUB1_C1_2,Subprovider 1 | Line 2 | Col 1
+"E, Part B: Settlement - Subprovider 1",300,,E_B_SUB1_C1_3,Subprovider 1 | Line 3 | Col 1
+"E, Part B: Settlement - Subprovider 1",400,,E_B_SUB1_C1_4,Subprovider 1 | Line 4 | Col 1
+"E, Part B: Settlement - Subprovider 1",500,,E_B_SUB1_C1_5,Subprovider 1 | Line 5 | Col 1
+"E, Part B: Settlement - Subprovider 1",600,,E_B_SUB1_C1_6,Subprovider 1 | Line 6 | Col 1
+"E, Part B: Settlement - Subprovider 1",700,,E_B_SUB1_C1_7,Subprovider 1 | Line 7 | Col 1
+"E, Part B: Settlement - Subprovider 1",800,,E_B_SUB1_C1_8,Subprovider 1 | Line 8 | Col 1
+"E, Part B: Settlement - Subprovider 1",900,,E_B_SUB1_C1_9,Subprovider 1 | Line 9 | Col 1
+"E, Part B: Settlement - Subprovider 1",1000,,E_B_SUB1_C1_10,Subprovider 1 | Line 10 | Col 1
+"E, Part B: Settlement - Subprovider 1",1100,,E_B_SUB1_C1_11,Subprovider 1 | Line 11 | Col 1
+"E, Part B: Settlement - Subprovider 1",1200,,E_B_SUB1_C1_12,Subprovider 1 | Line 12 | Col 1
+"E, Part B: Settlement - Subprovider 1",1300,,E_B_SUB1_C1_13,Subprovider 1 | Line 13 | Col 1
+"E, Part B: Settlement - Subprovider 1",1400,,E_B_SUB1_C1_14,Subprovider 1 | Line 14 | Col 1
+"E, Part B: Settlement - Subprovider 1",1500,,E_B_SUB1_C1_15,Subprovider 1 | Line 15 | Col 1
+"E, Part B: Settlement - Subprovider 1",1600,,E_B_SUB1_C1_16,Subprovider 1 | Line 16 | Col 1
+"E, Part B: Settlement - Subprovider 1",1700,,E_B_SUB1_C1_17,Subprovider 1 | Line 17 | Col 1
+"E, Part B: Settlement - Subprovider 1",1800,,E_B_SUB1_C1_18,Subprovider 1 | Line 18 | Col 1
+"E, Part B: Settlement - Subprovider 1",1900,,E_B_SUB1_C1_19,Subprovider 1 | Line 19 | Col 1
+"E, Part B: Settlement - Subprovider 1",2000,,E_B_SUB1_C1_20,Subprovider 1 | Line 20 | Col 1
+"E, Part B: Settlement - Subprovider 1",2100,,E_B_SUB1_C1_21,Subprovider 1 | Line 21 | Col 1
+"E, Part B: Settlement - Subprovider 1",2200,,E_B_SUB1_C1_22,Subprovider 1 | Line 22 | Col 1
+"E, Part B: Settlement - Subprovider 1",2300,,E_B_SUB1_C1_23,Subprovider 1 | Line 23 | Col 1
+"E, Part B: Settlement - Subprovider 1",2400,,E_B_SUB1_C1_24,Subprovider 1 | Line 24 | Col 1
+"E, Part B: Settlement - Subprovider 1",2500,,E_B_SUB1_C1_25,Subprovider 1 | Line 25 | Col 1
+"E, Part B: Settlement - Subprovider 1",2600,,E_B_SUB1_C1_26,Subprovider 1 | Line 26 | Col 1
+"E, Part B: Settlement - Subprovider 1",2700,,E_B_SUB1_C1_27,Subprovider 1 | Line 27 | Col 1
+"E, Part B: Settlement - Subprovider 1",2800,,E_B_SUB1_C1_28,Subprovider 1 | Line 28 | Col 1
+"E, Part B: Settlement - Subprovider 1",2900,,E_B_SUB1_C1_29,Subprovider 1 | Line 29 | Col 1
+"E, Part B: Settlement - Subprovider 1",3000,,E_B_SUB1_C1_30,Subprovider 1 | Line 30 | Col 1
+"E, Part B: Settlement - Subprovider 1",3100,,E_B_SUB1_C1_31,Subprovider 1 | Line 31 | Col 1
+"E, Part B: Settlement - Subprovider 1",3200,,E_B_SUB1_C1_32,Subprovider 1 | Line 32 | Col 1
+"E, Part B: Settlement - Subprovider 1",3300,,E_B_SUB1_C1_33,Subprovider 1 | Line 33 | Col 1
+"E, Part B: Settlement - Subprovider 1",3400,,E_B_SUB1_C1_34,Subprovider 1 | Line 34 | Col 1
+"E, Part B: Settlement - Subprovider 1",3500,,E_B_SUB1_C1_35,Subprovider 1 | Line 35 | Col 1
+"E, Part B: Settlement - Subprovider 1",3600,,E_B_SUB1_C1_36,Subprovider 1 | Line 36 | Col 1
+"E, Part B: Settlement - Subprovider 1",3700,,E_B_SUB1_C1_37,Subprovider 1 | Line 37 | Col 1
+"E, Part B: Settlement - Subprovider 1",3800,,E_B_SUB1_C1_38,Subprovider 1 | Line 38 | Col 1
+"E, Part B: Settlement - Subprovider 1",3900,,E_B_SUB1_C1_39,Subprovider 1 | Line 39 | Col 1
+"E, Part B: Settlement - Subprovider 1",4000,,E_B_SUB1_C1_40,Subprovider 1 | Line 40 | Col 1
+"E, Part B: Settlement - Subprovider 1",4100,,E_B_SUB1_C1_41,Subprovider 1 | Line 41 | Col 1
+"E, Part B: Settlement - Subprovider 1",4200,,E_B_SUB1_C1_42,Subprovider 1 | Line 42 | Col 1
+"E, Part B: Settlement - Subprovider 1",4300,,E_B_SUB1_C1_43,Subprovider 1 | Line 43 | Col 1
+"E, Part B: Settlement - Subprovider 1",4400,,E_B_SUB1_C1_44,Subprovider 1 | Line 44 | Col 1
+"E, Part B: Settlement - Subprovider 2",100,,E_B_SUB2_C1_1,Subprovider 2 | Line 1 | Col 1
+"E, Part B: Settlement - Subprovider 2",200,,E_B_SUB2_C1_2,Subprovider 2 | Line 2 | Col 1
+"E, Part B: Settlement - Subprovider 2",300,,E_B_SUB2_C1_3,Subprovider 2 | Line 3 | Col 1
+"E, Part B: Settlement - Subprovider 2",400,,E_B_SUB2_C1_4,Subprovider 2 | Line 4 | Col 1
+"E, Part B: Settlement - Subprovider 2",500,,E_B_SUB2_C1_5,Subprovider 2 | Line 5 | Col 1
+"E, Part B: Settlement - Subprovider 2",600,,E_B_SUB2_C1_6,Subprovider 2 | Line 6 | Col 1
+"E, Part B: Settlement - Subprovider 2",700,,E_B_SUB2_C1_7,Subprovider 2 | Line 7 | Col 1
+"E, Part B: Settlement - Subprovider 2",800,,E_B_SUB2_C1_8,Subprovider 2 | Line 8 | Col 1
+"E, Part B: Settlement - Subprovider 2",900,,E_B_SUB2_C1_9,Subprovider 2 | Line 9 | Col 1
+"E, Part B: Settlement - Subprovider 2",1000,,E_B_SUB2_C1_10,Subprovider 2 | Line 10 | Col 1
+"E, Part B: Settlement - Subprovider 2",1100,,E_B_SUB2_C1_11,Subprovider 2 | Line 11 | Col 1
+"E, Part B: Settlement - Subprovider 2",1200,,E_B_SUB2_C1_12,Subprovider 2 | Line 12 | Col 1
+"E, Part B: Settlement - Subprovider 2",1300,,E_B_SUB2_C1_13,Subprovider 2 | Line 13 | Col 1
+"E, Part B: Settlement - Subprovider 2",1400,,E_B_SUB2_C1_14,Subprovider 2 | Line 14 | Col 1
+"E, Part B: Settlement - Subprovider 2",1500,,E_B_SUB2_C1_15,Subprovider 2 | Line 15 | Col 1
+"E, Part B: Settlement - Subprovider 2",1600,,E_B_SUB2_C1_16,Subprovider 2 | Line 16 | Col 1
+"E, Part B: Settlement - Subprovider 2",1700,,E_B_SUB2_C1_17,Subprovider 2 | Line 17 | Col 1
+"E, Part B: Settlement - Subprovider 2",1800,,E_B_SUB2_C1_18,Subprovider 2 | Line 18 | Col 1
+"E, Part B: Settlement - Subprovider 2",1900,,E_B_SUB2_C1_19,Subprovider 2 | Line 19 | Col 1
+"E, Part B: Settlement - Subprovider 2",2000,,E_B_SUB2_C1_20,Subprovider 2 | Line 20 | Col 1
+"E, Part B: Settlement - Subprovider 2",2100,,E_B_SUB2_C1_21,Subprovider 2 | Line 21 | Col 1
+"E, Part B: Settlement - Subprovider 2",2200,,E_B_SUB2_C1_22,Subprovider 2 | Line 22 | Col 1
+"E, Part B: Settlement - Subprovider 2",2300,,E_B_SUB2_C1_23,Subprovider 2 | Line 23 | Col 1
+"E, Part B: Settlement - Subprovider 2",2400,,E_B_SUB2_C1_24,Subprovider 2 | Line 24 | Col 1
+"E, Part B: Settlement - Subprovider 2",2500,,E_B_SUB2_C1_25,Subprovider 2 | Line 25 | Col 1
+"E, Part B: Settlement - Subprovider 2",2600,,E_B_SUB2_C1_26,Subprovider 2 | Line 26 | Col 1
+"E, Part B: Settlement - Subprovider 2",2700,,E_B_SUB2_C1_27,Subprovider 2 | Line 27 | Col 1
+"E, Part B: Settlement - Subprovider 2",2800,,E_B_SUB2_C1_28,Subprovider 2 | Line 28 | Col 1
+"E, Part B: Settlement - Subprovider 2",2900,,E_B_SUB2_C1_29,Subprovider 2 | Line 29 | Col 1
+"E, Part B: Settlement - Subprovider 2",3000,,E_B_SUB2_C1_30,Subprovider 2 | Line 30 | Col 1
+"E, Part B: Settlement - Subprovider 2",3100,,E_B_SUB2_C1_31,Subprovider 2 | Line 31 | Col 1
+"E, Part B: Settlement - Subprovider 2",3200,,E_B_SUB2_C1_32,Subprovider 2 | Line 32 | Col 1
+"E, Part B: Settlement - Subprovider 2",3300,,E_B_SUB2_C1_33,Subprovider 2 | Line 33 | Col 1
+"E, Part B: Settlement - Subprovider 2",3400,,E_B_SUB2_C1_34,Subprovider 2 | Line 34 | Col 1
+"E, Part B: Settlement - Subprovider 2",3500,,E_B_SUB2_C1_35,Subprovider 2 | Line 35 | Col 1
+"E, Part B: Settlement - Subprovider 2",3600,,E_B_SUB2_C1_36,Subprovider 2 | Line 36 | Col 1
+"E, Part B: Settlement - Subprovider 2",3700,,E_B_SUB2_C1_37,Subprovider 2 | Line 37 | Col 1
+"E, Part B: Settlement - Subprovider 2",3800,,E_B_SUB2_C1_38,Subprovider 2 | Line 38 | Col 1
+"E, Part B: Settlement - Subprovider 2",3900,,E_B_SUB2_C1_39,Subprovider 2 | Line 39 | Col 1
+"E, Part B: Settlement - Subprovider 2",4000,,E_B_SUB2_C1_40,Subprovider 2 | Line 40 | Col 1
+"E, Part B: Settlement - Subprovider 2",4100,,E_B_SUB2_C1_41,Subprovider 2 | Line 41 | Col 1
+"E, Part B: Settlement - Subprovider 2",4200,,E_B_SUB2_C1_42,Subprovider 2 | Line 42 | Col 1
+"E, Part B: Settlement - Subprovider 2",4300,,E_B_SUB2_C1_43,Subprovider 2 | Line 43 | Col 1
+"E, Part B: Settlement - Subprovider 2",4400,,E_B_SUB2_C1_44,Subprovider 2 | Line 44 | Col 1
+"E-1, Part II: Settlement",100,,E1_2_HOS_C1_1,Hospital | Line 1 | Col 1
+"E-1, Part II: Settlement",200,,E1_2_HOS_C1_2,Hospital | Line 2 | Col 1
+"E-1, Part II: Settlement",300,,E1_2_HOS_C1_3,Hospital | Line 3 | Col 1
+"E-1, Part II: Settlement",400,,E1_2_HOS_C1_4,Hospital | Line 4 | Col 1
+"E-1, Part II: Settlement",500,,E1_2_HOS_C1_5,Hospital | Line 5 | Col 1
+"E-1, Part II: Settlement",600,,E1_2_HOS_C1_6,Hospital | Line 6 | Col 1
+"E-1, Part II: Settlement",700,,E1_2_HOS_C1_7,Hospital | Line 7 | Col 1
+"E-1, Part II: Settlement",800,,E1_2_HOS_C1_8,Hospital | Line 8 | Col 1
+"E-1, Part II: Settlement",3000,,E1_2_HOS_C1_30,Hospital | Line 30 | Col 1
+"E-1, Part II: Settlement",3100,,E1_2_HOS_C1_31,Hospital | Line 31 | Col 1
+"E-1, Part II: Settlement",3200,,E1_2_HOS_C1_32,Hospital | Line 32 | Col 1
+E-2: Swing Bed SNF,100,,E2_SWSNF_C1_1,Swing Bed SNF | Line 1 | Col 1
+E-2: Swing Bed SNF,200,,E2_SWSNF_C1_2,Swing Bed SNF | Line 2 | Col 1
+E-2: Swing Bed SNF,300,,E2_SWSNF_C1_3,Swing Bed SNF | Line 3 | Col 1
+E-2: Swing Bed SNF,400,,E2_SWSNF_C1_4,Swing Bed SNF | Line 4 | Col 1
+E-2: Swing Bed SNF,500,,E2_SWSNF_C1_5,Swing Bed SNF | Line 5 | Col 1
+E-2: Swing Bed SNF,600,,E2_SWSNF_C1_6,Swing Bed SNF | Line 6 | Col 1
+E-2: Swing Bed SNF,700,,E2_SWSNF_C1_7,Swing Bed SNF | Line 7 | Col 1
+E-2: Swing Bed SNF,800,,E2_SWSNF_C1_8,Swing Bed SNF | Line 8 | Col 1
+E-2: Swing Bed SNF,900,,E2_SWSNF_C1_9,Swing Bed SNF | Line 9 | Col 1
+E-2: Swing Bed SNF,1000,,E2_SWSNF_C1_10,Swing Bed SNF | Line 10 | Col 1
+E-2: Swing Bed SNF,1100,,E2_SWSNF_C1_11,Swing Bed SNF | Line 11 | Col 1
+E-2: Swing Bed SNF,1200,,E2_SWSNF_C1_12,Swing Bed SNF | Line 12 | Col 1
+E-2: Swing Bed SNF,1300,,E2_SWSNF_C1_13,Swing Bed SNF | Line 13 | Col 1
+E-2: Swing Bed SNF,1400,,E2_SWSNF_C1_14,Swing Bed SNF | Line 14 | Col 1
+E-2: Swing Bed SNF,1500,,E2_SWSNF_C1_15,Swing Bed SNF | Line 15 | Col 1
+E-2: Swing Bed SNF,1600,,E2_SWSNF_C1_16,Swing Bed SNF | Line 16 | Col 1
+E-2: Swing Bed SNF,1700,,E2_SWSNF_C1_17,Swing Bed SNF | Line 17 | Col 1
+E-2: Swing Bed SNF,1800,,E2_SWSNF_C1_18,Swing Bed SNF | Line 18 | Col 1
+E-2: Swing Bed SNF,1900,,E2_SWSNF_C1_19,Swing Bed SNF | Line 19 | Col 1
+E-2: Swing Bed SNF,2000,,E2_SWSNF_C1_20,Swing Bed SNF | Line 20 | Col 1
+E-2: Swing Bed SNF,2100,,E2_SWSNF_C1_21,Swing Bed SNF | Line 21 | Col 1
+E-2: Swing Bed SNF,2200,,E2_SWSNF_C1_22,Swing Bed SNF | Line 22 | Col 1
+E-2: Swing Bed SNF,2300,,E2_SWSNF_C1_23,Swing Bed SNF | Line 23 | Col 1
+"E-3, Part I: Settlement - Hospital",100,,E3_1_HOS_C1_1,Hospital | Line 1 | Col 1
+"E-3, Part I: Settlement - Hospital",200,,E3_1_HOS_C1_2,Hospital | Line 2 | Col 1
+"E-3, Part I: Settlement - Hospital",300,,E3_1_HOS_C1_3,Hospital | Line 3 | Col 1
+"E-3, Part I: Settlement - Hospital",400,,E3_1_HOS_C1_4,Hospital | Line 4 | Col 1
+"E-3, Part I: Settlement - Hospital",500,,E3_1_HOS_C1_5,Hospital | Line 5 | Col 1
+"E-3, Part I: Settlement - Hospital",600,,E3_1_HOS_C1_6,Hospital | Line 6 | Col 1
+"E-3, Part I: Settlement - Hospital",700,,E3_1_HOS_C1_7,Hospital | Line 7 | Col 1
+"E-3, Part I: Settlement - Hospital",800,,E3_1_HOS_C1_8,Hospital | Line 8 | Col 1
+"E-3, Part I: Settlement - Hospital",900,,E3_1_HOS_C1_9,Hospital | Line 9 | Col 1
+"E-3, Part I: Settlement - Hospital",1000,,E3_1_HOS_C1_10,Hospital | Line 10 | Col 1
+"E-3, Part I: Settlement - Hospital",1100,,E3_1_HOS_C1_11,Hospital | Line 11 | Col 1
+"E-3, Part I: Settlement - Hospital",1200,,E3_1_HOS_C1_12,Hospital | Line 12 | Col 1
+"E-3, Part I: Settlement - Hospital",1300,,E3_1_HOS_C1_13,Hospital | Line 13 | Col 1
+"E-3, Part I: Settlement - Hospital",1400,,E3_1_HOS_C1_14,Hospital | Line 14 | Col 1
+"E-3, Part I: Settlement - Hospital",1500,,E3_1_HOS_C1_15,Hospital | Line 15 | Col 1
+"E-3, Part I: Settlement - Hospital",1600,,E3_1_HOS_C1_16,Hospital | Line 16 | Col 1
+"E-3, Part I: Settlement - Hospital",1700,,E3_1_HOS_C1_17,Hospital | Line 17 | Col 1
+"E-3, Part I: Settlement - Hospital",1800,,E3_1_HOS_C1_18,Hospital | Line 18 | Col 1
+"E-3, Part I: Settlement - Hospital",1900,,E3_1_HOS_C1_19,Hospital | Line 19 | Col 1
+"E-3, Part I: Settlement - Hospital",2000,,E3_1_HOS_C1_20,Hospital | Line 20 | Col 1
+"E-3, Part I: Settlement - Hospital",2100,,E3_1_HOS_C1_21,Hospital | Line 21 | Col 1
+"E-3, Part I: Settlement - Hospital",2200,,E3_1_HOS_C1_22,Hospital | Line 22 | Col 1
+"E-3, Part I: Settlement - IPF",100,,E3_1_IPF_C1_1,Inpatient Psychiatric Facility | Line 1 | Col 1
+"E-3, Part I: Settlement - IPF",200,,E3_1_IPF_C1_2,Inpatient Psychiatric Facility | Line 2 | Col 1
+"E-3, Part I: Settlement - IPF",300,,E3_1_IPF_C1_3,Inpatient Psychiatric Facility | Line 3 | Col 1
+"E-3, Part I: Settlement - IPF",400,,E3_1_IPF_C1_4,Inpatient Psychiatric Facility | Line 4 | Col 1
+"E-3, Part I: Settlement - IPF",500,,E3_1_IPF_C1_5,Inpatient Psychiatric Facility | Line 5 | Col 1
+"E-3, Part I: Settlement - IPF",600,,E3_1_IPF_C1_6,Inpatient Psychiatric Facility | Line 6 | Col 1
+"E-3, Part I: Settlement - IPF",700,,E3_1_IPF_C1_7,Inpatient Psychiatric Facility | Line 7 | Col 1
+"E-3, Part I: Settlement - IPF",800,,E3_1_IPF_C1_8,Inpatient Psychiatric Facility | Line 8 | Col 1
+"E-3, Part I: Settlement - IPF",900,,E3_1_IPF_C1_9,Inpatient Psychiatric Facility | Line 9 | Col 1
+"E-3, Part I: Settlement - IPF",1000,,E3_1_IPF_C1_10,Inpatient Psychiatric Facility | Line 10 | Col 1
+"E-3, Part I: Settlement - IPF",1100,,E3_1_IPF_C1_11,Inpatient Psychiatric Facility | Line 11 | Col 1
+"E-3, Part I: Settlement - IPF",1200,,E3_1_IPF_C1_12,Inpatient Psychiatric Facility | Line 12 | Col 1
+"E-3, Part I: Settlement - IPF",1300,,E3_1_IPF_C1_13,Inpatient Psychiatric Facility | Line 13 | Col 1
+"E-3, Part I: Settlement - IPF",1400,,E3_1_IPF_C1_14,Inpatient Psychiatric Facility | Line 14 | Col 1
+"E-3, Part I: Settlement - IPF",1500,,E3_1_IPF_C1_15,Inpatient Psychiatric Facility | Line 15 | Col 1
+"E-3, Part I: Settlement - IPF",1600,,E3_1_IPF_C1_16,Inpatient Psychiatric Facility | Line 16 | Col 1
+"E-3, Part I: Settlement - IPF",1700,,E3_1_IPF_C1_17,Inpatient Psychiatric Facility | Line 17 | Col 1
+"E-3, Part I: Settlement - IPF",1800,,E3_1_IPF_C1_18,Inpatient Psychiatric Facility | Line 18 | Col 1
+"E-3, Part I: Settlement - IPF",1900,,E3_1_IPF_C1_19,Inpatient Psychiatric Facility | Line 19 | Col 1
+"E-3, Part I: Settlement - IPF",2000,,E3_1_IPF_C1_20,Inpatient Psychiatric Facility | Line 20 | Col 1
+"E-3, Part I: Settlement - IPF",2100,,E3_1_IPF_C1_21,Inpatient Psychiatric Facility | Line 21 | Col 1
+"E-3, Part I: Settlement - IPF",2200,,E3_1_IPF_C1_22,Inpatient Psychiatric Facility | Line 22 | Col 1
+"E-3, Part I: Settlement - IRF",100,,E3_1_IRF_C1_1,Inpatient Rehabilitation Facility | Line 1 | Col 1
+"E-3, Part I: Settlement - IRF",200,,E3_1_IRF_C1_2,Inpatient Rehabilitation Facility | Line 2 | Col 1
+"E-3, Part I: Settlement - IRF",300,,E3_1_IRF_C1_3,Inpatient Rehabilitation Facility | Line 3 | Col 1
+"E-3, Part I: Settlement - IRF",400,,E3_1_IRF_C1_4,Inpatient Rehabilitation Facility | Line 4 | Col 1
+"E-3, Part I: Settlement - IRF",500,,E3_1_IRF_C1_5,Inpatient Rehabilitation Facility | Line 5 | Col 1
+"E-3, Part I: Settlement - IRF",600,,E3_1_IRF_C1_6,Inpatient Rehabilitation Facility | Line 6 | Col 1
+"E-3, Part I: Settlement - IRF",700,,E3_1_IRF_C1_7,Inpatient Rehabilitation Facility | Line 7 | Col 1
+"E-3, Part I: Settlement - IRF",800,,E3_1_IRF_C1_8,Inpatient Rehabilitation Facility | Line 8 | Col 1
+"E-3, Part I: Settlement - IRF",900,,E3_1_IRF_C1_9,Inpatient Rehabilitation Facility | Line 9 | Col 1
+"E-3, Part I: Settlement - IRF",1000,,E3_1_IRF_C1_10,Inpatient Rehabilitation Facility | Line 10 | Col 1
+"E-3, Part I: Settlement - IRF",1100,,E3_1_IRF_C1_11,Inpatient Rehabilitation Facility | Line 11 | Col 1
+"E-3, Part I: Settlement - IRF",1200,,E3_1_IRF_C1_12,Inpatient Rehabilitation Facility | Line 12 | Col 1
+"E-3, Part I: Settlement - IRF",1300,,E3_1_IRF_C1_13,Inpatient Rehabilitation Facility | Line 13 | Col 1
+"E-3, Part I: Settlement - IRF",1400,,E3_1_IRF_C1_14,Inpatient Rehabilitation Facility | Line 14 | Col 1
+"E-3, Part I: Settlement - IRF",1500,,E3_1_IRF_C1_15,Inpatient Rehabilitation Facility | Line 15 | Col 1
+"E-3, Part I: Settlement - IRF",1600,,E3_1_IRF_C1_16,Inpatient Rehabilitation Facility | Line 16 | Col 1
+"E-3, Part I: Settlement - IRF",1700,,E3_1_IRF_C1_17,Inpatient Rehabilitation Facility | Line 17 | Col 1
+"E-3, Part I: Settlement - IRF",1800,,E3_1_IRF_C1_18,Inpatient Rehabilitation Facility | Line 18 | Col 1
+"E-3, Part I: Settlement - IRF",1900,,E3_1_IRF_C1_19,Inpatient Rehabilitation Facility | Line 19 | Col 1
+"E-3, Part I: Settlement - IRF",2000,,E3_1_IRF_C1_20,Inpatient Rehabilitation Facility | Line 20 | Col 1
+"E-3, Part I: Settlement - IRF",2100,,E3_1_IRF_C1_21,Inpatient Rehabilitation Facility | Line 21 | Col 1
+"E-3, Part I: Settlement - IRF",2200,,E3_1_IRF_C1_22,Inpatient Rehabilitation Facility | Line 22 | Col 1
+"E-3, Part I: Settlement - SNF",100,,E3_1_SNF_C1_1,Skilled Nursing Facility | Line 1 | Col 1
+"E-3, Part I: Settlement - SNF",200,,E3_1_SNF_C1_2,Skilled Nursing Facility | Line 2 | Col 1
+"E-3, Part I: Settlement - SNF",300,,E3_1_SNF_C1_3,Skilled Nursing Facility | Line 3 | Col 1
+"E-3, Part I: Settlement - SNF",400,,E3_1_SNF_C1_4,Skilled Nursing Facility | Line 4 | Col 1
+"E-3, Part I: Settlement - SNF",500,,E3_1_SNF_C1_5,Skilled Nursing Facility | Line 5 | Col 1
+"E-3, Part I: Settlement - SNF",600,,E3_1_SNF_C1_6,Skilled Nursing Facility | Line 6 | Col 1
+"E-3, Part I: Settlement - SNF",700,,E3_1_SNF_C1_7,Skilled Nursing Facility | Line 7 | Col 1
+"E-3, Part I: Settlement - SNF",800,,E3_1_SNF_C1_8,Skilled Nursing Facility | Line 8 | Col 1
+"E-3, Part I: Settlement - SNF",900,,E3_1_SNF_C1_9,Skilled Nursing Facility | Line 9 | Col 1
+"E-3, Part I: Settlement - SNF",1000,,E3_1_SNF_C1_10,Skilled Nursing Facility | Line 10 | Col 1
+"E-3, Part I: Settlement - SNF",1100,,E3_1_SNF_C1_11,Skilled Nursing Facility | Line 11 | Col 1
+"E-3, Part I: Settlement - SNF",1200,,E3_1_SNF_C1_12,Skilled Nursing Facility | Line 12 | Col 1
+"E-3, Part I: Settlement - SNF",1300,,E3_1_SNF_C1_13,Skilled Nursing Facility | Line 13 | Col 1
+"E-3, Part I: Settlement - SNF",1400,,E3_1_SNF_C1_14,Skilled Nursing Facility | Line 14 | Col 1
+"E-3, Part I: Settlement - SNF",1500,,E3_1_SNF_C1_15,Skilled Nursing Facility | Line 15 | Col 1
+"E-3, Part I: Settlement - SNF",1600,,E3_1_SNF_C1_16,Skilled Nursing Facility | Line 16 | Col 1
+"E-3, Part I: Settlement - SNF",1700,,E3_1_SNF_C1_17,Skilled Nursing Facility | Line 17 | Col 1
+"E-3, Part I: Settlement - SNF",1800,,E3_1_SNF_C1_18,Skilled Nursing Facility | Line 18 | Col 1
+"E-3, Part I: Settlement - SNF",1900,,E3_1_SNF_C1_19,Skilled Nursing Facility | Line 19 | Col 1
+"E-3, Part I: Settlement - SNF",2000,,E3_1_SNF_C1_20,Skilled Nursing Facility | Line 20 | Col 1
+"E-3, Part I: Settlement - SNF",2100,,E3_1_SNF_C1_21,Skilled Nursing Facility | Line 21 | Col 1
+"E-3, Part I: Settlement - SNF",2200,,E3_1_SNF_C1_22,Skilled Nursing Facility | Line 22 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",100,,E3_1_SUB1_C1_1,Subprovider 1 | Line 1 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",200,,E3_1_SUB1_C1_2,Subprovider 1 | Line 2 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",300,,E3_1_SUB1_C1_3,Subprovider 1 | Line 3 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",400,,E3_1_SUB1_C1_4,Subprovider 1 | Line 4 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",500,,E3_1_SUB1_C1_5,Subprovider 1 | Line 5 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",600,,E3_1_SUB1_C1_6,Subprovider 1 | Line 6 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",700,,E3_1_SUB1_C1_7,Subprovider 1 | Line 7 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",800,,E3_1_SUB1_C1_8,Subprovider 1 | Line 8 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",900,,E3_1_SUB1_C1_9,Subprovider 1 | Line 9 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1000,,E3_1_SUB1_C1_10,Subprovider 1 | Line 10 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1100,,E3_1_SUB1_C1_11,Subprovider 1 | Line 11 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1200,,E3_1_SUB1_C1_12,Subprovider 1 | Line 12 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1300,,E3_1_SUB1_C1_13,Subprovider 1 | Line 13 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1400,,E3_1_SUB1_C1_14,Subprovider 1 | Line 14 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1500,,E3_1_SUB1_C1_15,Subprovider 1 | Line 15 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1600,,E3_1_SUB1_C1_16,Subprovider 1 | Line 16 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1700,,E3_1_SUB1_C1_17,Subprovider 1 | Line 17 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1800,,E3_1_SUB1_C1_18,Subprovider 1 | Line 18 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",1900,,E3_1_SUB1_C1_19,Subprovider 1 | Line 19 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",2000,,E3_1_SUB1_C1_20,Subprovider 1 | Line 20 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",2100,,E3_1_SUB1_C1_21,Subprovider 1 | Line 21 | Col 1
+"E-3, Part I: Settlement - Subprovider 1",2200,,E3_1_SUB1_C1_22,Subprovider 1 | Line 22 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",100,,E3_1_SUB2_C1_1,Subprovider 2 | Line 1 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",200,,E3_1_SUB2_C1_2,Subprovider 2 | Line 2 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",300,,E3_1_SUB2_C1_3,Subprovider 2 | Line 3 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",400,,E3_1_SUB2_C1_4,Subprovider 2 | Line 4 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",500,,E3_1_SUB2_C1_5,Subprovider 2 | Line 5 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",600,,E3_1_SUB2_C1_6,Subprovider 2 | Line 6 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",700,,E3_1_SUB2_C1_7,Subprovider 2 | Line 7 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",800,,E3_1_SUB2_C1_8,Subprovider 2 | Line 8 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",900,,E3_1_SUB2_C1_9,Subprovider 2 | Line 9 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1000,,E3_1_SUB2_C1_10,Subprovider 2 | Line 10 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1100,,E3_1_SUB2_C1_11,Subprovider 2 | Line 11 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1200,,E3_1_SUB2_C1_12,Subprovider 2 | Line 12 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1300,,E3_1_SUB2_C1_13,Subprovider 2 | Line 13 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1400,,E3_1_SUB2_C1_14,Subprovider 2 | Line 14 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1500,,E3_1_SUB2_C1_15,Subprovider 2 | Line 15 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1600,,E3_1_SUB2_C1_16,Subprovider 2 | Line 16 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1700,,E3_1_SUB2_C1_17,Subprovider 2 | Line 17 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1800,,E3_1_SUB2_C1_18,Subprovider 2 | Line 18 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",1900,,E3_1_SUB2_C1_19,Subprovider 2 | Line 19 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",2000,,E3_1_SUB2_C1_20,Subprovider 2 | Line 20 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",2100,,E3_1_SUB2_C1_21,Subprovider 2 | Line 21 | Col 1
+"E-3, Part I: Settlement - Subprovider 2",2200,,E3_1_SUB2_C1_22,Subprovider 2 | Line 22 | Col 1
+"E-3, Part II: Settlement - Hospital",100,,E3_2_HOS_C1_1,Hospital | Line 1 | Col 1
+"E-3, Part II: Settlement - Hospital",200,,E3_2_HOS_C1_2,Hospital | Line 2 | Col 1
+"E-3, Part II: Settlement - Hospital",300,,E3_2_HOS_C1_3,Hospital | Line 3 | Col 1
+"E-3, Part II: Settlement - Hospital",400,,E3_2_HOS_C1_4,Hospital | Line 4 | Col 1
+"E-3, Part II: Settlement - Hospital",500,,E3_2_HOS_C1_5,Hospital | Line 5 | Col 1
+"E-3, Part II: Settlement - Hospital",600,,E3_2_HOS_C1_6,Hospital | Line 6 | Col 1
+"E-3, Part II: Settlement - Hospital",700,,E3_2_HOS_C1_7,Hospital | Line 7 | Col 1
+"E-3, Part II: Settlement - Hospital",800,,E3_2_HOS_C1_8,Hospital | Line 8 | Col 1
+"E-3, Part II: Settlement - Hospital",900,,E3_2_HOS_C1_9,Hospital | Line 9 | Col 1
+"E-3, Part II: Settlement - Hospital",1000,,E3_2_HOS_C1_10,Hospital | Line 10 | Col 1
+"E-3, Part II: Settlement - Hospital",1100,,E3_2_HOS_C1_11,Hospital | Line 11 | Col 1
+"E-3, Part II: Settlement - Hospital",1200,,E3_2_HOS_C1_12,Hospital | Line 12 | Col 1
+"E-3, Part II: Settlement - Hospital",1300,,E3_2_HOS_C1_13,Hospital | Line 13 | Col 1
+"E-3, Part II: Settlement - Hospital",1400,,E3_2_HOS_C1_14,Hospital | Line 14 | Col 1
+"E-3, Part II: Settlement - Hospital",1500,,E3_2_HOS_C1_15,Hospital | Line 15 | Col 1
+"E-3, Part II: Settlement - Hospital",1600,,E3_2_HOS_C1_16,Hospital | Line 16 | Col 1
+"E-3, Part II: Settlement - Hospital",1700,,E3_2_HOS_C1_17,Hospital | Line 17 | Col 1
+"E-3, Part II: Settlement - Hospital",1800,,E3_2_HOS_C1_18,Hospital | Line 18 | Col 1
+"E-3, Part II: Settlement - Hospital",1900,,E3_2_HOS_C1_19,Hospital | Line 19 | Col 1
+"E-3, Part II: Settlement - Hospital",2000,,E3_2_HOS_C1_20,Hospital | Line 20 | Col 1
+"E-3, Part II: Settlement - Hospital",2100,,E3_2_HOS_C1_21,Hospital | Line 21 | Col 1
+"E-3, Part II: Settlement - Hospital",2200,,E3_2_HOS_C1_22,Hospital | Line 22 | Col 1
+"E-3, Part II: Settlement - Hospital",2300,,E3_2_HOS_C1_23,Hospital | Line 23 | Col 1
+"E-3, Part II: Settlement - Hospital",2400,,E3_2_HOS_C1_24,Hospital | Line 24 | Col 1
+"E-3, Part II: Settlement - Hospital",2500,,E3_2_HOS_C1_25,Hospital | Line 25 | Col 1
+"E-3, Part II: Settlement - Hospital",2600,,E3_2_HOS_C1_26,Hospital | Line 26 | Col 1
+"E-3, Part II: Settlement - Hospital",2700,,E3_2_HOS_C1_27,Hospital | Line 27 | Col 1
+"E-3, Part II: Settlement - Hospital",2800,,E3_2_HOS_C1_28,Hospital | Line 28 | Col 1
+"E-3, Part II: Settlement - Hospital",2900,,E3_2_HOS_C1_29,Hospital | Line 29 | Col 1
+"E-3, Part II: Settlement - Hospital",3000,,E3_2_HOS_C1_30,Hospital | Line 30 | Col 1
+"E-3, Part II: Settlement - Hospital",3100,,E3_2_HOS_C1_31,Hospital | Line 31 | Col 1
+"E-3, Part II: Settlement - Hospital",3101,,E3_2_HOS_C1_3101,Hospital | Line 31.01 | Col 1
+"E-3, Part II: Settlement - Hospital",3200,,E3_2_HOS_C1_32,Hospital | Line 32 | Col 1
+"E-3, Part II: Settlement - Hospital",3300,,E3_2_HOS_C1_33,Hospital | Line 33 | Col 1
+"E-3, Part II: Settlement - Hospital",3400,,E3_2_HOS_C1_34,Hospital | Line 34 | Col 1
+"E-3, Part II: Settlement - Hospital",3500,,E3_2_HOS_C1_35,Hospital | Line 35 | Col 1
+"E-3, Part II: Settlement - IPF",100,,E3_2_IPF_C1_1,Inpatient Psychiatric Facility | Line 1 | Col 1
+"E-3, Part II: Settlement - IPF",200,,E3_2_IPF_C1_2,Inpatient Psychiatric Facility | Line 2 | Col 1
+"E-3, Part II: Settlement - IPF",300,,E3_2_IPF_C1_3,Inpatient Psychiatric Facility | Line 3 | Col 1
+"E-3, Part II: Settlement - IPF",400,,E3_2_IPF_C1_4,Inpatient Psychiatric Facility | Line 4 | Col 1
+"E-3, Part II: Settlement - IPF",500,,E3_2_IPF_C1_5,Inpatient Psychiatric Facility | Line 5 | Col 1
+"E-3, Part II: Settlement - IPF",600,,E3_2_IPF_C1_6,Inpatient Psychiatric Facility | Line 6 | Col 1
+"E-3, Part II: Settlement - IPF",700,,E3_2_IPF_C1_7,Inpatient Psychiatric Facility | Line 7 | Col 1
+"E-3, Part II: Settlement - IPF",800,,E3_2_IPF_C1_8,Inpatient Psychiatric Facility | Line 8 | Col 1
+"E-3, Part II: Settlement - IPF",900,,E3_2_IPF_C1_9,Inpatient Psychiatric Facility | Line 9 | Col 1
+"E-3, Part II: Settlement - IPF",1000,,E3_2_IPF_C1_10,Inpatient Psychiatric Facility | Line 10 | Col 1
+"E-3, Part II: Settlement - IPF",1100,,E3_2_IPF_C1_11,Inpatient Psychiatric Facility | Line 11 | Col 1
+"E-3, Part II: Settlement - IPF",1200,,E3_2_IPF_C1_12,Inpatient Psychiatric Facility | Line 12 | Col 1
+"E-3, Part II: Settlement - IPF",1300,,E3_2_IPF_C1_13,Inpatient Psychiatric Facility | Line 13 | Col 1
+"E-3, Part II: Settlement - IPF",1400,,E3_2_IPF_C1_14,Inpatient Psychiatric Facility | Line 14 | Col 1
+"E-3, Part II: Settlement - IPF",1500,,E3_2_IPF_C1_15,Inpatient Psychiatric Facility | Line 15 | Col 1
+"E-3, Part II: Settlement - IPF",1600,,E3_2_IPF_C1_16,Inpatient Psychiatric Facility | Line 16 | Col 1
+"E-3, Part II: Settlement - IPF",1700,,E3_2_IPF_C1_17,Inpatient Psychiatric Facility | Line 17 | Col 1
+"E-3, Part II: Settlement - IPF",1800,,E3_2_IPF_C1_18,Inpatient Psychiatric Facility | Line 18 | Col 1
+"E-3, Part II: Settlement - IPF",1900,,E3_2_IPF_C1_19,Inpatient Psychiatric Facility | Line 19 | Col 1
+"E-3, Part II: Settlement - IPF",2000,,E3_2_IPF_C1_20,Inpatient Psychiatric Facility | Line 20 | Col 1
+"E-3, Part II: Settlement - IPF",2100,,E3_2_IPF_C1_21,Inpatient Psychiatric Facility | Line 21 | Col 1
+"E-3, Part II: Settlement - IPF",2200,,E3_2_IPF_C1_22,Inpatient Psychiatric Facility | Line 22 | Col 1
+"E-3, Part II: Settlement - IPF",2300,,E3_2_IPF_C1_23,Inpatient Psychiatric Facility | Line 23 | Col 1
+"E-3, Part II: Settlement - IPF",2400,,E3_2_IPF_C1_24,Inpatient Psychiatric Facility | Line 24 | Col 1
+"E-3, Part II: Settlement - IPF",2500,,E3_2_IPF_C1_25,Inpatient Psychiatric Facility | Line 25 | Col 1
+"E-3, Part II: Settlement - IPF",2600,,E3_2_IPF_C1_26,Inpatient Psychiatric Facility | Line 26 | Col 1
+"E-3, Part II: Settlement - IPF",2700,,E3_2_IPF_C1_27,Inpatient Psychiatric Facility | Line 27 | Col 1
+"E-3, Part II: Settlement - IPF",2800,,E3_2_IPF_C1_28,Inpatient Psychiatric Facility | Line 28 | Col 1
+"E-3, Part II: Settlement - IPF",2900,,E3_2_IPF_C1_29,Inpatient Psychiatric Facility | Line 29 | Col 1
+"E-3, Part II: Settlement - IPF",3000,,E3_2_IPF_C1_30,Inpatient Psychiatric Facility | Line 30 | Col 1
+"E-3, Part II: Settlement - IPF",3100,,E3_2_IPF_C1_31,Inpatient Psychiatric Facility | Line 31 | Col 1
+"E-3, Part II: Settlement - IPF",3101,,E3_2_IPF_C1_3101,Inpatient Psychiatric Facility | Line 31.01 | Col 1
+"E-3, Part II: Settlement - IPF",3200,,E3_2_IPF_C1_32,Inpatient Psychiatric Facility | Line 32 | Col 1
+"E-3, Part II: Settlement - IPF",3300,,E3_2_IPF_C1_33,Inpatient Psychiatric Facility | Line 33 | Col 1
+"E-3, Part II: Settlement - IPF",3400,,E3_2_IPF_C1_34,Inpatient Psychiatric Facility | Line 34 | Col 1
+"E-3, Part II: Settlement - IPF",3500,,E3_2_IPF_C1_35,Inpatient Psychiatric Facility | Line 35 | Col 1
+"E-3, Part III: Settlement - Hospital",100,,E3_3_HOS_C1_1,Hospital | Line 1 | Col 1
+"E-3, Part III: Settlement - Hospital",200,,E3_3_HOS_C1_2,Hospital | Line 2 | Col 1
+"E-3, Part III: Settlement - Hospital",300,,E3_3_HOS_C1_3,Hospital | Line 3 | Col 1
+"E-3, Part III: Settlement - Hospital",400,,E3_3_HOS_C1_4,Hospital | Line 4 | Col 1
+"E-3, Part III: Settlement - Hospital",500,,E3_3_HOS_C1_5,Hospital | Line 5 | Col 1
+"E-3, Part III: Settlement - Hospital",600,,E3_3_HOS_C1_6,Hospital | Line 6 | Col 1
+"E-3, Part III: Settlement - Hospital",700,,E3_3_HOS_C1_7,Hospital | Line 7 | Col 1
+"E-3, Part III: Settlement - Hospital",800,,E3_3_HOS_C1_8,Hospital | Line 8 | Col 1
+"E-3, Part III: Settlement - Hospital",900,,E3_3_HOS_C1_9,Hospital | Line 9 | Col 1
+"E-3, Part III: Settlement - Hospital",1000,,E3_3_HOS_C1_10,Hospital | Line 10 | Col 1
+"E-3, Part III: Settlement - Hospital",1100,,E3_3_HOS_C1_11,Hospital | Line 11 | Col 1
+"E-3, Part III: Settlement - Hospital",1200,,E3_3_HOS_C1_12,Hospital | Line 12 | Col 1
+"E-3, Part III: Settlement - Hospital",1300,,E3_3_HOS_C1_13,Hospital | Line 13 | Col 1
+"E-3, Part III: Settlement - Hospital",1400,,E3_3_HOS_C1_14,Hospital | Line 14 | Col 1
+"E-3, Part III: Settlement - Hospital",1500,,E3_3_HOS_C1_15,Hospital | Line 15 | Col 1
+"E-3, Part III: Settlement - Hospital",1600,,E3_3_HOS_C1_16,Hospital | Line 16 | Col 1
+"E-3, Part III: Settlement - Hospital",1700,,E3_3_HOS_C1_17,Hospital | Line 17 | Col 1
+"E-3, Part III: Settlement - Hospital",1800,,E3_3_HOS_C1_18,Hospital | Line 18 | Col 1
+"E-3, Part III: Settlement - Hospital",1900,,E3_3_HOS_C1_19,Hospital | Line 19 | Col 1
+"E-3, Part III: Settlement - Hospital",2000,,E3_3_HOS_C1_20,Hospital | Line 20 | Col 1
+"E-3, Part III: Settlement - Hospital",2100,,E3_3_HOS_C1_21,Hospital | Line 21 | Col 1
+"E-3, Part III: Settlement - Hospital",2200,,E3_3_HOS_C1_22,Hospital | Line 22 | Col 1
+"E-3, Part III: Settlement - Hospital",2300,,E3_3_HOS_C1_23,Hospital | Line 23 | Col 1
+"E-3, Part III: Settlement - Hospital",2400,,E3_3_HOS_C1_24,Hospital | Line 24 | Col 1
+"E-3, Part III: Settlement - Hospital",2500,,E3_3_HOS_C1_25,Hospital | Line 25 | Col 1
+"E-3, Part III: Settlement - Hospital",2600,,E3_3_HOS_C1_26,Hospital | Line 26 | Col 1
+"E-3, Part III: Settlement - Hospital",2700,,E3_3_HOS_C1_27,Hospital | Line 27 | Col 1
+"E-3, Part III: Settlement - Hospital",2800,,E3_3_HOS_C1_28,Hospital | Line 28 | Col 1
+"E-3, Part III: Settlement - Hospital",2900,,E3_3_HOS_C1_29,Hospital | Line 29 | Col 1
+"E-3, Part III: Settlement - Hospital",3000,,E3_3_HOS_C1_30,Hospital | Line 30 | Col 1
+"E-3, Part III: Settlement - Hospital",3100,,E3_3_HOS_C1_31,Hospital | Line 31 | Col 1
+"E-3, Part III: Settlement - Hospital",3200,,E3_3_HOS_C1_32,Hospital | Line 32 | Col 1
+"E-3, Part III: Settlement - Hospital",3201,,E3_3_HOS_C1_3201,Hospital | Line 32.01 | Col 1
+"E-3, Part III: Settlement - Hospital",3300,,E3_3_HOS_C1_33,Hospital | Line 33 | Col 1
+"E-3, Part III: Settlement - Hospital",3400,,E3_3_HOS_C1_34,Hospital | Line 34 | Col 1
+"E-3, Part III: Settlement - Hospital",3500,,E3_3_HOS_C1_35,Hospital | Line 35 | Col 1
+"E-3, Part III: Settlement - Hospital",3600,,E3_3_HOS_C1_36,Hospital | Line 36 | Col 1
+"E-3, Part III: Settlement - Hospital",5000,,E3_3_HOS_C1_50,Hospital | Line 50 | Col 1
+"E-3, Part III: Settlement - Hospital",5100,,E3_3_HOS_C1_51,Hospital | Line 51 | Col 1
+"E-3, Part III: Settlement - Hospital",5200,,E3_3_HOS_C1_52,Hospital | Line 52 | Col 1
+"E-3, Part III: Settlement - Hospital",5300,,E3_3_HOS_C1_53,Hospital | Line 53 | Col 1
+"E-3, Part III: Settlement - IRF",100,,E3_3_IRF_C1_1,Inpatient Rehabilitation Facility | Line 1 | Col 1
+"E-3, Part III: Settlement - IRF",200,,E3_3_IRF_C1_2,Inpatient Rehabilitation Facility | Line 2 | Col 1
+"E-3, Part III: Settlement - IRF",300,,E3_3_IRF_C1_3,Inpatient Rehabilitation Facility | Line 3 | Col 1
+"E-3, Part III: Settlement - IRF",400,,E3_3_IRF_C1_4,Inpatient Rehabilitation Facility | Line 4 | Col 1
+"E-3, Part III: Settlement - IRF",500,,E3_3_IRF_C1_5,Inpatient Rehabilitation Facility | Line 5 | Col 1
+"E-3, Part III: Settlement - IRF",600,,E3_3_IRF_C1_6,Inpatient Rehabilitation Facility | Line 6 | Col 1
+"E-3, Part III: Settlement - IRF",700,,E3_3_IRF_C1_7,Inpatient Rehabilitation Facility | Line 7 | Col 1
+"E-3, Part III: Settlement - IRF",800,,E3_3_IRF_C1_8,Inpatient Rehabilitation Facility | Line 8 | Col 1
+"E-3, Part III: Settlement - IRF",900,,E3_3_IRF_C1_9,Inpatient Rehabilitation Facility | Line 9 | Col 1
+"E-3, Part III: Settlement - IRF",1000,,E3_3_IRF_C1_10,Inpatient Rehabilitation Facility | Line 10 | Col 1
+"E-3, Part III: Settlement - IRF",1100,,E3_3_IRF_C1_11,Inpatient Rehabilitation Facility | Line 11 | Col 1
+"E-3, Part III: Settlement - IRF",1200,,E3_3_IRF_C1_12,Inpatient Rehabilitation Facility | Line 12 | Col 1
+"E-3, Part III: Settlement - IRF",1300,,E3_3_IRF_C1_13,Inpatient Rehabilitation Facility | Line 13 | Col 1
+"E-3, Part III: Settlement - IRF",1400,,E3_3_IRF_C1_14,Inpatient Rehabilitation Facility | Line 14 | Col 1
+"E-3, Part III: Settlement - IRF",1500,,E3_3_IRF_C1_15,Inpatient Rehabilitation Facility | Line 15 | Col 1
+"E-3, Part III: Settlement - IRF",1600,,E3_3_IRF_C1_16,Inpatient Rehabilitation Facility | Line 16 | Col 1
+"E-3, Part III: Settlement - IRF",1700,,E3_3_IRF_C1_17,Inpatient Rehabilitation Facility | Line 17 | Col 1
+"E-3, Part III: Settlement - IRF",1800,,E3_3_IRF_C1_18,Inpatient Rehabilitation Facility | Line 18 | Col 1
+"E-3, Part III: Settlement - IRF",1900,,E3_3_IRF_C1_19,Inpatient Rehabilitation Facility | Line 19 | Col 1
+"E-3, Part III: Settlement - IRF",2000,,E3_3_IRF_C1_20,Inpatient Rehabilitation Facility | Line 20 | Col 1
+"E-3, Part III: Settlement - IRF",2100,,E3_3_IRF_C1_21,Inpatient Rehabilitation Facility | Line 21 | Col 1
+"E-3, Part III: Settlement - IRF",2200,,E3_3_IRF_C1_22,Inpatient Rehabilitation Facility | Line 22 | Col 1
+"E-3, Part III: Settlement - IRF",2300,,E3_3_IRF_C1_23,Inpatient Rehabilitation Facility | Line 23 | Col 1
+"E-3, Part III: Settlement - IRF",2400,,E3_3_IRF_C1_24,Inpatient Rehabilitation Facility | Line 24 | Col 1
+"E-3, Part III: Settlement - IRF",2500,,E3_3_IRF_C1_25,Inpatient Rehabilitation Facility | Line 25 | Col 1
+"E-3, Part III: Settlement - IRF",2600,,E3_3_IRF_C1_26,Inpatient Rehabilitation Facility | Line 26 | Col 1
+"E-3, Part III: Settlement - IRF",2700,,E3_3_IRF_C1_27,Inpatient Rehabilitation Facility | Line 27 | Col 1
+"E-3, Part III: Settlement - IRF",2800,,E3_3_IRF_C1_28,Inpatient Rehabilitation Facility | Line 28 | Col 1
+"E-3, Part III: Settlement - IRF",2900,,E3_3_IRF_C1_29,Inpatient Rehabilitation Facility | Line 29 | Col 1
+"E-3, Part III: Settlement - IRF",3000,,E3_3_IRF_C1_30,Inpatient Rehabilitation Facility | Line 30 | Col 1
+"E-3, Part III: Settlement - IRF",3100,,E3_3_IRF_C1_31,Inpatient Rehabilitation Facility | Line 31 | Col 1
+"E-3, Part III: Settlement - IRF",3200,,E3_3_IRF_C1_32,Inpatient Rehabilitation Facility | Line 32 | Col 1
+"E-3, Part III: Settlement - IRF",3201,,E3_3_IRF_C1_3201,Inpatient Rehabilitation Facility | Line 32.01 | Col 1
+"E-3, Part III: Settlement - IRF",3300,,E3_3_IRF_C1_33,Inpatient Rehabilitation Facility | Line 33 | Col 1
+"E-3, Part III: Settlement - IRF",3400,,E3_3_IRF_C1_34,Inpatient Rehabilitation Facility | Line 34 | Col 1
+"E-3, Part III: Settlement - IRF",3500,,E3_3_IRF_C1_35,Inpatient Rehabilitation Facility | Line 35 | Col 1
+"E-3, Part III: Settlement - IRF",3600,,E3_3_IRF_C1_36,Inpatient Rehabilitation Facility | Line 36 | Col 1
+"E-3, Part III: Settlement - IRF",5000,,E3_3_IRF_C1_50,Inpatient Rehabilitation Facility | Line 50 | Col 1
+"E-3, Part III: Settlement - IRF",5100,,E3_3_IRF_C1_51,Inpatient Rehabilitation Facility | Line 51 | Col 1
+"E-3, Part III: Settlement - IRF",5200,,E3_3_IRF_C1_52,Inpatient Rehabilitation Facility | Line 52 | Col 1
+"E-3, Part III: Settlement - IRF",5300,,E3_3_IRF_C1_53,Inpatient Rehabilitation Facility | Line 53 | Col 1
+"E-3, Part IV: Settlement - Hospital",100,,E3_4_HOS_C1_1,Hospital | Line 1 | Col 1
+"E-3, Part IV: Settlement - Hospital",200,,E3_4_HOS_C1_2,Hospital | Line 2 | Col 1
+"E-3, Part IV: Settlement - Hospital",300,,E3_4_HOS_C1_3,Hospital | Line 3 | Col 1
+"E-3, Part IV: Settlement - Hospital",400,,E3_4_HOS_C1_4,Hospital | Line 4 | Col 1
+"E-3, Part IV: Settlement - Hospital",500,,E3_4_HOS_C1_5,Hospital | Line 5 | Col 1
+"E-3, Part IV: Settlement - Hospital",600,,E3_4_HOS_C1_6,Hospital | Line 6 | Col 1
+"E-3, Part IV: Settlement - Hospital",700,,E3_4_HOS_C1_7,Hospital | Line 7 | Col 1
+"E-3, Part IV: Settlement - Hospital",800,,E3_4_HOS_C1_8,Hospital | Line 8 | Col 1
+"E-3, Part IV: Settlement - Hospital",900,,E3_4_HOS_C1_9,Hospital | Line 9 | Col 1
+"E-3, Part IV: Settlement - Hospital",1000,,E3_4_HOS_C1_10,Hospital | Line 10 | Col 1
+"E-3, Part IV: Settlement - Hospital",1100,,E3_4_HOS_C1_11,Hospital | Line 11 | Col 1
+"E-3, Part IV: Settlement - Hospital",1200,,E3_4_HOS_C1_12,Hospital | Line 12 | Col 1
+"E-3, Part IV: Settlement - Hospital",1300,,E3_4_HOS_C1_13,Hospital | Line 13 | Col 1
+"E-3, Part IV: Settlement - Hospital",1400,,E3_4_HOS_C1_14,Hospital | Line 14 | Col 1
+"E-3, Part IV: Settlement - Hospital",1500,,E3_4_HOS_C1_15,Hospital | Line 15 | Col 1
+"E-3, Part IV: Settlement - Hospital",1600,,E3_4_HOS_C1_16,Hospital | Line 16 | Col 1
+"E-3, Part IV: Settlement - Hospital",1700,,E3_4_HOS_C1_17,Hospital | Line 17 | Col 1
+"E-3, Part IV: Settlement - Hospital",1800,,E3_4_HOS_C1_18,Hospital | Line 18 | Col 1
+"E-3, Part IV: Settlement - Hospital",1900,,E3_4_HOS_C1_19,Hospital | Line 19 | Col 1
+"E-3, Part IV: Settlement - Hospital",2000,,E3_4_HOS_C1_20,Hospital | Line 20 | Col 1
+"E-3, Part IV: Settlement - Hospital",2100,,E3_4_HOS_C1_21,Hospital | Line 21 | Col 1
+"E-3, Part IV: Settlement - Hospital",2200,,E3_4_HOS_C1_22,Hospital | Line 22 | Col 1
+"E-3, Part IV: Settlement - Hospital",2201,,E3_4_HOS_C1_2201,Hospital | Line 22.01 | Col 1
+"E-3, Part IV: Settlement - Hospital",2300,,E3_4_HOS_C1_23,Hospital | Line 23 | Col 1
+"E-3, Part IV: Settlement - Hospital",2400,,E3_4_HOS_C1_24,Hospital | Line 24 | Col 1
+"E-3, Part IV: Settlement - Hospital",2500,,E3_4_HOS_C1_25,Hospital | Line 25 | Col 1
+"E-3, Part IV: Settlement - Hospital",2600,,E3_4_HOS_C1_26,Hospital | Line 26 | Col 1
+"E-3, Part IV: Settlement - Hospital",5000,,E3_4_HOS_C1_50,Hospital | Line 50 | Col 1
+"E-3, Part IV: Settlement - Hospital",5100,,E3_4_HOS_C1_51,Hospital | Line 51 | Col 1
+"E-3, Part IV: Settlement - Hospital",5200,,E3_4_HOS_C1_52,Hospital | Line 52 | Col 1
+"E-3, Part IV: Settlement - Hospital",5300,,E3_4_HOS_C1_53,Hospital | Line 53 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",100,,E3_4_SUB1_C1_1,Subprovider 1 | Line 1 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",200,,E3_4_SUB1_C1_2,Subprovider 1 | Line 2 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",300,,E3_4_SUB1_C1_3,Subprovider 1 | Line 3 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",400,,E3_4_SUB1_C1_4,Subprovider 1 | Line 4 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",500,,E3_4_SUB1_C1_5,Subprovider 1 | Line 5 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",600,,E3_4_SUB1_C1_6,Subprovider 1 | Line 6 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",700,,E3_4_SUB1_C1_7,Subprovider 1 | Line 7 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",800,,E3_4_SUB1_C1_8,Subprovider 1 | Line 8 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",900,,E3_4_SUB1_C1_9,Subprovider 1 | Line 9 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1000,,E3_4_SUB1_C1_10,Subprovider 1 | Line 10 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1100,,E3_4_SUB1_C1_11,Subprovider 1 | Line 11 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1200,,E3_4_SUB1_C1_12,Subprovider 1 | Line 12 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1300,,E3_4_SUB1_C1_13,Subprovider 1 | Line 13 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1400,,E3_4_SUB1_C1_14,Subprovider 1 | Line 14 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1500,,E3_4_SUB1_C1_15,Subprovider 1 | Line 15 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1600,,E3_4_SUB1_C1_16,Subprovider 1 | Line 16 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1700,,E3_4_SUB1_C1_17,Subprovider 1 | Line 17 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1800,,E3_4_SUB1_C1_18,Subprovider 1 | Line 18 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",1900,,E3_4_SUB1_C1_19,Subprovider 1 | Line 19 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2000,,E3_4_SUB1_C1_20,Subprovider 1 | Line 20 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2100,,E3_4_SUB1_C1_21,Subprovider 1 | Line 21 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2200,,E3_4_SUB1_C1_22,Subprovider 1 | Line 22 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2300,,E3_4_SUB1_C1_23,Subprovider 1 | Line 23 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2400,,E3_4_SUB1_C1_24,Subprovider 1 | Line 24 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2500,,E3_4_SUB1_C1_25,Subprovider 1 | Line 25 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",2600,,E3_4_SUB1_C1_26,Subprovider 1 | Line 26 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",5000,,E3_4_SUB1_C1_50,Subprovider 1 | Line 50 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",5100,,E3_4_SUB1_C1_51,Subprovider 1 | Line 51 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",5200,,E3_4_SUB1_C1_52,Subprovider 1 | Line 52 | Col 1
+"E-3, Part IV: Settlement - Subprovider 1",5300,,E3_4_SUB1_C1_53,Subprovider 1 | Line 53 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",100,,E3_4_SUB2_C1_1,Subprovider 2 | Line 1 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",200,,E3_4_SUB2_C1_2,Subprovider 2 | Line 2 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",300,,E3_4_SUB2_C1_3,Subprovider 2 | Line 3 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",400,,E3_4_SUB2_C1_4,Subprovider 2 | Line 4 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",500,,E3_4_SUB2_C1_5,Subprovider 2 | Line 5 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",600,,E3_4_SUB2_C1_6,Subprovider 2 | Line 6 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",700,,E3_4_SUB2_C1_7,Subprovider 2 | Line 7 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",800,,E3_4_SUB2_C1_8,Subprovider 2 | Line 8 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",900,,E3_4_SUB2_C1_9,Subprovider 2 | Line 9 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1000,,E3_4_SUB2_C1_10,Subprovider 2 | Line 10 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1100,,E3_4_SUB2_C1_11,Subprovider 2 | Line 11 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1200,,E3_4_SUB2_C1_12,Subprovider 2 | Line 12 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1300,,E3_4_SUB2_C1_13,Subprovider 2 | Line 13 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1400,,E3_4_SUB2_C1_14,Subprovider 2 | Line 14 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1500,,E3_4_SUB2_C1_15,Subprovider 2 | Line 15 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1600,,E3_4_SUB2_C1_16,Subprovider 2 | Line 16 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1700,,E3_4_SUB2_C1_17,Subprovider 2 | Line 17 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1800,,E3_4_SUB2_C1_18,Subprovider 2 | Line 18 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",1900,,E3_4_SUB2_C1_19,Subprovider 2 | Line 19 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2000,,E3_4_SUB2_C1_20,Subprovider 2 | Line 20 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2100,,E3_4_SUB2_C1_21,Subprovider 2 | Line 21 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2200,,E3_4_SUB2_C1_22,Subprovider 2 | Line 22 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2300,,E3_4_SUB2_C1_23,Subprovider 2 | Line 23 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2400,,E3_4_SUB2_C1_24,Subprovider 2 | Line 24 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2500,,E3_4_SUB2_C1_25,Subprovider 2 | Line 25 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",2600,,E3_4_SUB2_C1_26,Subprovider 2 | Line 26 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",5000,,E3_4_SUB2_C1_50,Subprovider 2 | Line 50 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",5100,,E3_4_SUB2_C1_51,Subprovider 2 | Line 51 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",5200,,E3_4_SUB2_C1_52,Subprovider 2 | Line 52 | Col 1
+"E-3, Part IV: Settlement - Subprovider 2",5300,,E3_4_SUB2_C1_53,Subprovider 2 | Line 53 | Col 1
+"E-3, Part VI: Settlement - SNF",100,,E3_6_SNF_C1_1,Skilled Nursing Facility | Line 1 | Col 1
+"E-3, Part VI: Settlement - SNF",200,,E3_6_SNF_C1_2,Skilled Nursing Facility | Line 2 | Col 1
+"E-3, Part VI: Settlement - SNF",300,,E3_6_SNF_C1_3,Skilled Nursing Facility | Line 3 | Col 1
+"E-3, Part VI: Settlement - SNF",400,,E3_6_SNF_C1_4,Skilled Nursing Facility | Line 4 | Col 1
+"E-3, Part VI: Settlement - SNF",500,,E3_6_SNF_C1_5,Skilled Nursing Facility | Line 5 | Col 1
+"E-3, Part VI: Settlement - SNF",600,,E3_6_SNF_C1_6,Skilled Nursing Facility | Line 6 | Col 1
+"E-3, Part VI: Settlement - SNF",700,,E3_6_SNF_C1_7,Skilled Nursing Facility | Line 7 | Col 1
+"E-3, Part VI: Settlement - SNF",800,,E3_6_SNF_C1_8,Skilled Nursing Facility | Line 8 | Col 1
+"E-3, Part VI: Settlement - SNF",900,,E3_6_SNF_C1_9,Skilled Nursing Facility | Line 9 | Col 1
+"E-3, Part VI: Settlement - SNF",1000,,E3_6_SNF_C1_10,Skilled Nursing Facility | Line 10 | Col 1
+"E-3, Part VI: Settlement - SNF",1100,,E3_6_SNF_C1_11,Skilled Nursing Facility | Line 11 | Col 1
+"E-3, Part VI: Settlement - SNF",1200,,E3_6_SNF_C1_12,Skilled Nursing Facility | Line 12 | Col 1
+"E-3, Part VI: Settlement - SNF",1300,,E3_6_SNF_C1_13,Skilled Nursing Facility | Line 13 | Col 1
+"E-3, Part VI: Settlement - SNF",1400,,E3_6_SNF_C1_14,Skilled Nursing Facility | Line 14 | Col 1
+"E-3, Part VI: Settlement - SNF",1500,,E3_6_SNF_C1_15,Skilled Nursing Facility | Line 15 | Col 1
+"E-3, Part VI: Settlement - SNF",1501,,E3_6_SNF_C1_1501,Skilled Nursing Facility | Line 15.01 | Col 1
+"E-3, Part VI: Settlement - SNF",1600,,E3_6_SNF_C1_16,Skilled Nursing Facility | Line 16 | Col 1
+"E-3, Part VI: Settlement - SNF",1700,,E3_6_SNF_C1_17,Skilled Nursing Facility | Line 17 | Col 1
+"E-3, Part VI: Settlement - SNF",1800,,E3_6_SNF_C1_18,Skilled Nursing Facility | Line 18 | Col 1
+"E-3, Part VI: Settlement - SNF",1900,,E3_6_SNF_C1_19,Skilled Nursing Facility | Line 19 | Col 1
+"H-3, Part I: HHA 1",100,,H3_1_HHA1_C6_1,Home Health Agency 1 | Line 1 | Col 6
+"H-3, Part I: HHA 1",200,,H3_1_HHA1_C6_2,Home Health Agency 1 | Line 2 | Col 6
+"H-3, Part I: HHA 1",300,,H3_1_HHA1_C6_3,Home Health Agency 1 | Line 3 | Col 6
+"H-3, Part I: HHA 1",400,,H3_1_HHA1_C6_4,Home Health Agency 1 | Line 4 | Col 6
+"H-3, Part I: HHA 1",500,,H3_1_HHA1_C6_5,Home Health Agency 1 | Line 5 | Col 6
+"H-3, Part I: HHA 1",600,,H3_1_HHA1_C6_6,Home Health Agency 1 | Line 6 | Col 6
+"H-3, Part I: HHA 1",700,,H3_1_HHA1_C5_7,Home Health Agency 1 | Line 7 | Col 5
+"H-3, Part I: HHA 1",1500,,H3_1_HHA1_C11_15,Home Health Agency 1 | Line 15 | Col 11
+"H-3, Part I: HHA 1",1600,,H3_1_HHA1_C10_16,Home Health Agency 1 | Line 16 | Col 10
+"H-3, Part I: HHA 2",100,,H3_1_HHA2_C5_1,Home Health Agency 2 | Line 1 | Col 5
+"H-3, Part I: HHA 2",200,,H3_1_HHA2_C5_2,Home Health Agency 2 | Line 2 | Col 5
+"H-3, Part I: HHA 2",300,,H3_1_HHA2_C5_3,Home Health Agency 2 | Line 3 | Col 5
+"H-3, Part I: HHA 2",400,,H3_1_HHA2_C5_4,Home Health Agency 2 | Line 4 | Col 5
+"H-3, Part I: HHA 2",500,,H3_1_HHA2_C5_5,Home Health Agency 2 | Line 5 | Col 5
+"H-3, Part I: HHA 2",600,,H3_1_HHA2_C5_6,Home Health Agency 2 | Line 6 | Col 5
+"H-3, Part I: HHA 2",700,,H3_1_HHA2_C5_7,Home Health Agency 2 | Line 7 | Col 5
+"H-3, Part I: HHA 2",1500,,H3_1_HHA2_C10_15,Home Health Agency 2 | Line 15 | Col 10
+"H-3, Part I: HHA 2",1600,,H3_1_HHA2_C10_16,Home Health Agency 2 | Line 16 | Col 10
+"H-3, Part I: HHA 3",100,,H3_1_HHA3_C5_1,Home Health Agency 3 | Line 1 | Col 5
+"H-3, Part I: HHA 3",200,,H3_1_HHA3_C5_2,Home Health Agency 3 | Line 2 | Col 5
+"H-3, Part I: HHA 3",300,,H3_1_HHA3_C5_3,Home Health Agency 3 | Line 3 | Col 5
+"H-3, Part I: HHA 3",400,,H3_1_HHA3_C5_4,Home Health Agency 3 | Line 4 | Col 5
+"H-3, Part I: HHA 3",500,,H3_1_HHA3_C5_5,Home Health Agency 3 | Line 5 | Col 5
+"H-3, Part I: HHA 3",600,,H3_1_HHA3_C5_6,Home Health Agency 3 | Line 6 | Col 5
+"H-3, Part I: HHA 3",700,,H3_1_HHA3_C5_7,Home Health Agency 3 | Line 7 | Col 5
+"H-3, Part I: HHA 3",1500,,H3_1_HHA3_C10_15,Home Health Agency 3 | Line 15 | Col 10
+"H-3, Part I: HHA 3",1600,,H3_1_HHA3_C10_16,Home Health Agency 3 | Line 16 | Col 10
+"H-3, Part I: HHA 4",100,,H3_1_HHA4_C5_1,Home Health Agency 4 | Line 1 | Col 5
+"H-3, Part I: HHA 4",200,,H3_1_HHA4_C5_2,Home Health Agency 4 | Line 2 | Col 5
+"H-3, Part I: HHA 4",300,,H3_1_HHA4_C5_3,Home Health Agency 4 | Line 3 | Col 5
+"H-3, Part I: HHA 4",400,,H3_1_HHA4_C5_4,Home Health Agency 4 | Line 4 | Col 5
+"H-3, Part I: HHA 4",500,,H3_1_HHA4_C5_5,Home Health Agency 4 | Line 5 | Col 5
+"H-3, Part I: HHA 4",600,,H3_1_HHA4_C5_6,Home Health Agency 4 | Line 6 | Col 5
+"H-3, Part I: HHA 4",700,,H3_1_HHA4_C5_7,Home Health Agency 4 | Line 7 | Col 5
+"H-3, Part I: HHA 4",1500,,H3_1_HHA4_C10_15,Home Health Agency 4 | Line 15 | Col 10
+"H-3, Part I: HHA 4",1600,,H3_1_HHA4_C10_16,Home Health Agency 4 | Line 16 | Col 10
+"H-3, Part I: HHA 5",100,,H3_1_HHA5_C5_1,Home Health Agency 5 | Line 1 | Col 5
+"H-3, Part I: HHA 5",200,,H3_1_HHA5_C5_2,Home Health Agency 5 | Line 2 | Col 5
+"H-3, Part I: HHA 5",300,,H3_1_HHA5_C5_3,Home Health Agency 5 | Line 3 | Col 5
+"H-3, Part I: HHA 5",400,,H3_1_HHA5_C5_4,Home Health Agency 5 | Line 4 | Col 5
+"H-3, Part I: HHA 5",500,,H3_1_HHA5_C5_5,Home Health Agency 5 | Line 5 | Col 5
+"H-3, Part I: HHA 5",600,,H3_1_HHA5_C5_6,Home Health Agency 5 | Line 6 | Col 5
+"H-3, Part I: HHA 5",700,,H3_1_HHA5_C5_7,Home Health Agency 5 | Line 7 | Col 5
+"H-3, Part I: HHA 5",1500,,H3_1_HHA5_C10_15,Home Health Agency 5 | Line 15 | Col 10
+"H-3, Part I: HHA 5",1600,,H3_1_HHA5_C10_16,Home Health Agency 5 | Line 16 | Col 10
+"H-4, Part II: HHA 1",1000,,H4_2_HHA1_C1_10,Home Health Agency 1 | Line 10 | Col 1
+"H-4, Part II: HHA 1",1100,,H4_2_HHA1_C1_11,Home Health Agency 1 | Line 11 | Col 1
+"H-4, Part II: HHA 1",1200,,H4_2_HHA1_C1_12,Home Health Agency 1 | Line 12 | Col 1
+"H-4, Part II: HHA 1",1300,,H4_2_HHA1_C1_13,Home Health Agency 1 | Line 13 | Col 1
+"H-4, Part II: HHA 1",1400,,H4_2_HHA1_C1_14,Home Health Agency 1 | Line 14 | Col 1
+"H-4, Part II: HHA 1",1500,,H4_2_HHA1_C1_15,Home Health Agency 1 | Line 15 | Col 1
+"H-4, Part II: HHA 1",1600,,H4_2_HHA1_C1_16,Home Health Agency 1 | Line 16 | Col 1
+"H-4, Part II: HHA 1",1700,,H4_2_HHA1_C1_17,Home Health Agency 1 | Line 17 | Col 1
+"H-4, Part II: HHA 1",1800,,H4_2_HHA1_C1_18,Home Health Agency 1 | Line 18 | Col 1
+"H-4, Part II: HHA 1",1900,,H4_2_HHA1_C1_19,Home Health Agency 1 | Line 19 | Col 1
+"H-4, Part II: HHA 1",2000,,H4_2_HHA1_C1_20,Home Health Agency 1 | Line 20 | Col 1
+"H-4, Part II: HHA 1",2100,,H4_2_HHA1_C1_21,Home Health Agency 1 | Line 21 | Col 1
+"H-4, Part II: HHA 1",2200,,H4_2_HHA1_C1_22,Home Health Agency 1 | Line 22 | Col 1
+"H-4, Part II: HHA 1",2300,,H4_2_HHA1_C1_23,Home Health Agency 1 | Line 23 | Col 1
+"H-4, Part II: HHA 1",2400,,H4_2_HHA1_C1_24,Home Health Agency 1 | Line 24 | Col 1
+"H-4, Part II: HHA 1",2500,,H4_2_HHA1_C1_25,Home Health Agency 1 | Line 25 | Col 1
+"H-4, Part II: HHA 1",2600,,H4_2_HHA1_C1_26,Home Health Agency 1 | Line 26 | Col 1
+"H-4, Part II: HHA 1",2700,,H4_2_HHA1_C1_27,Home Health Agency 1 | Line 27 | Col 1
+"H-4, Part II: HHA 1",2800,,H4_2_HHA1_C1_28,Home Health Agency 1 | Line 28 | Col 1
+"H-4, Part II: HHA 1",2900,,H4_2_HHA1_C1_29,Home Health Agency 1 | Line 29 | Col 1
+"H-4, Part II: HHA 1",3000,,H4_2_HHA1_C1_30,Home Health Agency 1 | Line 30 | Col 1
+"H-4, Part II: HHA 1",3100,,H4_2_HHA1_C1_31,Home Health Agency 1 | Line 31 | Col 1
+"H-4, Part II: HHA 1",3101,,H4_2_HHA1_C1_3101,Home Health Agency 1 | Line 31.01 | Col 1
+"H-4, Part II: HHA 1",3200,,H4_2_HHA1_C1_32,Home Health Agency 1 | Line 32 | Col 1
+"H-4, Part II: HHA 1",3300,,H4_2_HHA1_C1_33,Home Health Agency 1 | Line 33 | Col 1
+"H-4, Part II: HHA 1",3400,,H4_2_HHA1_C1_34,Home Health Agency 1 | Line 34 | Col 1
+"H-4, Part II: HHA 1",3500,,H4_2_HHA1_C1_35,Home Health Agency 1 | Line 35 | Col 1
+"H-4, Part II: HHA 2",1000,,H4_2_HHA2_C1_10,Home Health Agency 2 | Line 10 | Col 1
+"H-4, Part II: HHA 2",1100,,H4_2_HHA2_C1_11,Home Health Agency 2 | Line 11 | Col 1
+"H-4, Part II: HHA 2",1200,,H4_2_HHA2_C1_12,Home Health Agency 2 | Line 12 | Col 1
+"H-4, Part II: HHA 2",1300,,H4_2_HHA2_C1_13,Home Health Agency 2 | Line 13 | Col 1
+"H-4, Part II: HHA 2",1400,,H4_2_HHA2_C1_14,Home Health Agency 2 | Line 14 | Col 1
+"H-4, Part II: HHA 2",1500,,H4_2_HHA2_C1_15,Home Health Agency 2 | Line 15 | Col 1
+"H-4, Part II: HHA 2",1600,,H4_2_HHA2_C1_16,Home Health Agency 2 | Line 16 | Col 1
+"H-4, Part II: HHA 2",1700,,H4_2_HHA2_C1_17,Home Health Agency 2 | Line 17 | Col 1
+"H-4, Part II: HHA 2",1800,,H4_2_HHA2_C1_18,Home Health Agency 2 | Line 18 | Col 1
+"H-4, Part II: HHA 2",1900,,H4_2_HHA2_C1_19,Home Health Agency 2 | Line 19 | Col 1
+"H-4, Part II: HHA 2",2000,,H4_2_HHA2_C1_20,Home Health Agency 2 | Line 20 | Col 1
+"H-4, Part II: HHA 2",2100,,H4_2_HHA2_C1_21,Home Health Agency 2 | Line 21 | Col 1
+"H-4, Part II: HHA 2",2200,,H4_2_HHA2_C1_22,Home Health Agency 2 | Line 22 | Col 1
+"H-4, Part II: HHA 2",2300,,H4_2_HHA2_C1_23,Home Health Agency 2 | Line 23 | Col 1
+"H-4, Part II: HHA 2",2400,,H4_2_HHA2_C1_24,Home Health Agency 2 | Line 24 | Col 1
+"H-4, Part II: HHA 2",2500,,H4_2_HHA2_C1_25,Home Health Agency 2 | Line 25 | Col 1
+"H-4, Part II: HHA 2",2600,,H4_2_HHA2_C1_26,Home Health Agency 2 | Line 26 | Col 1
+"H-4, Part II: HHA 2",2700,,H4_2_HHA2_C1_27,Home Health Agency 2 | Line 27 | Col 1
+"H-4, Part II: HHA 2",2800,,H4_2_HHA2_C1_28,Home Health Agency 2 | Line 28 | Col 1
+"H-4, Part II: HHA 2",2900,,H4_2_HHA2_C1_29,Home Health Agency 2 | Line 29 | Col 1
+"H-4, Part II: HHA 2",3000,,H4_2_HHA2_C1_30,Home Health Agency 2 | Line 30 | Col 1
+"H-4, Part II: HHA 2",3100,,H4_2_HHA2_C1_31,Home Health Agency 2 | Line 31 | Col 1
+"H-4, Part II: HHA 2",3101,,H4_2_HHA2_C2_3101,Home Health Agency 2 | Line 31.01 | Col 2
+"H-4, Part II: HHA 2",3200,,H4_2_HHA2_C1_32,Home Health Agency 2 | Line 32 | Col 1
+"H-4, Part II: HHA 2",3300,,H4_2_HHA2_C1_33,Home Health Agency 2 | Line 33 | Col 1
+"H-4, Part II: HHA 2",3400,,H4_2_HHA2_C1_34,Home Health Agency 2 | Line 34 | Col 1
+"H-4, Part II: HHA 2",3500,,H4_2_HHA2_C1_35,Home Health Agency 2 | Line 35 | Col 1
+"H-4, Part II: HHA 3",1000,,H4_2_HHA3_C1_10,Home Health Agency 3 | Line 10 | Col 1
+"H-4, Part II: HHA 3",1100,,H4_2_HHA3_C1_11,Home Health Agency 3 | Line 11 | Col 1
+"H-4, Part II: HHA 3",1200,,H4_2_HHA3_C1_12,Home Health Agency 3 | Line 12 | Col 1
+"H-4, Part II: HHA 3",1300,,H4_2_HHA3_C1_13,Home Health Agency 3 | Line 13 | Col 1
+"H-4, Part II: HHA 3",1400,,H4_2_HHA3_C1_14,Home Health Agency 3 | Line 14 | Col 1
+"H-4, Part II: HHA 3",1500,,H4_2_HHA3_C1_15,Home Health Agency 3 | Line 15 | Col 1
+"H-4, Part II: HHA 3",1600,,H4_2_HHA3_C1_16,Home Health Agency 3 | Line 16 | Col 1
+"H-4, Part II: HHA 3",1700,,H4_2_HHA3_C1_17,Home Health Agency 3 | Line 17 | Col 1
+"H-4, Part II: HHA 3",1800,,H4_2_HHA3_C1_18,Home Health Agency 3 | Line 18 | Col 1
+"H-4, Part II: HHA 3",1900,,H4_2_HHA3_C1_19,Home Health Agency 3 | Line 19 | Col 1
+"H-4, Part II: HHA 3",2000,,H4_2_HHA3_C1_20,Home Health Agency 3 | Line 20 | Col 1
+"H-4, Part II: HHA 3",2100,,H4_2_HHA3_C1_21,Home Health Agency 3 | Line 21 | Col 1
+"H-4, Part II: HHA 3",2200,,H4_2_HHA3_C1_22,Home Health Agency 3 | Line 22 | Col 1
+"H-4, Part II: HHA 3",2300,,H4_2_HHA3_C1_23,Home Health Agency 3 | Line 23 | Col 1
+"H-4, Part II: HHA 3",2400,,H4_2_HHA3_C1_24,Home Health Agency 3 | Line 24 | Col 1
+"H-4, Part II: HHA 3",2500,,H4_2_HHA3_C1_25,Home Health Agency 3 | Line 25 | Col 1
+"H-4, Part II: HHA 3",2600,,H4_2_HHA3_C1_26,Home Health Agency 3 | Line 26 | Col 1
+"H-4, Part II: HHA 3",2700,,H4_2_HHA3_C1_27,Home Health Agency 3 | Line 27 | Col 1
+"H-4, Part II: HHA 3",2800,,H4_2_HHA3_C1_28,Home Health Agency 3 | Line 28 | Col 1
+"H-4, Part II: HHA 3",2900,,H4_2_HHA3_C1_29,Home Health Agency 3 | Line 29 | Col 1
+"H-4, Part II: HHA 3",3000,,H4_2_HHA3_C1_30,Home Health Agency 3 | Line 30 | Col 1
+"H-4, Part II: HHA 3",3100,,H4_2_HHA3_C1_31,Home Health Agency 3 | Line 31 | Col 1
+"H-4, Part II: HHA 3",3101,,H4_2_HHA3_C1_3101,Home Health Agency 3 | Line 31.01 | Col 1
+"H-4, Part II: HHA 3",3200,,H4_2_HHA3_C1_32,Home Health Agency 3 | Line 32 | Col 1
+"H-4, Part II: HHA 3",3300,,H4_2_HHA3_C1_33,Home Health Agency 3 | Line 33 | Col 1
+"H-4, Part II: HHA 3",3400,,H4_2_HHA3_C1_34,Home Health Agency 3 | Line 34 | Col 1
+"H-4, Part II: HHA 3",3500,,H4_2_HHA3_C1_35,Home Health Agency 3 | Line 35 | Col 1
+"H-4, Part II: HHA 4",1000,,H4_2_HHA4_C1_10,Home Health Agency 4 | Line 10 | Col 1
+"H-4, Part II: HHA 4",1100,,H4_2_HHA4_C1_11,Home Health Agency 4 | Line 11 | Col 1
+"H-4, Part II: HHA 4",1200,,H4_2_HHA4_C1_12,Home Health Agency 4 | Line 12 | Col 1
+"H-4, Part II: HHA 4",1300,,H4_2_HHA4_C1_13,Home Health Agency 4 | Line 13 | Col 1
+"H-4, Part II: HHA 4",1400,,H4_2_HHA4_C1_14,Home Health Agency 4 | Line 14 | Col 1
+"H-4, Part II: HHA 4",1500,,H4_2_HHA4_C1_15,Home Health Agency 4 | Line 15 | Col 1
+"H-4, Part II: HHA 4",1600,,H4_2_HHA4_C1_16,Home Health Agency 4 | Line 16 | Col 1
+"H-4, Part II: HHA 4",1700,,H4_2_HHA4_C1_17,Home Health Agency 4 | Line 17 | Col 1
+"H-4, Part II: HHA 4",1800,,H4_2_HHA4_C1_18,Home Health Agency 4 | Line 18 | Col 1
+"H-4, Part II: HHA 4",1900,,H4_2_HHA4_C1_19,Home Health Agency 4 | Line 19 | Col 1
+"H-4, Part II: HHA 4",2000,,H4_2_HHA4_C1_20,Home Health Agency 4 | Line 20 | Col 1
+"H-4, Part II: HHA 4",2100,,H4_2_HHA4_C1_21,Home Health Agency 4 | Line 21 | Col 1
+"H-4, Part II: HHA 4",2200,,H4_2_HHA4_C1_22,Home Health Agency 4 | Line 22 | Col 1
+"H-4, Part II: HHA 4",2300,,H4_2_HHA4_C1_23,Home Health Agency 4 | Line 23 | Col 1
+"H-4, Part II: HHA 4",2400,,H4_2_HHA4_C1_24,Home Health Agency 4 | Line 24 | Col 1
+"H-4, Part II: HHA 4",2500,,H4_2_HHA4_C1_25,Home Health Agency 4 | Line 25 | Col 1
+"H-4, Part II: HHA 4",2600,,H4_2_HHA4_C1_26,Home Health Agency 4 | Line 26 | Col 1
+"H-4, Part II: HHA 4",2700,,H4_2_HHA4_C1_27,Home Health Agency 4 | Line 27 | Col 1
+"H-4, Part II: HHA 4",2800,,H4_2_HHA4_C1_28,Home Health Agency 4 | Line 28 | Col 1
+"H-4, Part II: HHA 4",2900,,H4_2_HHA4_C1_29,Home Health Agency 4 | Line 29 | Col 1
+"H-4, Part II: HHA 4",3000,,H4_2_HHA4_C1_30,Home Health Agency 4 | Line 30 | Col 1
+"H-4, Part II: HHA 4",3100,,H4_2_HHA4_C1_31,Home Health Agency 4 | Line 31 | Col 1
+"H-4, Part II: HHA 4",3101,,H4_2_HHA4_C1_3101,Home Health Agency 4 | Line 31.01 | Col 1
+"H-4, Part II: HHA 4",3200,,H4_2_HHA4_C1_32,Home Health Agency 4 | Line 32 | Col 1
+"H-4, Part II: HHA 4",3300,,H4_2_HHA4_C1_33,Home Health Agency 4 | Line 33 | Col 1
+"H-4, Part II: HHA 4",3400,,H4_2_HHA4_C1_34,Home Health Agency 4 | Line 34 | Col 1
+"H-4, Part II: HHA 4",3500,,H4_2_HHA4_C1_35,Home Health Agency 4 | Line 35 | Col 1
+"H-4, Part II: HHA 5",1000,,H4_2_HHA5_C1_10,Home Health Agency 5 | Line 10 | Col 1
+"H-4, Part II: HHA 5",1100,,H4_2_HHA5_C1_11,Home Health Agency 5 | Line 11 | Col 1
+"H-4, Part II: HHA 5",1200,,H4_2_HHA5_C1_12,Home Health Agency 5 | Line 12 | Col 1
+"H-4, Part II: HHA 5",1300,,H4_2_HHA5_C1_13,Home Health Agency 5 | Line 13 | Col 1
+"H-4, Part II: HHA 5",1400,,H4_2_HHA5_C1_14,Home Health Agency 5 | Line 14 | Col 1
+"H-4, Part II: HHA 5",1500,,H4_2_HHA5_C1_15,Home Health Agency 5 | Line 15 | Col 1
+"H-4, Part II: HHA 5",1600,,H4_2_HHA5_C1_16,Home Health Agency 5 | Line 16 | Col 1
+"H-4, Part II: HHA 5",1700,,H4_2_HHA5_C1_17,Home Health Agency 5 | Line 17 | Col 1
+"H-4, Part II: HHA 5",1800,,H4_2_HHA5_C1_18,Home Health Agency 5 | Line 18 | Col 1
+"H-4, Part II: HHA 5",1900,,H4_2_HHA5_C1_19,Home Health Agency 5 | Line 19 | Col 1
+"H-4, Part II: HHA 5",2000,,H4_2_HHA5_C1_20,Home Health Agency 5 | Line 20 | Col 1
+"H-4, Part II: HHA 5",2100,,H4_2_HHA5_C1_21,Home Health Agency 5 | Line 21 | Col 1
+"H-4, Part II: HHA 5",2200,,H4_2_HHA5_C1_22,Home Health Agency 5 | Line 22 | Col 1
+"H-4, Part II: HHA 5",2300,,H4_2_HHA5_C1_23,Home Health Agency 5 | Line 23 | Col 1
+"H-4, Part II: HHA 5",2400,,H4_2_HHA5_C1_24,Home Health Agency 5 | Line 24 | Col 1
+"H-4, Part II: HHA 5",2500,,H4_2_HHA5_C1_25,Home Health Agency 5 | Line 25 | Col 1
+"H-4, Part II: HHA 5",2600,,H4_2_HHA5_C1_26,Home Health Agency 5 | Line 26 | Col 1
+"H-4, Part II: HHA 5",2700,,H4_2_HHA5_C1_27,Home Health Agency 5 | Line 27 | Col 1
+"H-4, Part II: HHA 5",2800,,H4_2_HHA5_C1_28,Home Health Agency 5 | Line 28 | Col 1
+"H-4, Part II: HHA 5",2900,,H4_2_HHA5_C1_29,Home Health Agency 5 | Line 29 | Col 1
+"H-4, Part II: HHA 5",3000,,H4_2_HHA5_C1_30,Home Health Agency 5 | Line 30 | Col 1
+"H-4, Part II: HHA 5",3100,,H4_2_HHA5_C1_31,Home Health Agency 5 | Line 31 | Col 1
+"H-4, Part II: HHA 5",3101,,H4_2_HHA5_C1_3101,Home Health Agency 5 | Line 31.01 | Col 1
+"H-4, Part II: HHA 5",3200,,H4_2_HHA5_C1_32,Home Health Agency 5 | Line 32 | Col 1
+"H-4, Part II: HHA 5",3300,,H4_2_HHA5_C1_33,Home Health Agency 5 | Line 33 | Col 1
+"H-4, Part II: HHA 5",3400,,H4_2_HHA5_C1_34,Home Health Agency 5 | Line 34 | Col 1
+"H-4, Part II: HHA 5",3500,,H4_2_HHA5_C1_35,Home Health Agency 5 | Line 35 | Col 1
+"L, Part I: Hospital",100,,L_1_HOS_C101_1,Hospital | Line 1 | Col 101
+"L, Part I: Hospital",101,,L_1_HOS_C1_101,Hospital | Line 1.01 | Col 1
+"L, Part I: Hospital",200,,L_1_HOS_C1_2,Hospital | Line 2 | Col 1
+"L, Part I: Hospital",201,,L_1_HOS_C1_201,Hospital | Line 2.01 | Col 1
+"L, Part I: Hospital",300,,L_1_HOS_C1_3,Hospital | Line 3 | Col 1
+"L, Part I: Hospital",400,,L_1_HOS_C1_4,Hospital | Line 4 | Col 1
+"L, Part I: Hospital",500,,L_1_HOS_C1_5,Hospital | Line 5 | Col 1
+"L, Part I: Hospital",600,,L_1_HOS_C1_6,Hospital | Line 6 | Col 1
+"L, Part I: Hospital",700,,L_1_HOS_C1_7,Hospital | Line 7 | Col 1
+"L, Part I: Hospital",800,,L_1_HOS_C1_8,Hospital | Line 8 | Col 1
+"L, Part I: Hospital",900,,L_1_HOS_C1_9,Hospital | Line 9 | Col 1
+"L, Part I: Hospital",1000,,L_1_HOS_C1_10,Hospital | Line 10 | Col 1
+"L, Part I: Hospital",1100,,L_1_HOS_C1_11,Hospital | Line 11 | Col 1
+"L, Part II: Hospital",100,,L_2_HOS_C1_1,Hospital | Line 1 | Col 1
+"L, Part II: Hospital",200,,L_2_HOS_C1_2,Hospital | Line 2 | Col 1
+"L, Part II: Hospital",300,,L_2_HOS_C1_3,Hospital | Line 3 | Col 1
+"L, Part II: Hospital",400,,L_2_HOS_C1_4,Hospital | Line 4 | Col 1
+"L, Part II: Hospital",500,,L_2_HOS_C1_5,Hospital | Line 5 | Col 1
+"L, Part III: Hospital",100,,L_3_HOS_C1_1,Hospital | Line 1 | Col 1
+"L, Part III: Hospital",200,,L_3_HOS_C1_2,Hospital | Line 2 | Col 1
+"L, Part III: Hospital",300,,L_3_HOS_C1_3,Hospital | Line 3 | Col 1
+"L, Part III: Hospital",400,,L_3_HOS_C1_4,Hospital | Line 4 | Col 1
+"L, Part III: Hospital",500,,L_3_HOS_C1_5,Hospital | Line 5 | Col 1
+"L, Part III: Hospital",600,,L_3_HOS_C1_6,Hospital | Line 6 | Col 1
+"L, Part III: Hospital",700,,L_3_HOS_C1_7,Hospital | Line 7 | Col 1
+"L, Part III: Hospital",800,,L_3_HOS_C1_8,Hospital | Line 8 | Col 1
+"L, Part III: Hospital",900,,L_3_HOS_C1_9,Hospital | Line 9 | Col 1
+"L, Part III: Hospital",1000,,L_3_HOS_C1_10,Hospital | Line 10 | Col 1
+"L, Part III: Hospital",1100,,L_3_HOS_C1_11,Hospital | Line 11 | Col 1
+"L, Part III: Hospital",1200,,L_3_HOS_C1_12,Hospital | Line 12 | Col 1
+"L, Part III: Hospital",1300,,L_3_HOS_C1_13,Hospital | Line 13 | Col 1
+"L, Part III: Hospital",1400,,L_3_HOS_C1_14,Hospital | Line 14 | Col 1
+"L, Part III: Hospital",1500,,L_3_HOS_C1_15,Hospital | Line 15 | Col 1
+"L, Part III: Hospital",1600,,L_3_HOS_C1_16,Hospital | Line 16 | Col 1
+"L, Part III: Hospital",1700,,L_3_HOS_C1_17,Hospital | Line 17 | Col 1

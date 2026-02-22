@@ -1,0 +1,48 @@
+======================================================================
+HCRIS Data Enrichment Report
+======================================================================
+
+Before enrichment:
+  Total columns: 5618
+  With descriptions: 5618 (100.0%)
+  Missing descriptions: 0
+
+After enrichment:
+  Total columns: 5618
+  With any description: 5618 (100.0%)
+  With real descriptions: 4936 (87.9%)
+  Still missing: 0
+
+  Descriptions added: +0
+
+--- Descriptions by worksheet ---
+  B, Part I: Cost Allocation - General                354/354  [####################] 100%
+  D, Part IV: Apportionment - Hospital                321/321  [####################] 100%
+  A: Reclassification & Adjustment of Trial Balance   310/310  [####################] 100%
+  D, Part V: Apportionment - Hospital                 240/240  [####################] 100%
+  C, Part I: Ancillary & Outpatient Cost              237/237  [####################] 100%
+  S-3, Part I: Utilization Data                       220/220  [####################] 100%
+  S-2, Part I: Hospital Identification                185/185  [####################] 100%
+  S-3, Part II: Medicaid Ratio                        184/184  [####################] 100%
+  E, Part A: Settlement - Hospital                    127/127  [####################] 100%
+  D-3: Apportionment - Hospital                       115/115  [####################] 100%
+  D-3: Apportionment - SNF                            112/112  [####################] 100%
+  D-3: Apportionment - IPF                            108/108  [####################] 100%
+  D-3: Apportionment - IRF                            108/108  [####################] 100%
+  D, Part IV: Apportionment - IPF                      85/85   [####################] 100%
+  D, Part IV: Apportionment - IRF                      85/85   [####################] 100%
+  D, Part IV: Apportionment - Subprovider 1            85/85   [####################] 100%
+  D, Part IV: Apportionment - Subprovider 2            85/85   [####################] 100%
+  B, Part II: Cost Allocation                          83/83   [####################] 100%
+  D, Part IV: Apportionment - SNF                      80/80   [####################] 100%
+  E-4: DSH Payment Adjustment                          80/80   [####################] 100%
+  G: Balance Sheet                                     60/60   [####################] 100%
+  G-2: Statement of Changes in Fund Balance            56/56   [####################] 100%
+  D-3: Apportionment - Subprovider 1                   54/54   [####################] 100%
+  D-3: Apportionment - Subprovider 2                   54/54   [####################] 100%
+  H-4, Part II: HHA 1                                  54/54   [####################] 100%
+  H-4, Part II: HHA 3                                  54/54   [####################] 100%
+  H-4, Part II: HHA 4                                  54/54   [####################] 100%
+  H-4, Part II: HHA 5                                  54/54   [####################] 100%
+  E, Part B: Settlement - Hospital                     53/53   [####################] 100%
+  H-4, Part II: HHA 2                                  53/53   [####################] 100%
