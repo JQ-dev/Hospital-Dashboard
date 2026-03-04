@@ -12,7 +12,20 @@
       "Bash(NUL)",
       "Bash(timeout:*)",
       "Bash(chmod:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(mkdir:*)",
+      "Bash(move \"APP_STRUCTURE.md\" \"temp files\"\" && move \"AUTHENTICATION_GUIDE.md\" \"temp files\"\")",
+      "Bash(move \"AUTH_QUICKSTART.md\" \"temp files\"\" && move \"CLEANUP_GUIDE.md\" \"temp files\"\")",
+      "Bash(move \"COMPREHENSIVE_CODE_AND_KPI_DOCUMENTATION.md\" \"temp files\"\" && move \"COMPREHENSIVE_RECOMMENDATIONS.md\" \"temp files\"\")",
+      "Bash(move \"CURRENT_RATIO_ENHANCEMENT.md\" \"temp files\"\" && move \"CURRENT_RATIO_ENHANCEMENTS_V2.md\" \"temp files\"\")",
+      "Bash(move \"DASHBOARD_FIX_REPORT.md\" \"temp files\"\" && move \"DASHBOARD_INTEGRATION.md\" \"temp files\"\")",
+      "Bash(move \"DASHBOARD_WORKSHEETS_GUIDE.md\" \"temp files\"\" && move \"DATABASE_BUILD_COMPLETE.md\" \"temp files\"\")",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(ls:*)",
+      "Bash(pip:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

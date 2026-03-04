@@ -11,7 +11,7 @@ from utils.logging_config import get_logger
 
 from config.mappings import DB_COLUMN_TO_KPI_KEY
 from components.kpi_cards import create_enhanced_level1_kpi_card
-from kpi_hierarchy_config import KPI_HIERARCHY
+from config.hierarchy_config import DEFAULT_KPI_HIERARCHY as KPI_HIERARCHY
 
 logger = get_logger(__name__)
 

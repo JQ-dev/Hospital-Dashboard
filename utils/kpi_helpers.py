@@ -4,7 +4,7 @@ KPI Helper Functions - Calculations and utilities for KPI processing
 
 import pandas as pd
 import plotly.graph_objects as go
-from kpi_hierarchy_config import KPI_METADATA
+from config.card_registry import KPI_METADATA
 
 
 def calculate_importance_score(kpi_key):

@@ -63,3 +63,6 @@ Thumbs.db
 *.tmp
 *.bak
 *.backup
+
+.DATABASE_CREATION/
+temp files/

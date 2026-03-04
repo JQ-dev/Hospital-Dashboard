@@ -660,7 +660,7 @@ def load_all_kpis(ccn, benchmark_level, sort_imp, sort_perf, sort_trend):
             calculate_percentile_rank,
             create_sparkline
         )
-        from kpi_hierarchy_config import KPI_METADATA
+        from config.card_registry import KPI_METADATA
         import pandas as pd
 
         # Get hospital metadata
